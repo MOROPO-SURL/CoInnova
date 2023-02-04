@@ -1,0 +1,31 @@
+﻿@model MOROPO.UIC.CoInnova.Models.View.IdeaWorkflowStepCreateViewModel
+
+<div class="modal fade" id="create-dialog" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="create-dialog-title">Agregar Etapa</h5>
+            </div>
+            @using (Html.BeginForm("createstep", "ideaworkflows", null, FormMethod.Post, true, null))
+            {
+                @Html.HiddenFor(model => model.WorkflowId)
+
+                <div class="modal-body">
+                    <div class="mb-3">
+                        @Html.LabelFor(model => model.Name, new { @class = "control-label" })
+                        @Html.TextBoxFor(model => model.Name, new { @class = "form-control"})
+                    </div>
+                    <div>
+                        @Html.LabelFor(model => model.Description, new { @class = "control-label" })
+                        @Html.TextAreaFor(model => model.Description, 4, 0, new { @class = "form-control"})
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Agregar</button>
+                    <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,15 @@
+﻿@model MOROPO.UIC.CoInnova.Models.View.HomeViewModel
+
+@{
+    ViewData["Title"] = GlobalViewLocalizationHelper.Localize("Home", ViewLocalizer);
+
+    ViewData[BreadcrumbViewModel.BREADCRUMBS_MAP_KEY] = new List<BreadcrumbViewModel>
+    {
+        new BreadcrumbViewModel
+        {
+            Caption = "<span class=\"mdi mdi-home\"></span> " + ViewData["Title"].ToString()
+        }
+    };
+
+    Layout = "_FrontendLayout";
+}

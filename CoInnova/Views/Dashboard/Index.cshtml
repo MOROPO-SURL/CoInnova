@@ -1,0 +1,162 @@
+﻿@using MOROPO.UIC.CoInnova.Extensions;
+@using MOROPO.UIC.CoInnova.Models.View;
+
+@model ManagementDashboardViewModel
+
+@{
+    ViewData["Title"] = GlobalViewLocalizationHelper.Localize("Dashboard", ViewLocalizer);
+
+    ViewData[BreadcrumbViewModel.BREADCRUMBS_MAP_KEY] = new List<BreadcrumbViewModel>
+    {
+        new BreadcrumbViewModel
+        {
+            Caption = "<span class=\"mdi mdi-cogs\"></span> " + ViewData["Title"].ToString()
+        }
+    };
+
+    Layout = "_BackendLayout";
+}
+
+@section styles {
+    <style type="text/css">
+        .card .mdi {
+            font-size: 48px;
+        }
+
+        .nav-link .mdi {
+            font-size: 18px;
+        }
+    </style>
+}
+
+@section scripts {
+    <script src="~/lib/chartjs/chart.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var varScope = $('#js-var-scope-layout');
+            const tracesByDayLabels = JSON.parse(varScope.attr('data-traces-by-day-labels'));
+            const weekStatisticsLabels = JSON.parse( varScope.attr('data-week-statistics-labels'));
+            const TracesbyUsers = JSON.parse(varScope.attr('data-traces-by-users'));
+            const WeekTracesStatisticsValues = JSON.parse(varScope.attr('data-Week-traces-statistics-values'));
+
+            const tracesByData = {
+                labels: tracesByDayLabels,
+                datasets: [{
+                    label: 'Registros por usuario',
+                    data: TracesbyUsers,
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(255, 159, 64, 0.2)',
+                'rgba(255, 205, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(201, 203, 207, 0.2)'
+            ],
+                borderColor: [
+                    'rgb(255, 99, 132)',
+                    'rgb(255, 159, 64)',
+                    'rgb(255, 205, 86)',
+                    'rgb(75, 192, 192)',
+                    'rgb(54, 162, 235)',
+                    'rgb(153, 102, 255)',
+                    'rgb(201, 203, 207)'
+                ],
+                    borderWidth: 1
+                        }]
+                    };
+
+            const tracesByConfig = {
+                type: 'bar',
+                data: tracesByData,
+                options: {}
+            };
+
+            const tracesByUsersChart = new Chart(
+                document.getElementById('tracesByUsersChart'),
+                tracesByConfig
+            );
+
+            const weekStatisticsData = {
+                labels: weekStatisticsLabels,
+                datasets: [{
+                    label: 'Registros por días',
+                    data: WeekTracesStatisticsValues,
+                fill: true,
+                borderColor: 'rgb(75, 192, 192)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                        tension: 0.1
+                        }]
+                    };
+
+            const weekStatisticsConfig = {
+                type: 'line',
+                data: weekStatisticsData,
+                options: {}
+            };
+
+            const weekStatisticsChart = new Chart(
+                document.getElementById('weekStatisticsChart'),
+                weekStatisticsConfig
+            );
+        });
+    </script>
+}
+
+<div id="js-var-scope-layout"
+     data-traces-by-day-labels=" @(Newtonsoft.Json.JsonConvert.SerializeObject(Model.UsersList))"
+     data-week-statistics-labels="@(Newtonsoft.Json.JsonConvert.SerializeObject(Model.WeekStatisticsColumns))"
+     data-traces-by-users="@(Newtonsoft.Json.JsonConvert.SerializeObject(Model.TracesbyUsers))"
+     data-Week-traces-statistics-values="@(Newtonsoft.Json.JsonConvert.SerializeObject(Model.WeekTracesStatisticsValues))">
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="border-bottom mb-2">
+            <h5>Actividad en el sistema</h5>
+        </div>
+        <canvas id="weekStatisticsChart"></canvas>
+    </div>
+    <div class="col-md-6">
+        <div class="border-bottom mb-2">
+            <h5>Usuarios más activos</h5>
+        </div>
+        <canvas id="tracesByUsersChart"></canvas>
+    </div>
+</div>
+
+<hr class="mb-4" />
+
+<div class="row">
+    @foreach (var group in Model.Sections)
+    {
+        <div class="col-sm-6 mb-4">
+            <div class="card">
+                <div class="card-header"><h5 class="mb-0">@group.Key</h5></div>
+                <div class="card-body">
+                    <div class="row">
+                        @foreach (var item in group.Value)
+                        {
+                            <div class="col-sm-4" style="text-align: center; padding-bottom: 15px; padding-top: 15px;">
+                                @if (User.HasClaim(claim => claim.Type.Equals(MOROPO.SAPRESSC.Core.Web.Security.Constants.ClaimTypes.AccountWithFullAccess) && claim.Value.Equals(true.ToString())) || User.IsInRole(item.Role))
+                                {
+                                    <a href="@Url.Action(item.Action, item.Controller, new { item.Area })">
+                                        @item.ToIconographyHtmlString()
+                                        <div>@GlobalViewLocalizationHelper.Localize(item.Title, ViewLocalizer)</div>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <div class="text-muted">
+                                        @item.ToIconographyHtmlString()
+                                        <div>@GlobalViewLocalizationHelper.Localize(item.Title, ViewLocalizer)</div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

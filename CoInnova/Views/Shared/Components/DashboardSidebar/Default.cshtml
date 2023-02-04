@@ -1,0 +1,52 @@
+﻿@using MOROPO.UIC.CoInnova.Extensions;
+
+@model MOROPO.UIC.CoInnova.Models.View.ManagementDashboardViewModel
+
+<div style="position: relative; min-height: 100vh; z-index: 1000;  overflow-x: hidden; overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */">
+    <nav class="nav flex-column nav-pills nav-sidebar" style="margin-top: 84px;">
+        @if (Context.Request.Path.Value == "/management/dashboard")
+        {
+            <a class="nav-link active" href="#"><span class="mdi mdi-cogs" style="margin-right: 4px;"></span>@GlobalViewLocalizationHelper.Localize("Dashboard", ViewLocalizer)</a>
+        }
+        else
+        {
+            <a class="nav-link" href="@Url.Action("index", "dashboard", new { area = string.Empty, key = string.Empty })"><span class="mdi mdi-cogs" style="margin-right: 4px;"></span>@GlobalViewLocalizationHelper.Localize("Dashboard", ViewLocalizer)</a>
+        }
+    </nav>
+
+    @foreach (var group in Model.Sections)
+    {
+        <p class="text-muted" style="margin: 20px 16px 4px 16px; font-weight: bold;">@group.Key</p>
+        <hr class="mb-1 mt-0 ml-2 mr-2" />
+        <nav class="nav flex-column nav-pills nav-sidebar">
+            @foreach (var item in group.Value)
+            {
+                if (User.HasClaim(claim => claim.Type.Equals(MOROPO.SAPRESSC.Core.Web.Security.Constants.ClaimTypes.AccountWithFullAccess) && claim.Value.Equals(true.ToString())) || User.IsInRole(item.Role))
+                {
+                    if (item.Controller == "personcollaborators" && Context.Request.Path.Value.StartsWith("/management/" + item.Area + "/organizationcollaborators"))
+                    {
+                        <a class="nav-link active" href="@Url.Action(item.Action, "organizationcollaborators", new { area = item.Area, sheet = string.Empty })">@item.ToIconographyHtmlString() <span>@GlobalViewLocalizationHelper.Localize(item.Title, ViewLocalizer)</span></a>
+                    }
+                    else if (Context.Request.Path.Value.StartsWith("/management/" + item.Area + "/" + item.Controller))
+                    {
+                        <a class="nav-link active" href="@Url.Action(item.Action, item.Controller, new { area = item.Area, sheet = string.Empty })">@item.ToIconographyHtmlString() <span>@GlobalViewLocalizationHelper.Localize(item.Title, ViewLocalizer)</span></a>
+                    }
+                    else if (string.IsNullOrEmpty(item.Area) && Context.Request.Path.Value.StartsWith("/management/" + item.Controller))
+                    {
+                        <a class="nav-link active" href="@Url.Action(item.Action, item.Controller, new { area = item.Area, sheet = string.Empty })">@item.ToIconographyHtmlString() <span>@GlobalViewLocalizationHelper.Localize(item.Title, ViewLocalizer)</span></a>
+                    }
+                    else
+                    {
+                        <a class="nav-link" href="@Url.Action(item.Action, item.Controller, new { area = item.Area, sheet = string.Empty })">@item.ToIconographyHtmlString() <span>@GlobalViewLocalizationHelper.Localize(item.Title, ViewLocalizer)</span></a>
+                    }
+                }
+                else
+                {
+                    <a class="nav-link disabled">
+                        @item.ToIconographyHtmlString() <span>@GlobalViewLocalizationHelper.Localize(item.Title, ViewLocalizer)</span>
+                    </a>
+                }
+            }
+        </nav>
+    }
+</div>

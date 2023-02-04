@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32630.192
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoInnova", "CoInnova\CoInnova.csproj", "{D7A72DA4-820D-4081-B95C-E3577A250A94}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoInnova.Persistence", "CoInnova.Persistence\CoInnova.Persistence.csproj", "{A2606ABC-F0D6-4FD5-9175-6E7ACC82978C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D7A72DA4-820D-4081-B95C-E3577A250A94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7A72DA4-820D-4081-B95C-E3577A250A94}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7A72DA4-820D-4081-B95C-E3577A250A94}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7A72DA4-820D-4081-B95C-E3577A250A94}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2606ABC-F0D6-4FD5-9175-6E7ACC82978C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2606ABC-F0D6-4FD5-9175-6E7ACC82978C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2606ABC-F0D6-4FD5-9175-6E7ACC82978C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2606ABC-F0D6-4FD5-9175-6E7ACC82978C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {059EEF6C-2EE0-4C7E-8F90-BDE9DC5C0DD8}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,84 @@
+﻿@model MOROPO.UIC.CoInnova.Models.View.IdeaWorkflowStepsDisplayViewModel
+
+@{
+    ViewData["Title"] = "Editar Modelo de Gestión de Ideas (Etapas)";
+
+    ViewData[BreadcrumbViewModel.BREADCRUMBS_MAP_KEY] = new List<BreadcrumbViewModel>
+    {
+        new BreadcrumbViewModel
+        {
+            Caption = "<span class=\"mdi mdi-cogs\" style=\"margin-right: 4px;\"></span>" + GlobalViewLocalizationHelper.Localize("Dashboard", ViewLocalizer),
+            Url = Url.Action("index", "dashboard", new { Area = string.Empty })
+        },
+        new BreadcrumbViewModel
+        {
+            Caption = "Administración de Modelo de Gestión de Ideas",
+            Url = Url.Action("index")
+        },
+        new BreadcrumbViewModel
+        {
+            Caption = "Modificar Modelo de Gestión de Ideas",
+            Url = Url.Action("edit", "artworks", new { key = Model.Workflow.Id })
+        },
+        new BreadcrumbViewModel
+        {
+            Caption = "Etapas"
+        }
+    };
+
+    Layout = "_BackendLayout";
+}
+
+@await Html.PartialAsync("_CreateStepPartial", new MOROPO.UIC.CoInnova.Models.View.IdeaWorkflowStepCreateViewModel { WorkflowId = Model.Workflow.Id })
+
+<div class="card" style="margin-bottom: 20px;">
+    <div class="card-header">
+        <h4>Modificar Modelo de Gestión de Ideas</h4>
+        <ul class="nav nav-tabs card-header-tabs">
+            <li class="nav-item">
+                <a class="nav-link" asp-action="edit" asp-route-key="@Model.Workflow.Id">Generales</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="#">Etapas</a>
+            </li>
+        </ul>
+    </div>
+    <div class="card-body">
+        @for (int i = 0; i < Model.Steps.Count; i++)
+        {
+            var item = Model.Steps.ElementAt(i);
+
+            if (i > 0)
+            {
+                <div class="text-center"><span class="mdi mdi-arrow-down mdi-48px mt-4 mb-4"></span></div>
+            }
+
+            <div class="card bg-light text-center">
+                <div class="card-body">
+                    <h4 class="card-title">@item.Name</h4>
+                    @if (string.IsNullOrEmpty(item.Description))
+                    {
+                        <p class="card-text text-muted" style="font-style: italic;">Descripción no especificada</p>
+                    }
+                    else
+                    {
+                        <p class="card-text">@item.Description</p>
+                    }
+                </div>
+                <div class="card-img-overlay p-1">
+                    <a href="#" class="btn btn-light float-right p-1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="mdi mdi-24px mdi-dots-vertical"></span></a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <button class="dropdown-item" type="button"><span class="mdi mdi-square-edit-outline"></span> Modificar</button>
+                        <button class="dropdown-item" type="button"><span class="mdi mdi-trash-can-outline"></span> Eliminar</button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="card-footer">
+        <a class="btn btn-primary" href="#" data-toggle="modal" data-target="#create-dialog">Agregar</a>
+        <a class="btn btn-light" href="@Url.Action("index")">Regresar al listado</a>
+    </div>
+</div>
+
+
