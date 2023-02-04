@@ -350,3 +350,5 @@ MigrationBackup/
 .ionide/
 CoInnova/dpkeys/
 CoInnova/wwwroot/media/
+/CoInnova/appsettings.Development.json
+/CoInnova/appsettings.Staging.json
