@@ -352,3 +352,4 @@ CoInnova/dpkeys/
 CoInnova/wwwroot/media/
 /CoInnova/appsettings.Development.json
 /CoInnova/appsettings.Staging.json
+/CoInnova/Migrations
