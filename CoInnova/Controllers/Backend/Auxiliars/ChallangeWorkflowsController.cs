@@ -47,6 +47,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Auxiliars
         [RequirePermissions(Constants.Permission.ChallangeWorkflowEditor)]
         public override IActionResult Edit(ChallangeWorkflowInputViewModel modelInput)
         {
+            ModelState.ClearValidationState("StartStepName");
             ModelState.MarkFieldSkipped("StartStepName");
 
             return base.Edit(modelInput);
