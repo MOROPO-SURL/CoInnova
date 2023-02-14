@@ -23,5 +23,7 @@
         public const string ChallangeCommentManagement = "challagecomment-management";
 
         public const string IdeaCommentManagement = "ideacomment-management";
+
+        public const string SphereManagement = "sphere-management";
     }
 }

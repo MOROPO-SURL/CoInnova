@@ -54,6 +54,9 @@ namespace MOROPO.UIC.CoInnova
             services.AddScoped<IEntityRepository<IdeaWorkflowStep, System.Guid>, Persistence.EF.Repositories.IdeaWorkflowStepRepository>();
             services.AddScoped<IEntityRepository<ChallangeWorkflow, System.Guid>, Persistence.EF.Repositories.ChallangeWorkflowRepository>();
             services.AddScoped<IEntityRepository<ChallangeWorkflowStep, System.Guid>, Persistence.EF.Repositories.ChallangeWorkflowStepRepository>();
+            services.AddScoped<IEntityRepository<Sphere, System.Guid>, Persistence.EF.Repositories.SphereRepository>();
+            services.AddScoped<IEntityRepository<Prototype, System.Guid>, Persistence.EF.Repositories.PrototypeRepository>();
+            services.AddScoped<IEntityRepository<Idea, System.Guid>, Persistence.EF.Repositories.IdeaRepository>();
 
             services.AddSingleton<SAPRESSC.Core.Persistence.EF.Providers.Facade.IDbSchemaConfigurationProviderFacade, Persistence.EF.Providers.DbSchemaConfigurationProvider>();
 

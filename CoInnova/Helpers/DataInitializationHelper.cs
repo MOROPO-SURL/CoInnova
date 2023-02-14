@@ -211,6 +211,28 @@ namespace MOROPO.UIC.CoInnova.Helpers
             {
                 permissionDbSet.Add(Constants.Permission.IdeaCommentRemover.ToPermissionEntity(Constants.PermissionsFamily.IdeaCommentManagement));
             }
+
+            #endregion
+
+            #region Sphere
+
+            if (!permissionDbSet.Any(item => item.Code.Equals(Constants.Permission.SphereViewer)))
+            {
+                permissionDbSet.Add(Constants.Permission.SphereViewer.ToPermissionEntity(Constants.PermissionsFamily.SphereManagement));
+            }
+            if (!permissionDbSet.Any(item => item.Code.Equals(Constants.Permission.SphereRemover)))
+            {
+                permissionDbSet.Add(Constants.Permission.SphereRemover.ToPermissionEntity(Constants.PermissionsFamily.SphereManagement));
+            }
+            if (!permissionDbSet.Any(item => item.Code.Equals(Constants.Permission.SphereEditor)))
+            {
+                permissionDbSet.Add(Constants.Permission.SphereEditor.ToPermissionEntity(Constants.PermissionsFamily.SphereManagement));
+            }
+            if (!permissionDbSet.Any(item => item.Code.Equals(Constants.Permission.SphereRemover)))
+            {
+                permissionDbSet.Add(Constants.Permission.SphereRemover.ToPermissionEntity(Constants.PermissionsFamily.SphereManagement));
+            }
+
             #endregion
 
             if (!permissionDbSet.Any(item => item.Code.Equals(Constants.Permission.TraceViewer)))

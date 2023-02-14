@@ -28,6 +28,8 @@
 
             if (target.Controller == "challanges" || target.Controller == "challangeworkflows") return new Microsoft.AspNetCore.Html.HtmlString("<span class=\"mdi mdi-podium\"></span>");
 
+            if (target.Controller == "spheres") return new Microsoft.AspNetCore.Html.HtmlString("<span class=\"mdi mdi-city-variant\"></span>");
+
             return new Microsoft.AspNetCore.Html.HtmlString("<span class=\"mdi mdi-toy-brick-outline\"></span>");
         }
     }

@@ -29,7 +29,7 @@ namespace MOROPO.UIC.CoInnova.Models.Api
         {
             Id = entity.Id;
             CreatedAt = entity.CreatedAt;
-            Name = entity.Name;
+            Name = entity.Title;
             Description = entity.Description;
             IsPublic = entity.IsPublic;
             PrototypeLevelId = entity.LevelId.Value;

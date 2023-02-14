@@ -21,7 +21,11 @@
                     new Configurators.PrototypeImageBridgeEntityTypeConfigurator(),
                     new Configurators.PrototypingLevelEntityTypeConfigurator(),
                     new Configurators.ApiKeyPermissionBridgeEntityTypeConfigurator(),
-                    new Configurators.CollaboratorEntityTypeConfigurator()
+                    new Configurators.CollaboratorEntityTypeConfigurator(),
+                    new Configurators.PrototypeSphereBridgeEntityTypeConfigurator(),
+                    new Configurators.UseCaseDocumentBridgeEntityTypeConfigurator(),
+                    new Configurators.UseCaseImageBridgeEntityTypeConfigurator(),
+                    new Configurators.PrototypeCollaboratorBridgeEntityTypeConfigurator()
                 };
             }
         }
