@@ -58,6 +58,8 @@ namespace MOROPO.UIC.CoInnova
             services.AddScoped<IEntityRepository<Prototype, System.Guid>, Persistence.EF.Repositories.PrototypeRepository>();
             services.AddScoped<IEntityRepository<Idea, System.Guid>, Persistence.EF.Repositories.IdeaRepository>();
 
+            services.AddSingleton<Managers.RelativeDocumentFileManager>();
+
             services.AddSingleton<SAPRESSC.Core.Persistence.EF.Providers.Facade.IDbSchemaConfigurationProviderFacade, Persistence.EF.Providers.DbSchemaConfigurationProvider>();
 
             services.AddSingleton<SAPRESSC.Core.Persistence.EF.Helpers.Facade.IDataInitializationHelper, Helpers.DataInitializationHelper>();
