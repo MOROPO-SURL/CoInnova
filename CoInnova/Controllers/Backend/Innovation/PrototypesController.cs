@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using MOROPO.SAPRESSC.Core.Common.Models.View;
 using MOROPO.SAPRESSC.Core.Persistence.Repositories;
 using MOROPO.SAPRESSC.Core.Web.Security.Attributes;
+using MOROPO.SAPRESSC.Middleware.Media.Persistence.Entities;
+using MOROPO.SAPRESSC.Middleware.Media.Web.Common.Managers.Facade;
 using MOROPO.UIC.CoInnova.Models.View;
 using MOROPO.UIC.CoInnova.Persistence.Entities;
 using System.Linq;
@@ -16,14 +19,18 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
         private readonly IEntityRepository<Idea, System.Guid> ideaRepository;
         private readonly IEntityRepository<PrototypingLevel, System.Guid> levelRepository;
         private readonly IEntityRepository<Collaborator, System.Guid> collaboratorRepository;
+        private readonly IEntityRepository<Image, System.Guid> imageRepository;
         private readonly Managers.RelativeDocumentFileManager documentManager;
+        private readonly IImageFileManagerFacade imageFileManager;
 
-        public PrototypesController(Managers.RelativeDocumentFileManager documentManager, IEntityRepository<Collaborator, System.Guid> collaboratorRepository, IEntityRepository<PrototypingLevel, System.Guid> levelRepository, IEntityRepository<Idea, System.Guid> ideaRepository, IEntityRepository<Prototype, System.Guid> repository, Microsoft.Extensions.Localization.IStringLocalizer<PrototypesController> localizer, Microsoft.Extensions.Logging.ILogger<PrototypesController> logger) : base(repository, localizer, logger)
+        public PrototypesController(IImageFileManagerFacade imageFileManager, Managers.RelativeDocumentFileManager documentManager, IEntityRepository<Image, System.Guid> imageRepository, IEntityRepository<Collaborator, System.Guid> collaboratorRepository, IEntityRepository<PrototypingLevel, System.Guid> levelRepository, IEntityRepository<Idea, System.Guid> ideaRepository, IEntityRepository<Prototype, System.Guid> repository, Microsoft.Extensions.Localization.IStringLocalizer<PrototypesController> localizer, Microsoft.Extensions.Logging.ILogger<PrototypesController> logger) : base(repository, localizer, logger)
         {
             this.ideaRepository = ideaRepository;
             this.levelRepository = levelRepository;
             this.collaboratorRepository = collaboratorRepository;
+            this.imageRepository = imageRepository;
             this.documentManager = documentManager;
+            this.imageFileManager = imageFileManager;
         }
 
         [RequirePermissions(Constants.Permission.PrototypeViewer)]
@@ -171,7 +178,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
         [HttpGet]
         [Route("edit/{key}/documents")]
         [RequirePermissions(Constants.Permission.PrototypeEditor)]
-        public ActionResult Documents(System.Guid key)
+        public ActionResult EditDocuments(System.Guid key)
         {
             var entity = Repository.Get(key);
 
@@ -236,9 +243,9 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
                             Repository.Update(entity, User.Identity.Name);
                         }
 
-                        SetDefaultNotification(SAPRESSC.Core.Common.Models.View.NotificationType.Success, GetCreationSuccessMessage());
+                        SetDefaultNotification(NotificationType.Success, GetCreationSuccessMessage());
 
-                        return RedirectToAction("documents", new { key = entity.Id });
+                        return RedirectToAction("editdocuments", new { key = entity.Id });
                     }
                     catch (SAPRESSC.Core.Web.Frontend.InvalidModelException e)
                     {
@@ -246,16 +253,16 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
                     }
                 }
 
-                SetDefaultNotification(SAPRESSC.Core.Common.Models.View.NotificationType.Danger, GetInvalidMessage());
+                SetDefaultNotification(NotificationType.Danger, GetInvalidMessage());
 
-                return RedirectToAction("documents", new { key = entity.Id });
+                return RedirectToAction("editdocuments", new { key = entity.Id });
             }
             catch (System.Exception e)
             {
                 logger.LogError(e.InnerException, e.Message);
             }
 
-            SetDefaultNotification(SAPRESSC.Core.Common.Models.View.NotificationType.Danger, GetNotFoundMessage());
+            SetDefaultNotification(NotificationType.Danger, GetNotFoundMessage());
 
             return GetDefaultActionResult();
         }
@@ -282,24 +289,24 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
                 }
                 catch { }
 
-                SetDefaultNotification(SAPRESSC.Core.Common.Models.View.NotificationType.Success, GetDeletionSuccessMessage());
+                SetDefaultNotification(NotificationType.Success, GetDeletionSuccessMessage());
 
-                return RedirectToAction("documents", new { key = entity.Id });
+                return RedirectToAction("editdocuments", new { key = entity.Id });
             }
             catch (Microsoft.EntityFrameworkCore.DbUpdateException e)
             {
                 logger.LogError(e.InnerException, e.Message);
 
-                SetDefaultNotification(SAPRESSC.Core.Common.Models.View.NotificationType.Warning, GetOnDeletionDependecyConstrainErrorMessage());
+                SetDefaultNotification(NotificationType.Warning, GetOnDeletionDependecyConstrainErrorMessage());
 
-                return RedirectToAction("documents", new { key });
+                return RedirectToAction("editdocuments", new { key });
             }
             catch (System.Exception e)
             {
                 logger.LogError(e.InnerException, e.Message);
             }
 
-            SetDefaultNotification(SAPRESSC.Core.Common.Models.View.NotificationType.Danger, GetNotFoundMessage());
+            SetDefaultNotification(NotificationType.Danger, GetNotFoundMessage());
 
             return GetSuccessDeleteActionResult();
         }
@@ -328,18 +335,18 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
 
                         Repository.Update(entity, User.Identity.Name);
 
-                        SetDefaultNotification(SAPRESSC.Core.Common.Models.View.NotificationType.Success, GetEditionSuccessMessage());
+                        SetDefaultNotification(NotificationType.Success, GetEditionSuccessMessage());
 
-                        return RedirectToAction("documents", new { key = entity.Id });
+                        return RedirectToAction("editdocuments", new { key = entity.Id });
                     }
                     catch (SAPRESSC.Core.Web.Frontend.InvalidModelException e)
                     {
                         ModelState.AddModelError(e.ModelKey, e.ErrorMessage);
                     }
 
-                    SetDefaultNotification(SAPRESSC.Core.Common.Models.View.NotificationType.Danger, GetInvalidMessage());
+                    SetDefaultNotification(NotificationType.Danger, GetInvalidMessage());
 
-                    return RedirectToAction("documents", new { key = entity.Id });
+                    return RedirectToAction("editdocuments", new { key = entity.Id });
                 }
                 catch (System.Exception e)
                 {
@@ -347,9 +354,148 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
                 }
             }
 
-            SetDefaultNotification(notificationType: SAPRESSC.Core.Common.Models.View.NotificationType.Danger, GetNotFoundMessage());
+            SetDefaultNotification(notificationType: NotificationType.Danger, GetNotFoundMessage());
 
             return GetDefaultActionResult();
+        }
+
+        #endregion
+
+        #region Images
+
+        [HttpGet]
+        [Route("edit/{key}/images")]
+        [RequirePermissions(Constants.Permission.PrototypeEditor)]
+        public ActionResult EditImages(System.Guid key)
+        {
+            var entity = Repository.Get(key);
+
+            var model = new PrototypeImagesViewModel
+            {
+                Prototype = new PrototypeDisplayViewModel(),
+                FeatureImage = entity.FeatureImageId == null ? null : new Models.ImageDisplayCommonModel(),
+                Images = entity.ImageBridges.Select(bridge =>
+                {
+                    var result = new Models.ImageDisplayCommonModel();
+
+                    result.Import(bridge.Image);
+
+                    return result;
+                }).ToArray()
+            };
+
+            model.Prototype.Import(entity);
+
+            model.FeatureImage?.Import(entity.FeatureImage);
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Route("edit/{key}/images/add")]
+        [ValidateAntiForgeryToken]
+        [RequirePermissions(Constants.Permission.PrototypeEditor)]
+        public IActionResult AddImage(System.Guid key)
+        {
+            try
+            {
+                var imageFile = Request.Form.Files[0];
+
+                var entity = Repository.Get(key);
+
+                // TODO Validate imageFile
+
+                if (ModelState.IsValid)
+                {
+                    try
+                    {
+                        using (var memoryStream = new System.IO.MemoryStream())
+                        {
+                            imageFile.CopyTo(memoryStream);
+
+                            var image = new Image { ContentType = imageFile.ContentType, Length = imageFile.Length, About = "For Prototype " + entity.Id };
+
+                            imageFileManager.SaveImageFileContent(image.Id, memoryStream.ToArray(), imageFile.ContentType);
+
+                            entity.ImageBridges.Add(new PrototypeImageBridge
+                            {
+                                PrototypeId = entity.Id,
+                                Image = image
+                            });
+                        }
+
+                        Repository.Update(entity, User.Identity.Name);
+
+                        SetDefaultNotification(NotificationType.Success, GetCreationSuccessMessage());
+
+                        return RedirectToAction("editimages", new { key = entity.Id });
+                    }
+                    catch (SAPRESSC.Core.Web.Frontend.InvalidModelException e)
+                    {
+                        ModelState.AddModelError(e.ModelKey, e.ErrorMessage);
+                    }
+                }
+
+                SetDefaultNotification(NotificationType.Danger, GetInvalidMessage());
+
+                return RedirectToAction("editimages", new { key = entity.Id });
+            }
+            catch (System.Exception e)
+            {
+                logger.LogError(e.InnerException, e.Message);
+            }
+
+            SetDefaultNotification(NotificationType.Danger, GetNotFoundMessage());
+
+            return GetDefaultActionResult();
+        }
+
+        [HttpPost]
+        [Route("edit/{key}/images/delete")]
+        [ValidateAntiForgeryToken]
+        [RequirePermissions(Constants.Permission.PrototypeEditor)]
+        public IActionResult DeleteImage(System.Guid key, System.Guid imageId)
+        {
+            try
+            {
+                var entity = Repository.Get(key);
+
+                var bridge = entity.ImageBridges.First(b => b.ImageId == imageId);
+
+                entity.ImageBridges.Remove(bridge);
+
+                if (entity.FeatureImageId == imageId)
+                {
+                    entity.FeatureImage = null;
+                    entity.FeatureImageId = null;
+                }
+
+                Repository.Update(entity, User.Identity.Name);
+
+                imageRepository.Delete(bridge.Image, User.Identity.Name);
+
+                imageFileManager.DeleteImageFile(bridge.Image);
+
+                SetDefaultNotification(NotificationType.Success, GetDeletionSuccessMessage());
+
+                return RedirectToAction("editimages", new { key = entity.Id });
+            }
+            catch (Microsoft.EntityFrameworkCore.DbUpdateException e)
+            {
+                logger.LogError(e.InnerException, e.Message);
+
+                SetDefaultNotification(NotificationType.Warning, GetOnDeletionDependecyConstrainErrorMessage());
+
+                return RedirectToAction("editimages", new { key });
+            }
+            catch (System.Exception e)
+            {
+                logger.LogError(e.InnerException, e.Message);
+            }
+
+            SetDefaultNotification(NotificationType.Danger, GetNotFoundMessage());
+
+            return GetSuccessDeleteActionResult();
         }
 
         #endregion
