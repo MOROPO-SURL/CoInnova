@@ -19,15 +19,17 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
         private readonly IEntityRepository<Idea, System.Guid> ideaRepository;
         private readonly IEntityRepository<PrototypingLevel, System.Guid> levelRepository;
         private readonly IEntityRepository<Collaborator, System.Guid> collaboratorRepository;
+        private readonly IEntityRepository<Sphere, System.Guid> sphereRepository;
         private readonly IEntityRepository<Image, System.Guid> imageRepository;
         private readonly Managers.RelativeDocumentFileManager documentManager;
         private readonly IImageFileManagerFacade imageFileManager;
 
-        public PrototypesController(IImageFileManagerFacade imageFileManager, Managers.RelativeDocumentFileManager documentManager, IEntityRepository<Image, System.Guid> imageRepository, IEntityRepository<Collaborator, System.Guid> collaboratorRepository, IEntityRepository<PrototypingLevel, System.Guid> levelRepository, IEntityRepository<Idea, System.Guid> ideaRepository, IEntityRepository<Prototype, System.Guid> repository, Microsoft.Extensions.Localization.IStringLocalizer<PrototypesController> localizer, Microsoft.Extensions.Logging.ILogger<PrototypesController> logger) : base(repository, localizer, logger)
+        public PrototypesController(IImageFileManagerFacade imageFileManager, Managers.RelativeDocumentFileManager documentManager, IEntityRepository<Image, System.Guid> imageRepository, IEntityRepository<Sphere, System.Guid> sphereRepository, IEntityRepository<Collaborator, System.Guid> collaboratorRepository, IEntityRepository<PrototypingLevel, System.Guid> levelRepository, IEntityRepository<Idea, System.Guid> ideaRepository, IEntityRepository<Prototype, System.Guid> repository, Microsoft.Extensions.Localization.IStringLocalizer<PrototypesController> localizer, Microsoft.Extensions.Logging.ILogger<PrototypesController> logger) : base(repository, localizer, logger)
         {
             this.ideaRepository = ideaRepository;
             this.levelRepository = levelRepository;
             this.collaboratorRepository = collaboratorRepository;
+            this.sphereRepository = sphereRepository;
             this.imageRepository = imageRepository;
             this.documentManager = documentManager;
             this.imageFileManager = imageFileManager;
@@ -500,36 +502,33 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
 
         #endregion
 
-        #region Collaborators
+        #region Executors
 
-        [Route("edit/{key}/collaborators")]
+        [Route("edit/{key}/executors")]
         [RequirePermissions(Constants.Permission.PrototypeEditor)]
-        public IActionResult EditCollaborators(System.Guid key)
+        public IActionResult EditExecutors(System.Guid key)
         {
             try
             {
                 var entity = Repository.Get(key);
 
-                var availableCollaborators = collaboratorRepository.GetAll().ToList();
+                var availableCollaborators = collaboratorRepository.FindBy(ent1ty => ent1ty.OrganizationIdentityId != null).ToList();
 
-                var prototypeCollaborators = new System.Collections.Generic.List<Collaborator>();
+                var prototypeExecutors = new System.Collections.Generic.List<Collaborator>();
 
                 foreach (var bridge in entity.CollaboratorBridges)
                 {
-                    foreach (var item in availableCollaborators)
-                    {
-                        if (item.Id != bridge.CollaboratorId) continue;
+                    var executor = availableCollaborators.First(item => item.Id == bridge.CollaboratorId);
 
-                        prototypeCollaborators.Add(item);
+                    prototypeExecutors.Add(executor);
 
-                        availableCollaborators.Remove(item);
-                    }
+                    availableCollaborators.Remove(executor);
                 }
 
                 var model = new PrototypeCollaboratorsViewModel
                 {
                     Prototype = new PrototypeDisplayViewModel(),
-                    Collaborators = prototypeCollaborators.Select(item =>
+                    Executors = prototypeExecutors.Select(item =>
                     {
                         var iModel = new CollaboratorDisplayViewModel();
 
@@ -562,54 +561,222 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
             return GetDefaultActionResult();
         }
 
-        //[Route("edit/members/add")]
-        //[RequirePermissions(Permission.CreationGroupEditor)]
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public IActionResult AddMember(CreationGroupMembersInputViewModel modelInput)
-        //{
-        //    CreationGroup entity = null;
+        [Route("edit/{key}/executors/add")]
+        [RequirePermissions(Constants.Permission.PrototypeEditor)]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult AddExecutor(System.Guid key, System.Guid? executorId)
+        {
+            try
+            {
+                var entity = Repository.Get(key);
 
-        //    try
-        //    {
-        //        entity = Repository.Get(modelInput.CreationGroupId);
-        //    }
-        //    catch { }
+                if (executorId != null)
+                {
+                    try
+                    {
+                        entity.CollaboratorBridges.Add(new PrototypeCollaboratorBridge { PrototypeId = entity.Id, CollaboratorId = executorId.Value });
 
-        //    if (entity == null)
-        //    {
-        //        SetDefaultNotification(MOROPO.SAPRESSC.Core.Common.Models.View.NotificationType.Danger, GetNotFoundMessage());
+                        Repository.Update(entity, User.Identity.Name);
 
-        //        return GetDefaultActionResult();
-        //    }
+                        SetDefaultNotification(NotificationType.Success, GetCreationSuccessMessage());
 
-        //    if (ModelState.IsValid)
-        //    {
-        //        entity.ArtistBridges.Add(new CreationGroupArtistBridge { CreationGroupId = entity.Id, ArtistId = modelInput.ArtistId });
+                        return RedirectToAction("editexecutors", new { key = entity.Id });
+                    }
+                    catch (SAPRESSC.Core.Web.Frontend.InvalidModelException e)
+                    {
+                        ModelState.AddModelError(e.ModelKey, e.ErrorMessage);
+                    }
+                }
 
-        //        Repository.Update(entity, User.Identity.Name);
+                ModelState.AddModelError("executorId", string.Format(localizer["RequiredValidationErrorMessage"], localizer["Executor"]));
 
-        //        SetDefaultNotification(NotificationType.Success, GetCreationSuccessMessage());
-        //    }
-        //    else
-        //    {
-        //        var messages = new List<string>();
+                SetDefaultNotification(NotificationType.Danger, GetInvalidMessage());
 
-        //        foreach (var item in ModelState)
-        //        {
-        //            if (ModelState.GetFieldValidationState(item.Key) != Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid) continue;
+                return RedirectToAction("editexecutors", new { key = entity.Id });
+            }
+            catch (System.Exception e)
+            {
+                logger.LogError(e.InnerException, e.Message);
+            }
 
-        //            foreach (var error in item.Value.Errors)
-        //            {
-        //                messages.Add(error.ErrorMessage);
-        //            }
-        //        }
+            SetDefaultNotification(NotificationType.Danger, GetNotFoundMessage());
 
-        //        SetDefaultNotification(NotificationType.Danger, messages.ToArray());
-        //    }
+            return GetDefaultActionResult();
+        }
 
-        //    return RedirectToAction("members", new { key = entity.Id });
-        //}
+        [HttpPost]
+        [Route("edit/{key}/executors/delete")]
+        [ValidateAntiForgeryToken]
+        [RequirePermissions(Constants.Permission.PrototypeEditor)]
+        public IActionResult DeleteExecutor(System.Guid key, System.Guid executorId)
+        {
+            try
+            {
+                var entity = Repository.Get(key);
+
+                var bridge = entity.CollaboratorBridges.First(b => b.CollaboratorId == executorId);
+
+                entity.CollaboratorBridges.Remove(bridge);
+
+                Repository.Update(entity, User.Identity.Name);
+
+                SetDefaultNotification(NotificationType.Success, GetDeletionSuccessMessage());
+
+                return RedirectToAction("editexecutors", new { key = entity.Id });
+            }
+            catch (Microsoft.EntityFrameworkCore.DbUpdateException e)
+            {
+                logger.LogError(e.InnerException, e.Message);
+
+                SetDefaultNotification(NotificationType.Warning, GetOnDeletionDependecyConstrainErrorMessage());
+
+                return RedirectToAction("editexecutors", new { key });
+            }
+            catch (System.Exception e)
+            {
+                logger.LogError(e.InnerException, e.Message);
+            }
+
+            SetDefaultNotification(NotificationType.Danger, GetNotFoundMessage());
+
+            return GetSuccessDeleteActionResult();
+        }
+
+        #endregion
+
+        #region Spheres
+
+        [Route("edit/{key}/spheres")]
+        [RequirePermissions(Constants.Permission.PrototypeEditor)]
+        public IActionResult EditSpheres(System.Guid key)
+        {
+            try
+            {
+                var entity = Repository.Get(key);
+
+                var availableSpheres = sphereRepository.GetAll().ToList();
+
+                var prototypeSpheres = new System.Collections.Generic.List<Sphere>();
+
+                foreach (var bridge in entity.SphereBridges)
+                {
+                    var sphere = availableSpheres.First(item => item.Id == bridge.SphereId);
+
+                    prototypeSpheres.Add(sphere);
+
+                    availableSpheres.Remove(sphere);
+                }
+
+                var model = new PrototypeSpheresViewModel
+                {
+                    Prototype = new PrototypeDisplayViewModel(),
+                    Spheres = prototypeSpheres.Select(item =>
+                    {
+                        var iModel = new SphereDisplayViewModel();
+
+                        iModel.Import(item);
+
+                        return iModel;
+                    }).ToArray(),
+                    AvailableSpheres = availableSpheres.Select(item => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem { Value = item.Id.ToString(), Text = item.Name }).ToArray()
+                };
+
+                model.Prototype.Import(entity);
+
+                return View(model);
+            }
+            catch (System.Exception e)
+            {
+                logger.LogError(e.InnerException, e.Message);
+            }
+
+            SetDefaultNotification(NotificationType.Danger, GetNotFoundMessage());
+
+            return GetDefaultActionResult();
+        }
+
+        [Route("edit/{key}/spheres/add")]
+        [RequirePermissions(Constants.Permission.PrototypeEditor)]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult AddSphere(System.Guid key, System.Guid? sphereId)
+        {
+            try
+            {
+                var entity = Repository.Get(key);
+
+                if (sphereId != null)
+                {
+                    try
+                    {
+                        entity.SphereBridges.Add(new PrototypeSphereBridge { PrototypeId = entity.Id, SphereId = sphereId.Value });
+
+                        Repository.Update(entity, User.Identity.Name);
+
+                        SetDefaultNotification(NotificationType.Success, GetCreationSuccessMessage());
+
+                        return RedirectToAction("editspheres", new { key = entity.Id });
+                    }
+                    catch (SAPRESSC.Core.Web.Frontend.InvalidModelException e)
+                    {
+                        ModelState.AddModelError(e.ModelKey, e.ErrorMessage);
+                    }
+                }
+
+                ModelState.AddModelError("sphereId", string.Format(localizer["RequiredValidationErrorMessage"], localizer["Sphere"]));
+
+                SetDefaultNotification(NotificationType.Danger, GetInvalidMessage());
+
+                return RedirectToAction("editspheres", new { key = entity.Id });
+            }
+            catch (System.Exception e)
+            {
+                logger.LogError(e.InnerException, e.Message);
+            }
+
+            SetDefaultNotification(NotificationType.Danger, GetNotFoundMessage());
+
+            return GetDefaultActionResult();
+        }
+
+        [HttpPost]
+        [Route("edit/{key}/spheres/delete")]
+        [ValidateAntiForgeryToken]
+        [RequirePermissions(Constants.Permission.PrototypeEditor)]
+        public IActionResult DeleteSphere(System.Guid key, System.Guid sphereId)
+        {
+            try
+            {
+                var entity = Repository.Get(key);
+
+                var bridge = entity.SphereBridges.First(b => b.SphereId == sphereId);
+
+                entity.SphereBridges.Remove(bridge);
+
+                Repository.Update(entity, User.Identity.Name);
+
+                SetDefaultNotification(NotificationType.Success, GetDeletionSuccessMessage());
+
+                return RedirectToAction("editspheres", new { key = entity.Id });
+            }
+            catch (Microsoft.EntityFrameworkCore.DbUpdateException e)
+            {
+                logger.LogError(e.InnerException, e.Message);
+
+                SetDefaultNotification(NotificationType.Warning, GetOnDeletionDependecyConstrainErrorMessage());
+
+                return RedirectToAction("editspheres", new { key });
+            }
+            catch (System.Exception e)
+            {
+                logger.LogError(e.InnerException, e.Message);
+            }
+
+            SetDefaultNotification(NotificationType.Danger, GetNotFoundMessage());
+
+            return GetSuccessDeleteActionResult();
+        }
 
         #endregion
     }

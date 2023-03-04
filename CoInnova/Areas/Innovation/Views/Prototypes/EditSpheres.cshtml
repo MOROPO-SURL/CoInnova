@@ -1,0 +1,187 @@
+﻿@model MOROPO.UIC.CoInnova.Models.View.PrototypeSpheresViewModel
+
+@{
+
+    ViewData["Title"] = "Modificar Prototipo (Esferas de Actuación)";
+    ViewData[BreadcrumbViewModel.BREADCRUMBS_MAP_KEY] = new List<BreadcrumbViewModel>
+    {
+        new BreadcrumbViewModel
+        {
+            Caption = "<span class=\"mdi mdi-cogs\" style=\"margin-right: 4px;\"></span>" + GlobalViewLocalizationHelper.Localize("Dashboard", ViewLocalizer),
+            Url = "/"
+        },
+        new BreadcrumbViewModel
+        {
+            Caption = "Administración de Prototipos",
+            Url = Url.Action("index")
+        },
+        new BreadcrumbViewModel
+        {
+            Caption = ViewData["Title"].ToString()
+        }
+    };
+
+    Layout = "_BackendLayout";
+}
+
+@section styles {
+    <link rel="stylesheet" href="~/lib/bootstrap-combobox/css/bootstrap-combobox.css" />
+    <style type="text/css">
+        .dropdown-toggle {
+            border-radius: 0.25rem;
+            border: 1px solid #ced4da;
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+            margin-left: -1px;
+            line-height: 36px;
+        }
+
+        .dropdown-toggle::after {
+            margin: 0 5px;
+        }
+
+        ul.dropdown-menu{
+            width: 100%;
+        }
+    </style>
+}
+
+@section scripts {
+    <script src="~/lib/bootstrap-combobox/js/bootstrap-combobox.js"></script>
+    <script type="text/javascript">
+        $('select#sphereId').combobox();
+    </script>
+
+}
+
+<div class="card" style="margin-bottom: 20px;">
+    <div class="card-header">
+        <h4>Modificar Prototipo</h4>
+        <ul class="nav nav-tabs card-header-tabs">
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("edit", @Model.Prototype.Id)">Generales</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("editexecutors", @Model.Prototype.Id)">Ejecutores</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("editdocuments", @Model.Prototype.Id)">Documentos</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("editimages", @Model.Prototype.Id)">Imágenes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active">Esferas de Acción</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("editusecases", @Model.Prototype.Id)">Escalamientos</a>
+            </li>
+        </ul>
+    </div>
+    <div class="card-body pb-0">
+        <div class="alert alert-dark mb-4">
+            <details>
+                <summary class="h4 mb-0">@Model.Prototype.Title</summary>
+                <hr />
+                <div class="row">
+                    <dl class="col-md-6 mb-3">
+                        <dt>@Html.DisplayNameFor(model => model.Prototype.Level)</dt>
+                        <dd>@Model.Prototype.Level.Name</dd>
+                    </dl>
+                    <dl class="col-md-6 mb-3">
+                        <dt>@Html.DisplayNameFor(model => model.Prototype.InnovationAgent.OrganizationIdentity.Name)</dt>
+                        <dd>@Model.Prototype.InnovationAgent.OrganizationIdentity.Name</dd>
+                    </dl>
+                </div>
+                <dl class="mb-0">
+                    <dt>@Html.DisplayNameFor(model => model.Prototype.Idea)</dt>
+                    @if (Model.Prototype.Idea == null)
+                    {
+                        <dd>---</dd>
+                    }
+                    else
+                    {
+                        <dd>@Model.Prototype.Idea.Title</dd>
+                    }
+                </dl>
+            </details>
+        </div>
+        <div class="modal fade" id="add" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="add-title">Agregar Esfera de Actuación</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    @using (Html.BeginForm("addsphere", "prototypes", new { key = Model.Prototype.Id }, FormMethod.Post, true, null))
+                    {
+                        <div class="modal-body">
+                            @if (Model.AvailableSpheres.Length > 0)
+                            {
+                                @Html.DropDownList("sphereId", Model.AvailableSpheres, "Seleccione o búsque aquí ...", new { @class = "form-control" })
+                            }else{
+                                <div class="text-muted font-italic">No hay otras esferas de actuación disponibles para agregar</div>
+                            }
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Agregar</button>
+                            <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        @if (Model.Spheres.Length <= 0)
+        {
+            <p class="text-muted mb-0">Sin elementos que mostrar</p>
+        }
+        else
+        {
+            <div class="card-columns">
+                @foreach (var item in Model.Spheres)
+                {
+                    <div class="card" style="margin-bottom: 1.25rem !important;">
+                        <div class="card-body">
+                            <div class="row">
+                                <h3 class="col mb-0">@item.Name</h3>
+                                <div class="col-auto">
+                                    <a class="btn btn-danger" href="#" data-toggle="modal" data-target="#delete-@item.Id"><span class="mdi mdi-trash-can"></span></a>
+                                </div>
+                            </div>
+                            <div class="modal fade" id="delete-@item.Id" tabindex="-1" role="dialog" aria-labelledby="delete-@item.Id-lable" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        @using (Html.BeginForm("deletesphere", "prototypes", new { key = Model.Prototype.Id }, FormMethod.Post, true, new { @class = "modal-content" }))
+                                        {
+                                            @Html.Hidden("sphereId", item.Id)
+
+                                            <div class="modal-header">
+                                                <h4 class="modal-title" id="delete-image-@item.Id-lable">Eliminar Esfera de Actuación</h4>
+                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p class="mb-0">Esta seguro que desea eliminar la esfera de actuación seleccionada?</p>
+                                            </div>
+                                            <div class="modal-footer" style="margin-top: 0;">
+                                                <button type="submit" class="btn btn-danger">Eliminar</button>
+                                                <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+    <div class="card-footer">
+        <a class="btn btn-primary" href="#" data-toggle="modal" data-target="#add">Agregar</a>
+        <a class="btn btn-light" href="@Url.Action("index")">Regresar al listado</a>
+    </div>
+</div>
+
+

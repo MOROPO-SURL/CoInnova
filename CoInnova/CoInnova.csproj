@@ -23,6 +23,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\lib\bootstrap-combobox\js\bootstrap-combobox.js" />
+    <None Include="wwwroot\lib\bootstrap-combobox\js\bootstrap-select.js" />
+    <None Include="wwwroot\lib\bootstrap-combobox\less\combobox.less" />
+    <None Include="wwwroot\lib\bootstrap-combobox\README.md" />
+  </ItemGroup>
+
+  <ItemGroup>
 	<PackageReference Include="AspNetCore.Authentication.ApiKey" Version="1.0.0" />
 	<PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
