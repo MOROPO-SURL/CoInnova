@@ -499,5 +499,118 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
         }
 
         #endregion
+
+        #region Collaborators
+
+        [Route("edit/{key}/collaborators")]
+        [RequirePermissions(Constants.Permission.PrototypeEditor)]
+        public IActionResult EditCollaborators(System.Guid key)
+        {
+            try
+            {
+                var entity = Repository.Get(key);
+
+                var availableCollaborators = collaboratorRepository.GetAll().ToList();
+
+                var prototypeCollaborators = new System.Collections.Generic.List<Collaborator>();
+
+                foreach (var bridge in entity.CollaboratorBridges)
+                {
+                    foreach (var item in availableCollaborators)
+                    {
+                        if (item.Id != bridge.CollaboratorId) continue;
+
+                        prototypeCollaborators.Add(item);
+
+                        availableCollaborators.Remove(item);
+                    }
+                }
+
+                var model = new PrototypeCollaboratorsViewModel
+                {
+                    Prototype = new PrototypeDisplayViewModel(),
+                    Collaborators = prototypeCollaborators.Select(item =>
+                    {
+                        var iModel = new CollaboratorDisplayViewModel();
+
+                        iModel.Import(item);
+
+                        return iModel;
+                    }).ToArray(),
+                    AvailableCollaborators = availableCollaborators.Select(item =>
+                    {
+                        if (item.OrganizationIdentityId == null)
+                        {
+                            return new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem { Value = item.Id.ToString(), Text = string.Format("{0} {1}", item.User.Identity.Name, item.User.Identity.LastName) };
+                        }
+
+                        return new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem { Value = item.Id.ToString(), Text = item.OrganizationIdentity.Name };
+                    }).ToArray()
+                };
+
+                model.Prototype.Import(entity);
+
+                return View(model);
+            }
+            catch (System.Exception e)
+            {
+                logger.LogError(e.InnerException, e.Message);
+            }
+
+            SetDefaultNotification(NotificationType.Danger, GetNotFoundMessage());
+
+            return GetDefaultActionResult();
+        }
+
+        //[Route("edit/members/add")]
+        //[RequirePermissions(Permission.CreationGroupEditor)]
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public IActionResult AddMember(CreationGroupMembersInputViewModel modelInput)
+        //{
+        //    CreationGroup entity = null;
+
+        //    try
+        //    {
+        //        entity = Repository.Get(modelInput.CreationGroupId);
+        //    }
+        //    catch { }
+
+        //    if (entity == null)
+        //    {
+        //        SetDefaultNotification(MOROPO.SAPRESSC.Core.Common.Models.View.NotificationType.Danger, GetNotFoundMessage());
+
+        //        return GetDefaultActionResult();
+        //    }
+
+        //    if (ModelState.IsValid)
+        //    {
+        //        entity.ArtistBridges.Add(new CreationGroupArtistBridge { CreationGroupId = entity.Id, ArtistId = modelInput.ArtistId });
+
+        //        Repository.Update(entity, User.Identity.Name);
+
+        //        SetDefaultNotification(NotificationType.Success, GetCreationSuccessMessage());
+        //    }
+        //    else
+        //    {
+        //        var messages = new List<string>();
+
+        //        foreach (var item in ModelState)
+        //        {
+        //            if (ModelState.GetFieldValidationState(item.Key) != Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid) continue;
+
+        //            foreach (var error in item.Value.Errors)
+        //            {
+        //                messages.Add(error.ErrorMessage);
+        //            }
+        //        }
+
+        //        SetDefaultNotification(NotificationType.Danger, messages.ToArray());
+        //    }
+
+        //    return RedirectToAction("members", new { key = entity.Id });
+        //}
+
+        #endregion
     }
 }

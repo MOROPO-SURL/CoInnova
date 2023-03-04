@@ -48,7 +48,7 @@
             </li>
         </ul>
     </div>
-    <div class="card-body pb-2">
+    <div class="card-body pb-0">
         <div class="alert alert-dark mb-4">
             <details>
                 <summary class="h4 mb-0">@Model.Prototype.Title</summary>
@@ -107,7 +107,7 @@
             <div class="card-columns">
                 @foreach (var item in Model.Images)
                 {
-                    <div class="card">
+                    <div class="card" style="margin-bottom: 1.25rem !important;">
                         <img class="card-img" src="~/media/images/@item.Id.@item.Extension">
                         <div class="card-img-overlay"><a class="btn btn-danger float-right" href="#" data-toggle="modal" data-target="#delete-image-@item.Id"><span class="mdi mdi-trash-can"></span></a></div>
                         <div class="modal fade" id="delete-image-@item.Id" tabindex="-1" role="dialog" aria-labelledby="delete-image-@item.Id-lable" aria-hidden="true">
