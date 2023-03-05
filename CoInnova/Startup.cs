@@ -57,6 +57,7 @@ namespace MOROPO.UIC.CoInnova
             services.AddScoped<IEntityRepository<Sphere, System.Guid>, Persistence.EF.Repositories.SphereRepository>();
             services.AddScoped<IEntityRepository<Prototype, System.Guid>, Persistence.EF.Repositories.PrototypeRepository>();
             services.AddScoped<IEntityRepository<Idea, System.Guid>, Persistence.EF.Repositories.IdeaRepository>();
+            services.AddScoped<IEntityRepository<UseCase, System.Guid>, Persistence.EF.Repositories.UseCaseRepository>();
 
             services.AddSingleton<Managers.RelativeDocumentFileManager>();
 

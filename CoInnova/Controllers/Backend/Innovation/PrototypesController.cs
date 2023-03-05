@@ -20,16 +20,18 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
         private readonly IEntityRepository<PrototypingLevel, System.Guid> levelRepository;
         private readonly IEntityRepository<Collaborator, System.Guid> collaboratorRepository;
         private readonly IEntityRepository<Sphere, System.Guid> sphereRepository;
+        private readonly IEntityRepository<UseCase, System.Guid> useCaseRepository;
         private readonly IEntityRepository<Image, System.Guid> imageRepository;
         private readonly Managers.RelativeDocumentFileManager documentManager;
         private readonly IImageFileManagerFacade imageFileManager;
 
-        public PrototypesController(IImageFileManagerFacade imageFileManager, Managers.RelativeDocumentFileManager documentManager, IEntityRepository<Image, System.Guid> imageRepository, IEntityRepository<Sphere, System.Guid> sphereRepository, IEntityRepository<Collaborator, System.Guid> collaboratorRepository, IEntityRepository<PrototypingLevel, System.Guid> levelRepository, IEntityRepository<Idea, System.Guid> ideaRepository, IEntityRepository<Prototype, System.Guid> repository, Microsoft.Extensions.Localization.IStringLocalizer<PrototypesController> localizer, Microsoft.Extensions.Logging.ILogger<PrototypesController> logger) : base(repository, localizer, logger)
+        public PrototypesController(IImageFileManagerFacade imageFileManager, Managers.RelativeDocumentFileManager documentManager, IEntityRepository<Image, System.Guid> imageRepository, IEntityRepository<UseCase, System.Guid> useCaseRepository, IEntityRepository<Sphere, System.Guid> sphereRepository, IEntityRepository<Collaborator, System.Guid> collaboratorRepository, IEntityRepository<PrototypingLevel, System.Guid> levelRepository, IEntityRepository<Idea, System.Guid> ideaRepository, IEntityRepository<Prototype, System.Guid> repository, Microsoft.Extensions.Localization.IStringLocalizer<PrototypesController> localizer, Microsoft.Extensions.Logging.ILogger<PrototypesController> logger) : base(repository, localizer, logger)
         {
             this.ideaRepository = ideaRepository;
             this.levelRepository = levelRepository;
             this.collaboratorRepository = collaboratorRepository;
             this.sphereRepository = sphereRepository;
+            this.useCaseRepository = useCaseRepository;
             this.imageRepository = imageRepository;
             this.documentManager = documentManager;
             this.imageFileManager = imageFileManager;
@@ -536,15 +538,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
 
                         return iModel;
                     }).ToArray(),
-                    AvailableCollaborators = availableCollaborators.Select(item =>
-                    {
-                        if (item.OrganizationIdentityId == null)
-                        {
-                            return new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem { Value = item.Id.ToString(), Text = string.Format("{0} {1}", item.User.Identity.Name, item.User.Identity.LastName) };
-                        }
-
-                        return new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem { Value = item.Id.ToString(), Text = item.OrganizationIdentity.Name };
-                    }).ToArray()
+                    AvailableCollaborators = availableCollaborators.Select(item => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem { Value = item.Id.ToString(), Text = item.OrganizationIdentity.Name }).ToArray()
                 };
 
                 model.Prototype.Import(entity);
@@ -776,6 +770,131 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
             SetDefaultNotification(NotificationType.Danger, GetNotFoundMessage());
 
             return GetSuccessDeleteActionResult();
+        }
+
+        #endregion
+
+        #region UseCases
+
+        private void PopulateUseCaseInputViewModel(UseCaseInputViewModel model)
+        {
+            model.AvailableCollaborators = collaboratorRepository.FindBy(ent1ty => ent1ty.OrganizationIdentityId != null).ToArray().Select(item => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem { Value = item.Id.ToString(), Text = item.OrganizationIdentity.Name }).ToArray();
+        }
+
+        [Route("edit/{key}/usecases")]
+        [RequirePermissions(Constants.Permission.PrototypeEditor)]
+        public IActionResult EditUseCases(System.Guid key)
+        {
+            try
+            {
+                var entity = Repository.Get(key);
+
+                var model = new PrototypeUseCasesViewModel
+                {
+                    Prototype = new PrototypeDisplayViewModel(),
+                    UseCases = useCaseRepository.FindBy(item => item.PrototypeId == entity.Id).ToArray().Select(item =>
+                    {
+                        var result = new UseCaseDisplayViewModel();
+
+                        result.Import(item);
+
+                        return result;
+                    }).ToArray()
+                };
+
+                model.Prototype.Import(entity);
+
+                return View(model);
+            }
+            catch (System.Exception e)
+            {
+                logger.LogError(e.InnerException, e.Message);
+            }
+
+            SetDefaultNotification(NotificationType.Danger, GetNotFoundMessage());
+
+            return GetDefaultActionResult();
+        }
+
+        [HttpGet]
+        [Route("edit/{key}/usecases/add")]
+        public virtual IActionResult AddUseCase(System.Guid key)
+        {
+            try
+            {
+                var entity = Repository.Get(key);
+                
+                var model = new UseCaseInputViewModel
+                {
+                    Prototype = new PrototypeDisplayViewModel()
+                };
+
+                model.Prototype.Import(entity);
+
+                PopulateUseCaseInputViewModel(model);
+
+                return View(model);
+            }
+            catch (System.Exception e)
+            {
+                logger.LogError(e.InnerException, e.Message);
+            }
+
+            SetDefaultNotification(NotificationType.Danger, GetNotFoundMessage());
+
+            return GetDefaultActionResult();
+        }
+
+        [Route("edit/{key}/usecases/add")]
+        [RequirePermissions(Constants.Permission.PrototypeEditor)]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult AddUseCase(System.Guid key, UseCaseInputViewModel model)
+        {
+            try
+            {
+                var entity = Repository.Get(key);
+
+                if (ModelState.IsValid)
+                {
+                    try
+                    {
+                        var ent1ty = model.Export();
+
+                        ent1ty.PrototypeId = entity.Id;
+                        ent1ty.Benefited = collaboratorRepository.Get(model.BenefitedId.Value);
+                        ent1ty.BenefitedId = model.BenefitedId.Value;
+
+                        useCaseRepository.Add(ent1ty, User.Identity.Name);
+
+                        SetDefaultNotification(NotificationType.Success, GetCreationSuccessMessage());
+
+                        return RedirectToAction("editusecases", new { key = entity.Id });
+                    }
+                    catch (SAPRESSC.Core.Web.Frontend.InvalidModelException e)
+                    {
+                        ModelState.AddModelError(e.ModelKey, e.ErrorMessage);
+                    }
+                }
+
+                SetDefaultNotification(NotificationType.Danger, GetInvalidMessage());
+
+                model.Prototype = new PrototypeDisplayViewModel();
+
+                model.Prototype.Import(entity);
+
+                PopulateUseCaseInputViewModel(model);
+
+                return View(model);
+            }
+            catch (System.Exception e)
+            {
+                logger.LogError(e.InnerException, e.Message);
+            }
+
+            SetDefaultNotification(NotificationType.Danger, GetNotFoundMessage());
+
+            return GetDefaultActionResult();
         }
 
         #endregion
