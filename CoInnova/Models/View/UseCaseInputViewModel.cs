@@ -30,6 +30,7 @@ namespace MOROPO.UIC.CoInnova.Models.View
         {
             Id = entity.Id;
             About = entity.About;
+            BenefitedId = entity.BenefitedId.Value;
         }
 
         public void Mergue(UseCase entity)

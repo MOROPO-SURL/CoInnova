@@ -818,7 +818,8 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
 
         [HttpGet]
         [Route("edit/{key}/usecases/add")]
-        public virtual IActionResult AddUseCase(System.Guid key)
+        [RequirePermissions(Constants.Permission.PrototypeEditor)]
+        public IActionResult AddUseCase(System.Guid key)
         {
             try
             {
@@ -895,6 +896,120 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
             SetDefaultNotification(NotificationType.Danger, GetNotFoundMessage());
 
             return GetDefaultActionResult();
+        }
+
+        [HttpGet]
+        [Route("edit/{key}/usecases/modify/{useCaseId}")]
+        [RequirePermissions(Constants.Permission.PrototypeEditor)]
+        public IActionResult ModifyUseCase(System.Guid key, System.Guid useCaseId)
+        {
+            try
+            {
+                var entity = useCaseRepository.Get(useCaseId);
+
+                var model = new UseCaseInputViewModel
+                {
+                    Prototype = new PrototypeDisplayViewModel()
+                };
+
+                model.Import(entity);
+                model.Prototype.Import(Repository.Get(entity.PrototypeId.Value));
+
+                PopulateUseCaseInputViewModel(model);
+
+                return View(model);
+            }
+            catch (System.Exception e)
+            {
+                logger.LogError(e.InnerException, e.Message);
+            }
+
+            SetDefaultNotification(NotificationType.Danger, GetNotFoundMessage());
+
+            return RedirectToAction("editusecases", new { key });
+        }
+
+        [HttpPost]
+        [Route("edit/{key}/usecases/modify")]
+        [RequirePermissions(Constants.Permission.PrototypeEditor)]
+        [ValidateAntiForgeryToken]
+        public IActionResult ModifyUseCase(System.Guid key, UseCaseInputViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var entity = useCaseRepository.Get(model.Id);
+
+                    model.Mergue(entity);
+
+                    if (model.BenefitedId != entity.BenefitedId)
+                    {
+                        entity.Benefited = collaboratorRepository.Get(model.BenefitedId.Value);
+                        entity.BenefitedId = model.BenefitedId.Value;
+                    }
+
+                    useCaseRepository.Update(entity, User.Identity.Name);
+
+                    SetDefaultNotification(NotificationType.Success, GetEditionSuccessMessage());
+
+                    return RedirectToAction("editusecases", new { key = entity.PrototypeId.Value });
+                }
+                catch (System.Exception e)
+                {
+                    if (!(e.InnerException is SAPRESSC.Core.Web.Frontend.InvalidModelException))
+                    {
+                        logger.LogError(e.InnerException, e.Message);
+
+                        SetDefaultNotification(NotificationType.Danger, GetNotFoundMessage());
+
+                        return RedirectToAction("editusecases", new { key });
+                    }
+                }
+            }
+
+            SetDefaultNotification(NotificationType.Danger, GetInvalidMessage());
+
+            model.Prototype = new PrototypeDisplayViewModel();
+
+            model.Prototype.Import(Repository.Get(key));
+
+            PopulateUseCaseInputViewModel(model);
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Route("edit/{key}/usecases/delete")]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteUseCase(System.Guid key, System.Guid id)
+        {
+            try
+            {
+                var entity = useCaseRepository.Get(id);
+
+                useCaseRepository.Delete(entity, User.Identity.Name);
+
+                SetDefaultNotification(NotificationType.Success, GetDeletionSuccessMessage());
+
+                return RedirectToAction("editusecases", new { key });
+            }
+            catch (Microsoft.EntityFrameworkCore.DbUpdateException e)
+            {
+                logger.LogError(e.InnerException, e.Message);
+
+                SetDefaultNotification(NotificationType.Warning, GetOnDeletionDependecyConstrainErrorMessage());
+
+                return RedirectToAction("editusecases", new { key });
+            }
+            catch (System.Exception e)
+            {
+                logger.LogError(e.InnerException, e.Message);
+            }
+
+            SetDefaultNotification(NotificationType.Danger, GetNotFoundMessage());
+
+            return RedirectToAction("editusecases", new { key });
         }
 
         #endregion

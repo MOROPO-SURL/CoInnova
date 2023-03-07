@@ -12,7 +12,9 @@ namespace MOROPO.UIC.CoInnova.Persistence.EF.Repositories
 
         protected override IQueryable<UseCase> GetQueryableDbSet()
         {
-            return base.GetQueryableDbSet().Include(entity => entity.Benefited).ThenInclude(entity => entity.OrganizationIdentity).ThenInclude(entity => entity.Image);
+            return base.GetQueryableDbSet()
+                .Include(entity => entity.Benefited).ThenInclude(entity => entity.OrganizationIdentity).ThenInclude(entity => entity.Image)
+                .Include(entity => entity.Benefited).ThenInclude(entity => entity.User);
         }
     }
 }
