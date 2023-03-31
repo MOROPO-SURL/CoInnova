@@ -1,6 +1,6 @@
 ﻿namespace MOROPO.UIC.CoInnova.Persistence.Entities
 {
-    public class Prototype : SAPRESSC.Core.Persistence.Entities.INamedEntity<System.Guid>
+    public class Prototype : SAPRESSC.Core.Persistence.Entities.IEntity<System.Guid>
     {
         public Prototype()
         {
@@ -8,6 +8,8 @@
             CreatedAt = System.DateTime.Now;
             ImageBridges = new System.Collections.Generic.List<PrototypeImageBridge>();
             DocumentBridges = new System.Collections.Generic.List<PrototypeDocumentBridge>();
+            SphereBridges = new System.Collections.Generic.List<PrototypeSphereBridge>();
+            CollaboratorBridges = new System.Collections.Generic.List<PrototypeCollaboratorBridge>();
         }
 
         [System.ComponentModel.DataAnnotations.Key]
@@ -16,7 +18,7 @@
         public System.DateTime CreatedAt { get; set; }
 
         [System.ComponentModel.DataAnnotations.Required]
-        public string Name { get; set; }
+        public string Title { get; set; }
 
         public bool IsPublic { get; set; }
 
@@ -25,11 +27,19 @@
         [System.ComponentModel.DataAnnotations.Required]
         public System.Guid? LevelId { get; set; }
 
+        [System.ComponentModel.DataAnnotations.Schema.ForeignKey("InnovationAgentId")]
+        public Collaborator InnovationAgent { get; set; }
+        [System.ComponentModel.DataAnnotations.Required]
+        public System.Guid? InnovationAgentId { get; set; }
+
+        [System.ComponentModel.DataAnnotations.Required]
+        public string Summary { get; set; }
+
+        [System.ComponentModel.DataAnnotations.Required]
         public string Description { get; set; }
 
         [System.ComponentModel.DataAnnotations.Schema.ForeignKey("IdeaId")]
         public Idea Idea { get; set; }
-        [System.ComponentModel.DataAnnotations.Required]
         public System.Guid? IdeaId { get; set; }
 
         [System.ComponentModel.DataAnnotations.Schema.ForeignKey("FeatureImageId")]
@@ -39,5 +49,9 @@
         public System.Collections.Generic.List<PrototypeImageBridge> ImageBridges { get; set; }
 
         public System.Collections.Generic.List<PrototypeDocumentBridge> DocumentBridges { get; set; }
+
+        public System.Collections.Generic.List<PrototypeSphereBridge> SphereBridges { get; set; }
+
+        public System.Collections.Generic.List<PrototypeCollaboratorBridge> CollaboratorBridges { get; set; }
     }
 }

@@ -1,8 +1,4 @@
-﻿
-using MOROPO.SAPRESSC.Core.Web.Common.ComponentModel.DataAnnotations;
-using MOROPO.SAPRESSC.Middleware.Media.Web.Common.Extensions;
-using MOROPO.UIC.CoInnova.Persistence.Entities;
-using System.Collections.Generic;
+﻿using MOROPO.UIC.CoInnova.Persistence.Entities;
 using System.ComponentModel.DataAnnotations;
 
 namespace MOROPO.UIC.CoInnova.Models.View
@@ -11,32 +7,37 @@ namespace MOROPO.UIC.CoInnova.Models.View
     {
         public System.Guid Id { get; set; }
 
-        [FormFileContentTypes(ContentTypes = new string[] { "image/png", "image/jpeg" }, ErrorMessage = "PNG_JPEG_FileAllowedOnlyMessage")]
-        [FormFileMaxLength(Length = 3145728, ErrorMessage = "FileLimitSizeExcededMessage")]
-        [Display(Name = "ImageFile")]
-        public Microsoft.AspNetCore.Http.IFormFile ImageFile { get; set; }
+        [Required(ErrorMessage = "RequiredValidationErrorMessage")]
+        [Display(Name = "Title")]
+        public string Title { get; set; }
 
-        public System.Guid ImageId { get; set; }
-
-        public string ImageExtension { get; set; }
-
-        public string Name { get; set; }
-
-        public System.DateTime CreatedAt { get; set; }
-
+        [Display(Name = "IsPublic")]
         public bool IsPublic { get; set; }
 
+        [Required(ErrorMessage = "RequiredValidationErrorMessage")]
+        [Display(Name = "PrototypingLevel")]
+        public System.Guid? LevelId { get; set; }
+
+        [Required(ErrorMessage = "RequiredValidationErrorMessage")]
+        [Display(Name = "InnovationAgent")]
+        public System.Guid? InnovationAgentId { get; set; }
+
+        [Display(Name = "Idea")]
+        public System.Guid? IdeaId { get; set; }
+
+        [Required(ErrorMessage = "RequiredValidationErrorMessage")]
+        [Display(Name = "Summary")]
+        public string Summary { get; set; }
+
+        [Required(ErrorMessage = "RequiredValidationErrorMessage")]
+        [Display(Name = "Description")]
         public string Description { get; set; }
 
-        public System.Guid? LevelId { get; set; }
-        public PrototypingLevel Level { get; set; }
+        public Microsoft.AspNetCore.Mvc.Rendering.SelectListItem[] AvailablePrototypingLevels { get; set; }
 
-        public System.Guid? IdeaId { get; set; }
-        public Idea Idea { get; set; }
+        public Microsoft.AspNetCore.Mvc.Rendering.SelectListItem[] AvailableIdeas { get; set; }
 
-        public ICollection<PrototypeImageBridge> ImageBridges { get; set; }
-
-        public ICollection<PrototypeDocumentBridge> DocumentBridges { get; set; }
+        public Microsoft.AspNetCore.Mvc.Rendering.SelectListItem[] AvailableInnovationAgents { get; set; }
 
         public Prototype Export()
         {
@@ -50,26 +51,22 @@ namespace MOROPO.UIC.CoInnova.Models.View
         public void Import(Prototype entity)
         {
             Id = entity.Id;
-            ImageId = entity.FeatureImage?.Id ?? System.Guid.Empty;
-            ImageExtension = entity.FeatureImage?.ContentType.ContentTypeToExtension() ?? null;
-            Name = entity.Name;
-            CreatedAt = entity.CreatedAt;
-            IsPublic = entity.IsPublic;
+            Title = entity.Title;
+            Summary = entity.Summary;
             Description = entity.Description;
-            IdeaId = entity.IdeaId;
+            IsPublic = entity.IsPublic;
             LevelId = entity.LevelId;
-            ImageBridges = entity.ImageBridges;
-            DocumentBridges = entity.DocumentBridges;
+            InnovationAgentId = entity.InnovationAgentId;
+            IdeaId = entity.IdeaId;
         }
 
         public void Mergue(Prototype entity)
         {
-            entity.Name = Name;
-            entity.CreatedAt = CreatedAt;
-            entity.IsPublic = IsPublic;
+            entity.Id = Id;
+            entity.Title = Title;
+            entity.Summary = Summary;
             entity.Description = Description;
-            entity.IdeaId = IdeaId;
-            entity.LevelId = LevelId;
+            entity.IsPublic = IsPublic;
         }
     }
 }

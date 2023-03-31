@@ -7,9 +7,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MOROPO.UIC.CoInnova.Models.View
 {
-    public class PrototypeDisplayViewModel : SAPRESSC.Core.Persistence.Models.IEntityDisplayModel<Prototype, System.Guid>
+    public class PrototypeDisplayViewModel : SAPRESSC.Core.Persistence.Models.IEntityDisplayModel<Persistence.Entities.Prototype, System.Guid>
     {
-        public Guid Id { get; set; }
+        public System.Guid Id { get; set; }
 
         public Guid ImageId { get; set; }
 
@@ -21,33 +21,46 @@ namespace MOROPO.UIC.CoInnova.Models.View
         [Display(Name = "CreatedAt")]
         public System.DateTime CreatedAt { get; set; }
 
+        [Display(Name = "Title")]
+        public string Title { get; set; }
+
         [Display(Name = "IsPublic")]
         public bool IsPublic { get; set; }
+
+        [Display(Name = "PrototypingLevel")]
+        public PrototypingLevelDisplayViewModel Level { get; set; }
+
+        [Display(Name = "InnovationAgent")]
+        public CollaboratorDisplayViewModel InnovationAgent { get; set; }
+
+        [Display(Name = "Summary")]
+        public string Summary { get; set; }
 
         [Display(Name = "Description")]
         public string Description { get; set; }
 
-        [Display(Name = "Level")]
-        public PrototypingLevel Level { get; set; }
-
         [Display(Name = "Idea")]
-        public Idea Idea { get; set; }
+        public IdeaDisplayViewModel Idea { get; set; }
 
-        public ICollection<PrototypeImageBridge> ImageBridges { get; set; }
-
-        public ICollection<PrototypeDocumentBridge> DocumentBridges { get; set; }
-
-        public void Import(Prototype entity)
+        public void Import(Persistence.Entities.Prototype entity)
         {
             Id = entity.Id;
-            ImageId = entity.FeatureImage?.Id ?? System.Guid.Empty;
-            ImageExtension = entity.FeatureImage?.ContentType.ContentTypeToExtension() ?? null;
-            Name = entity.Name;
-            CreatedAt = entity.CreatedAt;
-            IsPublic = entity.IsPublic;
+            Title = entity.Title;
+            Summary = entity.Summary;
             Description = entity.Description;
-            ImageBridges = entity.ImageBridges;
-            DocumentBridges = entity.DocumentBridges;
+            IsPublic = entity.IsPublic;
+            Level = new PrototypingLevelDisplayViewModel();
+            InnovationAgent = new CollaboratorDisplayViewModel();
+
+            Level.Import(entity.Level);
+            InnovationAgent.Import(entity.InnovationAgent);
+
+            if (entity.Idea != null)
+            {
+                Idea = new IdeaDisplayViewModel();
+
+                Idea.Import(entity.Idea);
+            }
         }
     }
 }

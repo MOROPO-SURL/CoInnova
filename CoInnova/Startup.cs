@@ -36,7 +36,6 @@ namespace MOROPO.UIC.CoInnova
         {
             services.Configure<Options.MediaThumbnailResizeOptions>(configuration.GetSection("MediaThumbnailResize"));
             services.Configure<SAPRESSC.Middleware.Media.Web.Common.Options.RelativeMediaFileManagementOptions>(configuration.GetSection("FileManagement"));
-            services.Configure<Models.View.PrototypeDisplayViewModel>(configuration.GetSection("prototypeDefault"));
 
             services.AddDbContext<Persistence.EF.ApplicationDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
@@ -55,7 +54,12 @@ namespace MOROPO.UIC.CoInnova
             services.AddScoped<IEntityRepository<IdeaWorkflowStep, System.Guid>, Persistence.EF.Repositories.IdeaWorkflowStepRepository>();
             services.AddScoped<IEntityRepository<ChallangeWorkflow, System.Guid>, Persistence.EF.Repositories.ChallangeWorkflowRepository>();
             services.AddScoped<IEntityRepository<ChallangeWorkflowStep, System.Guid>, Persistence.EF.Repositories.ChallangeWorkflowStepRepository>();
+            services.AddScoped<IEntityRepository<Sphere, System.Guid>, Persistence.EF.Repositories.SphereRepository>();
             services.AddScoped<IEntityRepository<Prototype, System.Guid>, Persistence.EF.Repositories.PrototypeRepository>();
+            services.AddScoped<IEntityRepository<Idea, System.Guid>, Persistence.EF.Repositories.IdeaRepository>();
+            services.AddScoped<IEntityRepository<UseCase, System.Guid>, Persistence.EF.Repositories.UseCaseRepository>();
+
+            services.AddSingleton<Managers.RelativeDocumentFileManager>();
 
             services.AddSingleton<SAPRESSC.Core.Persistence.EF.Providers.Facade.IDbSchemaConfigurationProviderFacade, Persistence.EF.Providers.DbSchemaConfigurationProvider>();
 

@@ -84,6 +84,11 @@ namespace MOROPO.UIC.CoInnova.Persistence.EF
         public DbSet<Entities.Prototype> Prototypes { get; set; }
         public DbSet<Entities.PrototypeDocumentBridge> PrototypeDocumentBridges { get; set; }
         public DbSet<Entities.PrototypeImageBridge> PrototypeImageBridges { get; set; }
+        public DbSet<Entities.PrototypeSphereBridge> PrototypeSphereBridges { get; set; }
+        public DbSet<Entities.PrototypeCollaboratorBridge> PrototypeCollaboratorBridges { get; set; }
+        public DbSet<Entities.UseCase> UseCaseBridges { get; set; }
+        public DbSet<Entities.UseCaseImageBridge> UseCaseImageBridges { get; set; }
+        public DbSet<Entities.UseCaseDocumentBridge> UseCaseDocumentBridges { get; set; }
         public DbSet<Entities.PrototypingLevel> PrototypingLevels { get; set; }
         public DbSet<Entities.ApiKey> ApiKeys { get; set; }
     }

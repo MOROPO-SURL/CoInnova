@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using MOROPO.SAPRESSC.Middleware.Media.Web.Common.Extensions;
 
-
 namespace MOROPO.UIC.CoInnova.Models.View
 {
     public class OrganizationDisplayViewModel : SAPRESSC.Core.Persistence.Models.IEntityDisplayModel<SAPRESSC.Middleware.Identity.Persistence.Entities.OrganizationIdentity, System.Guid>

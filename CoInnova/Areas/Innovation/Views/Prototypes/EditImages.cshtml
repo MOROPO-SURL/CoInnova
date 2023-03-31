@@ -1,0 +1,146 @@
+﻿@model MOROPO.UIC.CoInnova.Models.View.PrototypeImagesViewModel
+
+@{
+    ViewData["Title"] = "Modificar Prototipo (Imágenes)";
+
+    ViewData[BreadcrumbViewModel.BREADCRUMBS_MAP_KEY] = new List<BreadcrumbViewModel>
+    {
+        new BreadcrumbViewModel
+        {
+            Caption = "<span class=\"mdi mdi-cogs\" style=\"margin-right: 4px;\"></span>" + GlobalViewLocalizationHelper.Localize("Dashboard", ViewLocalizer),
+            Url = "/"
+        },
+        new BreadcrumbViewModel
+        {
+            Caption = "Administración de Prototipos",
+            Url = Url.Action("index")
+        },
+        new BreadcrumbViewModel
+        {
+            Caption = ViewData["Title"].ToString()
+        }
+    };
+
+    Layout = "_BackendLayout";
+}
+
+<div class="card" style="margin-bottom: 20px;">
+    <div class="card-header">
+        <h4>Modificar Prototipo</h4>
+        <ul class="nav nav-tabs card-header-tabs">
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("edit", @Model.Prototype.Id)">Generales</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("editexecutors", @Model.Prototype.Id)">Ejecutores</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("editdocuments", @Model.Prototype.Id)">Documentos</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active">Imágenes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("editspheres", @Model.Prototype.Id)">Esferas de Acción</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("editusecases", @Model.Prototype.Id)">Escalamientos</a>
+            </li>
+        </ul>
+    </div>
+    <div class="card-body pb-0">
+        <div class="alert alert-dark mb-4">
+            <details>
+                <summary class="h4 mb-0">@Model.Prototype.Title</summary>
+                <hr />
+                <div class="row">
+                    <dl class="col-md-6 mb-3">
+                        <dt>@Html.DisplayNameFor(model => model.Prototype.Level)</dt>
+                        <dd>@Model.Prototype.Level.Name</dd>
+                    </dl>
+                    <dl class="col-md-6 mb-3">
+                        <dt>@Html.DisplayNameFor(model => model.Prototype.InnovationAgent.OrganizationIdentity.Name)</dt>
+                        <dd>@Model.Prototype.InnovationAgent.OrganizationIdentity.Name</dd>
+                    </dl>
+                </div>
+                <dl class="mb-0">
+                    <dt>@Html.DisplayNameFor(model => model.Prototype.Idea)</dt>
+                    @if (Model.Prototype.Idea == null)
+                    {
+                        <dd>---</dd>
+                    }
+                    else
+                    {
+                        <dd>@Model.Prototype.Idea.Title</dd>
+                    }
+                </dl>
+            </details>
+        </div>
+        <div class="modal fade" id="add-image" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="add-image-title">Agregar Imagen</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    @using (Html.BeginForm("addimage", "prototypes", new { key = Model.Prototype.Id }, FormMethod.Post, true, new { enctype = "multipart/form-data" }))
+                    {
+                        <div class="modal-body">
+                            <input type="file" class="form-control" id="imageFile" name="imageFile" />
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Agregar</button>
+                            <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        @if (Model.Images.Length <= 0)
+        {
+            <p class="text-muted mb-2">Sin elementos que mostrar</p>
+        }
+        else
+        {
+            <div class="card-columns">
+                @foreach (var item in Model.Images)
+                {
+                    <div class="card" style="margin-bottom: 1.25rem !important;">
+                        <img class="card-img" src="~/media/images/@item.Id.@item.Extension">
+                        <div class="card-img-overlay"><a class="btn btn-danger float-right" href="#" data-toggle="modal" data-target="#delete-image-@item.Id"><span class="mdi mdi-trash-can"></span></a></div>
+                        <div class="modal fade" id="delete-image-@item.Id" tabindex="-1" role="dialog" aria-labelledby="delete-image-@item.Id-lable" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    @using (Html.BeginForm("deleteimage", "prototypes", new { key = Model.Prototype.Id }, FormMethod.Post, true, new { @class = "modal-content" }))
+                                    {
+                                        @Html.Hidden("imageId", item.Id)
+
+                                        <div class="modal-header">
+                                            <h4 class="modal-title" id="delete-image-@item.Id-lable">Eliminar Imagen</h4>
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>Esta seguro que desea eliminar la imagen seleccionada?</p>
+                                        </div>
+                                        <div class="modal-footer" style="margin-top: 0;">
+                                            <button type="submit" class="btn btn-danger">Eliminar</button>
+                                            <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+    <div class="card-footer">
+        <a class="btn btn-primary" href="#" data-toggle="modal" data-target="#add-image">Agregar</a>
+        <a class="btn btn-light" href="@Url.Action("index")">Regresar al listado</a>
+    </div>
+</div>
+
+

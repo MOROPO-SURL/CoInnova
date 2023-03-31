@@ -1,0 +1,113 @@
+﻿@model MOROPO.UIC.CoInnova.Models.View.UseCaseInputViewModel
+
+@{
+    ViewData["Title"] = "Agregar Escalamiento";
+
+    ViewData[BreadcrumbViewModel.BREADCRUMBS_MAP_KEY] = new List<BreadcrumbViewModel>
+    {
+        new BreadcrumbViewModel
+        {
+            Caption = "<span class=\"mdi mdi-cogs\" style=\"margin-right: 4px;\"></span>" + GlobalViewLocalizationHelper.Localize("Dashboard", ViewLocalizer),
+            Url = Url.Action("index", "dashboard", new { Area = string.Empty })
+        },
+        new BreadcrumbViewModel
+        {
+            Caption = "Administración de Prototipos",
+            Url = Url.Action("index")
+        },
+        new BreadcrumbViewModel
+        {
+            Caption = "Modificar Prototipo",
+            Url = Url.Action("editusecases", new { key = Model.Prototype.Id })
+        },
+        new BreadcrumbViewModel
+        {
+            Caption = ViewData["Title"].ToString()
+        }
+    };
+
+    Layout = "_BackendLayout";
+}
+
+@section styles {
+    <link rel="stylesheet" href="~/lib/bootstrap-combobox/css/bootstrap-combobox.css" />
+    <style type="text/css">
+        .dropdown-toggle {
+            border-radius: 0.25rem;
+            border: 1px solid #ced4da;
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+            margin-left: -1px;
+            line-height: 36px;
+        }
+
+        .dropdown-toggle::after {
+            margin: 0 5px;
+        }
+
+        ul.dropdown-menu{
+            width: 100%;
+        }
+    </style>
+}
+
+@section scripts {
+    <script src="~/lib/bootstrap-combobox/js/bootstrap-combobox.js"></script>
+    <script type="text/javascript">
+        $('#BenefitedId').combobox();
+    </script>
+
+}
+
+@using (Html.BeginForm("addusecase", "prototypes", new { Key = Model.Prototype.Id, Area = "innovation" }, FormMethod.Post, true, null))
+{
+    @Html.ValidationSummary(true)
+
+    <div class="card mb-3">
+        <div class="card-header"><h4 class="mb-0">@ViewData["Title"]</h4></div>
+
+        <div class="card-body">
+            <div class="alert alert-dark mb-4">
+                <details>
+                    <summary class="h4 mb-0">@Model.Prototype.Title</summary>
+                    <hr />
+                    <div class="row">
+                        <dl class="col-md-6 mb-3">
+                            <dt>@Html.DisplayNameFor(model => model.Prototype.Level)</dt>
+                            <dd>@Model.Prototype.Level.Name</dd>
+                        </dl>
+                        <dl class="col-md-6 mb-3">
+                            <dt>@Html.DisplayNameFor(model => model.Prototype.InnovationAgent.OrganizationIdentity.Name)</dt>
+                            <dd>@Model.Prototype.InnovationAgent.OrganizationIdentity.Name</dd>
+                        </dl>
+                    </div>
+                    <dl class="mb-0">
+                        <dt>@Html.DisplayNameFor(model => model.Prototype.Idea)</dt>
+                        @if (Model.Prototype.Idea == null)
+                        {
+                            <dd>---</dd>
+                        }
+                        else
+                        {
+                            <dd>@Model.Prototype.Idea.Title</dd>
+                        }
+                    </dl>
+                </details>
+            </div>
+            <div class="mb-3">
+                @Html.LabelFor(model => model.BenefitedId, new { @class = "control-label" })
+                @Html.DropDownListFor(model => model.BenefitedId, Model.AvailableCollaborators, "Seleccione o busque aquí ...", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.BenefitedId, null, new { @class = "text-danger" })
+            </div>
+            <div>
+                @Html.LabelFor(model => model.About, new { @class = "control-label" })
+                @Html.TextAreaFor(model => model.About, 10, 0, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.About, null, new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="card-footer">
+            <button type="submit" class="btn btn-primary">Agregar</button>
+            <a class="btn btn-light" href="@Url.Action("index")">Cancelar</a>
+        </div>
+    </div>
+}

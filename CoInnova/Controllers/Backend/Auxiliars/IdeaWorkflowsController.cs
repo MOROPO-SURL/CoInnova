@@ -47,6 +47,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Auxiliars
         [RequirePermissions(Constants.Permission.IdeaWorkflowEditor)]
         public override IActionResult Edit(IdeaWorkflowInputViewModel modelInput)
         {
+            ModelState.ClearValidationState("StartStepName");
             ModelState.MarkFieldSkipped("StartStepName");
 
             return base.Edit(modelInput);

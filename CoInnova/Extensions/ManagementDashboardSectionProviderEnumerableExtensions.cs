@@ -107,6 +107,14 @@ namespace MOROPO.UIC.CoInnova.Extensions
                 },
                 new ManagementDashboardSectionViewModel
                 {
+                    Title = "Esferas de Actuación",
+                    Controller = "spheres",
+                    Action = "index",
+                    Area = "auxiliars",
+                    Role = Constants.Permission.SphereViewer
+                },
+                new ManagementDashboardSectionViewModel
+                {
                     Title = "Comentarios a Retos",
                     Controller = "challangecomments",
                     Action = "index",

@@ -144,14 +144,14 @@
                 @foreach (var item in Model.List)
                 {
                     <tr>
-                        <td>
+                        <td style="vertical-align: middle;">
                             @if (item.OrganizationIdentity.ImageId != null)
                             {
-                                <img class="img-thumbnail" src="~/media/images/@item.OrganizationIdentity.ImageId.@item.OrganizationIdentity.ImageExtension" />
+                                <img title="@item.OrganizationIdentity.Name" class="img-thumbnail" src="~/media/images/@item.OrganizationIdentity.ImageId.@item.OrganizationIdentity.ImageExtension" />
                             }
                             else
                             {
-                                <img class="img-thumbnail" src="~/img/default-organization-picture.png" />
+                                <img title="@item.OrganizationIdentity.Name" class="img-thumbnail" src="~/img/default-organization-picture.png" />
                             }
                         </td>
                         <td style="vertical-align: middle;">@item.OrganizationIdentity.Name</td>

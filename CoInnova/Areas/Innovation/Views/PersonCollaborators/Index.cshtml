@@ -145,7 +145,7 @@
                 @foreach (var item in Model.List)
                 {
                     <tr>
-                        <td>
+                        <td style="vertical-align: middle;">
                             @if (item.User.ImageId != null)
                             {
                                 <img class="img-thumbnail rounded-circle" src="~/media/images/@item.User.ImageId.@item.User.ImageExtension" />

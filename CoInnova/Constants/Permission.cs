@@ -54,5 +54,10 @@
 
         public const string IdeaCommentViewer = "ideacomment-viewer";
         public const string IdeaCommentRemover = "ideacomment-remover";
+
+        public const string SphereViewer = "sphere-viewer";
+        public const string SphereCreator = "sphere-creator";
+        public const string SphereEditor = "sphere-editor";
+        public const string SphereRemover = "sphere-remover";
     }
 }
