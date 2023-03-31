@@ -25,13 +25,13 @@ namespace MOROPO.UIC.CoInnova.Controllers.Frontend
 
         [HttpGet]
         [Route("details")]
-        public IActionResult Details(PrototypeDisplayViewModel prototypeDisplay)
+        public IActionResult Details(PrototypeImagesViewModel prototypeImageDisplay)
         {
-            if(prototypeDisplay.Id == System.Guid.Empty)
+            if(prototypeImageDisplay.Prototype == null)
             {
-                prototypeDisplay = model.Value;
+                prototypeImageDisplay.Prototype = model.Value;
             } 
-            return View(prototypeDisplay);
+            return View(prototypeImageDisplay);
         }
     }
 }

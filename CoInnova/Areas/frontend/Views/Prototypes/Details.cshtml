@@ -1,5 +1,5 @@
 ﻿@using MOROPO.SAPRESSC.Middleware.Media.Web.Common.Extensions
-@model MOROPO.UIC.CoInnova.Models.View.PrototypeDisplayViewModel
+@model MOROPO.UIC.CoInnova.Models.View.PrototypeImagesViewModel
 
 @{
     Layout = "_FrontendLayout";
@@ -46,24 +46,24 @@
                 <div class="col-md-12 col-lg-6 offset-lg-6 p-4">
                     <div class="row">
                         <dl class="col-md-6">
-                            <dt>@Html.DisplayNameFor(model => model.Name)</dt>
-                            <dd>@Html.DisplayFor(model => model.Name)</dd>
+                            <dt>@Html.DisplayNameFor(model => model.Prototype.Title)</dt>
+                            <dd>@Html.DisplayFor(model => model.Prototype.Title)</dd>
                         </dl>
                         <dl class="col-md-6">
-                            <dt>@Html.DisplayNameFor(model => model.CreatedAt)</dt>
-                            <dd>@Html.DisplayFor(model => model.CreatedAt)</dd>
+                            <dt>@Html.DisplayNameFor(model => model.Prototype.CreatedAt)</dt>
+                            <dd>@Html.DisplayFor(model => model.Prototype.CreatedAt)</dd>
                         </dl>
                         <dl class="col-md-6">
-                            <dt>@Html.DisplayNameFor(model => model.Level)</dt>
-                            <dd><a href="#">@Html.DisplayFor(model => model.Level.Name)</a></dd>
+                            <dt>@Html.DisplayNameFor(model => model.Prototype.Level)</dt>
+                            <dd><a href="#">@Html.DisplayFor(model => model.Prototype.Level.Name)</a></dd>
                         </dl>
                         <dl class="col-md-6">
-                            <dt>@Html.DisplayNameFor(model => model.Idea)</dt>
-                            <dd><a href="#">@Html.DisplayFor(model => model.Idea.Title)</a></dd>
+                            <dt>@Html.DisplayNameFor(model => model.Prototype.Idea)</dt>
+                            <dd><a href="#">@Html.DisplayFor(model => model.Prototype.Idea.Title)</a></dd>
                         </dl>
                         <dl class="col-md-12">
-                            <dt>@Html.DisplayNameFor(model => model.Description)</dt>
-                            <dd><p style="word-wrap: break-word;">@Html.DisplayFor(model => model.Description)</p></dd>
+                            <dt>@Html.DisplayNameFor(model => model.Prototype.Description)</dt>
+                            <dd><p style="word-wrap: break-word;">@Html.DisplayFor(model => model.Prototype.Description)</p></dd>
                         </dl>
                     </div>
                 </div>
@@ -73,8 +73,23 @@
 
 <div class="row no-gutters">
     <div class="col-lg-3 col-md-4 col-sm-6 pb-2">
+        
         <div class="documents">
             <h4>Documentos</h4>
+            <ul>
+                    <li>
+                        <a href="#">name1</a>
+                    </li>
+                    <li>
+                        <a href="#">name2</a>
+                    </li>
+                    <li>
+                        <a href="#">name3</a>
+                    </li>
+            </ul>
+            @{
+            /*
+            
                 <ul>
                 @if(Model.DocumentBridges == null){
                     <li>
@@ -95,10 +110,12 @@
                     }
                 }
             </ul>
+                */
+            }
         </div>
     </div>
     <div class="col-lg-9 col-md-8 col-sm-6 pl-3">
-        @if (Model.ImageBridges == null)
+        @if (Model.Images == null)
         {
             string[] picturesSrc = { "/img/car1.jpg", "/img/car2.jpg", "/img/car3.jpg", "/img/car4.jpg" };
             Random rand = new Random();
@@ -115,10 +132,10 @@
         }
         else
         {
-            foreach (var item in Model.ImageBridges)
+            foreach (var item in Model.Images)
             {
                 <div class="card">
-                    <img class="card-img" src=@item.Image.Id.@item.Image.ContentType.ContentTypeToExtension() alt="Card image">
+                    <img class="card-img" src=@item.Id.@item.Extension alt="Card image">
                 </div>
             }
         }
