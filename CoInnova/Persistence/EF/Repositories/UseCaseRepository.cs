@@ -13,6 +13,7 @@ namespace MOROPO.UIC.CoInnova.Persistence.EF.Repositories
             return base.GetQueryableDbSet()
                 .Include(entity => entity.DocumentBridges).ThenInclude(bridge => bridge.Document)
                 .Include(entity => entity.ImageBridges).ThenInclude(bridge => bridge.Image)
+                .Include(entity => entity.FeatureImage)
                 .Include(entity => entity.Benefited).ThenInclude(entity => entity.OrganizationIdentity).ThenInclude(entity => entity.Image)
                 .Include(entity => entity.Benefited).ThenInclude(entity => entity.User);
         }

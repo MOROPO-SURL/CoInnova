@@ -1,8 +1,4 @@
 ﻿using MOROPO.SAPRESSC.Middleware.Media.Web.Common.Extensions;
-using MOROPO.UIC.CoInnova.Persistence.Entities;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace MOROPO.UIC.CoInnova.Models.View
@@ -11,9 +7,9 @@ namespace MOROPO.UIC.CoInnova.Models.View
     {
         public System.Guid Id { get; set; }
 
-        public Guid ImageId { get; set; }
+        public System.Guid? FeatureImageId { get; set; }
 
-        public string ImageExtension { get; set; }
+        public string FeatureImageExtension { get; set; }
 
         [Display(Name = "Name")]
         public string Name { get; set; }
@@ -49,6 +45,8 @@ namespace MOROPO.UIC.CoInnova.Models.View
             Summary = entity.Summary;
             Description = entity.Description;
             IsPublic = entity.IsPublic;
+            FeatureImageId = entity.FeatureImageId;
+            FeatureImageExtension = entity.FeatureImage?.ContentType.ContentTypeToExtension();
             Level = new PrototypingLevelDisplayViewModel();
             InnovationAgent = new CollaboratorDisplayViewModel();
 

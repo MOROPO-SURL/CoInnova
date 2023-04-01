@@ -3,7 +3,7 @@
 @model MOROPO.UIC.CoInnova.Models.View.UseCaseDocumentsViewModel
 
 @{
-    ViewData["Title"] = "Modificar Prototipo (Documentos de Escalamiento)";
+    ViewData["Title"] = "Modificar Escalamiento (Documentos)";
 
     ViewData[BreadcrumbViewModel.BREADCRUMBS_MAP_KEY] = new List<BreadcrumbViewModel>
     {
@@ -57,7 +57,7 @@
                     <dt>@Html.DisplayNameFor(model => model.UseCase.About)</dt>
                     @if (Model.UseCase.About == null)
                     {
-                        <dd>---</dd>
+                        <dd>--</dd>
                     }
                     else
                     {

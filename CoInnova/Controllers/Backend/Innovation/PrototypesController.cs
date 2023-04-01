@@ -1232,6 +1232,215 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
 
         #endregion
 
+        #region UseCase Images
+
+        [HttpGet]
+        [Route("edit/{key}/usecases/{id}/images")]
+        [RequirePermissions(Constants.Permission.PrototypeEditor)]
+        public ActionResult EditUseCaseImages(System.Guid key, System.Guid id)
+        {
+            var target = useCaseRepository.Get(id);
+
+            if (target.PrototypeId != key)
+            {
+                SetDefaultNotification(NotificationType.Danger, GetNotFoundMessage());
+
+                return RedirectToAction("editusecases", new { key });
+            }
+
+            var entity = Repository.Get(key);
+
+            var model = new UseCaseImagesViewModel
+            {
+                Prototype = new PrototypeDisplayViewModel(),
+                UseCase = new UseCaseDisplayViewModel(),
+                FeatureImage = entity.FeatureImageId == null ? null : new Models.ImageDisplayCommonModel(),
+                Images = target.ImageBridges.Select(bridge =>
+                {
+                    var result = new Models.ImageDisplayCommonModel();
+
+                    result.Import(bridge.Image);
+
+                    return result;
+                }).ToArray()
+            };
+
+            model.Prototype.Import(entity);
+            model.UseCase.Import(target);
+
+            model.FeatureImage?.Import(entity.FeatureImage);
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Route("edit/{key}/usecases/{id}/images/add")]
+        [ValidateAntiForgeryToken]
+        [RequirePermissions(Constants.Permission.PrototypeEditor)]
+        public IActionResult AddUseCaseImage(System.Guid key, System.Guid id)
+        {
+            try
+            {
+                var imageFile = Request.Form.Files[0];
+
+                var target = useCaseRepository.Get(id);
+
+                if (key != target.PrototypeId)
+                {
+                    throw new System.InvalidOperationException();
+                }
+
+                var entity = Repository.Get(key);
+
+                // TODO Validate imageFile
+
+                if (ModelState.IsValid)
+                {
+                    try
+                    {
+                        using (var imageSkData = SkiaSharp.SKData.Create(imageFile.OpenReadStream(), imageFile.Length))
+                        {
+                            using (var imageSkBitmap = SkiaSharp.SKBitmap.Decode(imageSkData))
+                            {
+                                var image = new Image 
+                                { 
+                                    ContentType = imageFile.ContentType, 
+                                    Length = imageFile.Length, 
+                                    About = "For UseCase " + entity.Id,
+                                    Width = imageSkBitmap.Width,
+                                    Height = imageSkBitmap.Height
+                                };
+
+                                imageFileManager.SaveImageFileContent(image.Id, imageSkData.ToArray(), imageFile.ContentType);
+
+                                target.ImageBridges.Add(new UseCaseImageBridge
+                                {
+                                    UseCaseId = target.Id,
+                                    Image = image
+                                });
+                            }
+                        }
+
+                        useCaseRepository.Update(target, User.Identity.Name);
+
+                        SetDefaultNotification(NotificationType.Success, GetCreationSuccessMessage());
+
+                        return RedirectToAction("editusecaseimages", new { key = entity.Id, id = target.Id });
+                    }
+                    catch (SAPRESSC.Core.Web.Frontend.InvalidModelException e)
+                    {
+                        ModelState.AddModelError(e.ModelKey, e.ErrorMessage);
+                    }
+                }
+
+                SetDefaultNotification(NotificationType.Danger, GetInvalidMessage());
+
+                return RedirectToAction("editusecaseimages", new { key = entity.Id, id = target.Id });
+            }
+            catch (System.Exception e)
+            {
+                logger.LogError(e.InnerException, e.Message);
+            }
+
+            SetDefaultNotification(NotificationType.Danger, GetNotFoundMessage());
+
+            return GetDefaultActionResult();
+        }
+
+        [HttpPost]
+        [Route("edit/{key}/usecases/{id}/images/delete")]
+        [ValidateAntiForgeryToken]
+        [RequirePermissions(Constants.Permission.PrototypeEditor)]
+        public IActionResult DeleteUseCaseImage(System.Guid key, System.Guid id, System.Guid imageId)
+        {
+            try
+            {
+                var target = useCaseRepository.Get(id);
+
+                if (key != target.PrototypeId)
+                {
+                    throw new System.InvalidOperationException();
+                }
+
+                var entity = Repository.Get(key);
+
+                var bridge = target.ImageBridges.First(b => b.ImageId == imageId);
+
+                target.ImageBridges.Remove(bridge);
+
+                if (target.FeatureImageId == imageId)
+                {
+                    target.FeatureImage = null;
+                    target.FeatureImageId = null;
+                }
+
+                useCaseRepository.Update(target, User.Identity.Name);
+
+                imageRepository.Delete(bridge.Image, User.Identity.Name);
+
+                imageFileManager.DeleteImageFile(bridge.Image);
+
+                SetDefaultNotification(NotificationType.Success, GetDeletionSuccessMessage());
+
+                return RedirectToAction("editusecaseimages", new { key, id });
+            }
+            catch (Microsoft.EntityFrameworkCore.DbUpdateException e)
+            {
+                logger.LogError(e.InnerException, e.Message);
+
+                SetDefaultNotification(NotificationType.Warning, GetOnDeletionDependecyConstrainErrorMessage());
+
+                return RedirectToAction("editusecaseimages", new { key, id });
+            }
+            catch (System.Exception e)
+            {
+                logger.LogError(e.InnerException, e.Message);
+            }
+
+            SetDefaultNotification(NotificationType.Danger, GetNotFoundMessage());
+
+            return GetSuccessDeleteActionResult();
+        }
+
+        [HttpPost]
+        [Route("edit/{key}/usecases/{id}/images/featured")]
+        [ValidateAntiForgeryToken]
+        [RequirePermissions(Constants.Permission.PrototypeEditor)]
+        public IActionResult FeaturedUseCaseImage(System.Guid key, System.Guid id, System.Guid imageId)
+        {
+            try
+            {
+                var target = useCaseRepository.Get(id);
+
+                if (key != target.PrototypeId)
+                {
+                    throw new System.InvalidOperationException();
+                }
+
+                var entity = Repository.Get(key);
+
+                var bridge = target.ImageBridges.First(b => b.ImageId == imageId);
+
+                target.FeatureImageId = bridge.ImageId;
+
+                useCaseRepository.Update(target, User.Identity.Name);
+
+                SetDefaultNotification(NotificationType.Success, GetEditionSuccessMessage());
+
+                return RedirectToAction("editusecaseimages", new { key, id });
+            }
+            catch (System.Exception e)
+            {
+                logger.LogError(e.InnerException, e.Message);
+            }
+
+            SetDefaultNotification(NotificationType.Danger, GetNotFoundMessage());
+
+            return GetSuccessDeleteActionResult();
+        }
+
+        #endregion
+
         #endregion
     }
 }
