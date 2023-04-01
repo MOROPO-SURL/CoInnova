@@ -186,7 +186,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
         {
             var entity = Repository.Get(key);
 
-            var model = new PrototypeDocuementsViewModel
+            var model = new PrototypeDocumentsViewModel
             {
                 Prototype = new PrototypeDisplayViewModel(),
                 Documents = entity.DocumentBridges.Select(item =>
@@ -899,13 +899,13 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
         }
 
         [HttpGet]
-        [Route("edit/{key}/usecases/modify/{useCaseId}")]
+        [Route("edit/{key}/usecases/modify/{id}")]
         [RequirePermissions(Constants.Permission.PrototypeEditor)]
-        public IActionResult ModifyUseCase(System.Guid key, System.Guid useCaseId)
+        public IActionResult ModifyUseCase(System.Guid key, System.Guid id)
         {
             try
             {
-                var entity = useCaseRepository.Get(useCaseId);
+                var entity = useCaseRepository.Get(id);
 
                 var model = new UseCaseInputViewModel
                 {
@@ -1011,6 +1011,226 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
 
             return RedirectToAction("editusecases", new { key });
         }
+
+        #region UseCase Documents
+
+        [HttpGet]
+        [Route("edit/{key}/usecases/{id}/documents")]
+        [RequirePermissions(Constants.Permission.PrototypeEditor)]
+        public ActionResult EditUseCaseDocuments(System.Guid key, System.Guid id)
+        {
+            var target = useCaseRepository.Get(id);
+
+            if (target.PrototypeId != key)
+            {
+                SetDefaultNotification(NotificationType.Danger, GetNotFoundMessage());
+
+                return RedirectToAction("editusecases", new { key });
+            }
+
+            var entity = Repository.Get(key);
+
+            var model = new UseCaseDocumentsViewModel
+            {
+                Prototype = new PrototypeDisplayViewModel(),
+                UseCase = new UseCaseDisplayViewModel(),
+                Documents = target.DocumentBridges.Select(item =>
+                {
+                    var result = new Models.DocumentDisplayCommonModel();
+
+                    result.Import(item.Document);
+
+                    return result;
+                }).ToArray()
+            };
+
+            model.UseCase.Import(target);
+            model.Prototype.Import(entity);
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Route("edit/{key}/usecases/{id}/documents/add")]
+        [ValidateAntiForgeryToken]
+        [RequirePermissions(Constants.Permission.PrototypeEditor)]
+        public IActionResult AddUseCaseDocument(System.Guid key, System.Guid id, DocumentInputViewModel model)
+        {
+            try
+            {
+                var target = useCaseRepository.Get(id);
+
+                if (key != target.PrototypeId)
+                {
+                    throw new System.InvalidOperationException();
+                }
+
+                var entity = Repository.Get(key);
+
+                ModelState.ClearValidationState("File");
+
+                model.File = Request.Form.Files[0];
+
+                TryValidateModel(model);
+
+                if (ModelState.IsValid)
+                {
+                    try
+                    {
+                        using (var memoryStream = new System.IO.MemoryStream())
+                        {
+                            model.File.CopyTo(memoryStream);
+
+                            var document = new Document
+                            {
+                                Name = model.Name,
+                                Description = model.Description,
+                                ContentType = model.File.ContentType,
+                                Length = model.File.Length
+                            };
+
+                            target.DocumentBridges.Add(new UseCaseDocumentBridge
+                            {
+                                UseCaseId = target.Id,
+                                Document = document
+                            });
+
+                            documentManager.SaveFileContent(document.Id, memoryStream.ToArray(), document.ContentType);
+
+                            useCaseRepository.Update(target, User.Identity.Name);
+                        }
+
+                        SetDefaultNotification(NotificationType.Success, GetCreationSuccessMessage());
+
+                        return RedirectToAction("editusecasedocuments", new { key = entity.Id, id = target.Id });
+                    }
+                    catch (SAPRESSC.Core.Web.Frontend.InvalidModelException e)
+                    {
+                        ModelState.AddModelError(e.ModelKey, e.ErrorMessage);
+                    }
+                }
+
+                SetDefaultNotification(NotificationType.Danger, GetInvalidMessage());
+
+                return RedirectToAction("editusecases", new { key = entity.Id });
+            }
+            catch (System.Exception e)
+            {
+                logger.LogError(e.InnerException, e.Message);
+            }
+
+            SetDefaultNotification(NotificationType.Danger, GetNotFoundMessage());
+
+            return GetDefaultActionResult();
+        }
+
+        [HttpPost]
+        [Route("edit/{key}/usecases/{id}/documents/remove")]
+        [ValidateAntiForgeryToken]
+        [RequirePermissions(Constants.Permission.PrototypeEditor)]
+        public IActionResult RemoveUseCaseDocument(System.Guid key, System.Guid id, System.Guid documentId)
+        {
+            try
+            {
+                var target = useCaseRepository.Get(id);
+
+                if (key != target.PrototypeId)
+                {
+                    throw new System.InvalidOperationException();
+                }
+
+                var entity = Repository.Get(key);
+
+                var bridge = target.DocumentBridges.First(b => b.DocumentId == documentId);
+
+                target.DocumentBridges.Remove(bridge);
+
+                useCaseRepository.Update(target, User.Identity.Name);
+
+                try
+                {
+                    documentManager.DeleteFile(bridge.Document);
+                }
+                catch { }
+
+                SetDefaultNotification(NotificationType.Success, GetDeletionSuccessMessage());
+
+                return RedirectToAction("editusecasedocuments", new { key = entity.Id, id = target.Id });
+            }
+            catch (Microsoft.EntityFrameworkCore.DbUpdateException e)
+            {
+                logger.LogError(e.InnerException, e.Message);
+
+                SetDefaultNotification(NotificationType.Warning, GetOnDeletionDependecyConstrainErrorMessage());
+
+                return RedirectToAction("editusecasedocuments", new { key, id });
+            }
+            catch (System.Exception e)
+            {
+                logger.LogError(e.InnerException, e.Message);
+            }
+
+            SetDefaultNotification(NotificationType.Danger, GetNotFoundMessage());
+
+            return GetSuccessDeleteActionResult();
+        }
+
+        [HttpPost]
+        [Route("edit/{key}/usecases/{tid}/documents/edit")]
+        [ValidateAntiForgeryToken]
+        [RequirePermissions(Constants.Permission.PrototypeEditor)]
+        public IActionResult EditUseCaseDocument(System.Guid key, System.Guid tid, DocumentInputViewModel modelInput)
+        {
+            ModelState.ClearValidationState("File");
+            ModelState.MarkFieldValid("File");
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var target = useCaseRepository.Get(tid);
+
+                    if (key != target.PrototypeId)
+                    {
+                        throw new System.InvalidOperationException();
+                    }
+
+                    var entity = Repository.Get(key);
+
+                    try
+                    {
+                        var bridge = target.DocumentBridges.First(b => b.DocumentId == modelInput.Id);
+
+                        bridge.Document.Name = modelInput.Name;
+                        bridge.Document.Description = modelInput.Description;
+
+                        useCaseRepository.Update(target, User.Identity.Name);
+
+                        SetDefaultNotification(NotificationType.Success, GetEditionSuccessMessage());
+
+                        return RedirectToAction("editusecasedocuments", new { key = entity.Id, id = target.Id });
+                    }
+                    catch (SAPRESSC.Core.Web.Frontend.InvalidModelException e)
+                    {
+                        ModelState.AddModelError(e.ModelKey, e.ErrorMessage);
+                    }
+
+                    SetDefaultNotification(NotificationType.Danger, GetInvalidMessage());
+
+                    return RedirectToAction("editusecasedocuments", new { key, id = tid });
+                }
+                catch (System.Exception e)
+                {
+                    logger.LogError(e.InnerException, e.Message);
+                }
+            }
+
+            SetDefaultNotification(notificationType: NotificationType.Danger, GetNotFoundMessage());
+
+            return GetDefaultActionResult();
+        }
+
+        #endregion
 
         #endregion
     }
