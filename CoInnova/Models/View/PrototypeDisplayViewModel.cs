@@ -1,10 +1,22 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using MOROPO.SAPRESSC.Middleware.Media.Web.Common.Extensions;
+using MOROPO.UIC.CoInnova.Persistence.Entities;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace MOROPO.UIC.CoInnova.Models.View
 {
     public class PrototypeDisplayViewModel : SAPRESSC.Core.Persistence.Models.IEntityDisplayModel<Persistence.Entities.Prototype, System.Guid>
     {
         public System.Guid Id { get; set; }
+
+        public Guid ImageId { get; set; }
+
+        public string ImageExtension { get; set; }
+
+        [Display(Name = "Name")]
+        public string Name { get; set; }
 
         [Display(Name = "CreatedAt")]
         public System.DateTime CreatedAt { get; set; }

@@ -36,6 +36,7 @@ namespace MOROPO.UIC.CoInnova
         {
             services.Configure<Options.MediaThumbnailResizeOptions>(configuration.GetSection("MediaThumbnailResize"));
             services.Configure<SAPRESSC.Middleware.Media.Web.Common.Options.RelativeMediaFileManagementOptions>(configuration.GetSection("FileManagement"));
+            services.Configure<Models.View.PrototypeDisplayViewModel>(configuration.GetSection("prototypeDefault"));
 
             services.AddDbContext<Persistence.EF.ApplicationDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 

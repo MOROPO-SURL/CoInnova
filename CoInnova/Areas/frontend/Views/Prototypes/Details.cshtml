@@ -1,0 +1,143 @@
+﻿@using MOROPO.SAPRESSC.Middleware.Media.Web.Common.Extensions
+@model MOROPO.UIC.CoInnova.Models.View.PrototypeImagesViewModel
+
+@{
+    Layout = "_FrontendLayout";
+}
+
+@section styles{
+    <style type="text/css">
+        .future-image {
+            background-image: url("/img/black-background.jpg");
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+            //background-color: white;
+        }
+
+        .background-text {
+            color: white;
+            text-shadow: 0px 0px 6px #000000;
+        }
+
+        img {
+            width: 100%;
+            height: 100%;
+        }
+
+        dd a{
+            font-weight: 900;
+        }
+
+        dd a:hover{
+           color: #ff00bf;
+        }
+
+        .documents {
+            border: 1px solid rgb(0,0,0,0.1);
+            height: 100%;
+        }
+        
+    </style>
+}
+
+    <div class="future-image mb-3">
+        <div class="background-text">
+            <div class="row">
+                <div class="col-md-12 col-lg-6 offset-lg-6 p-4">
+                    <div class="row">
+                        <dl class="col-md-6">
+                            <dt>@Html.DisplayNameFor(model => model.Prototype.Title)</dt>
+                            <dd>@Html.DisplayFor(model => model.Prototype.Title)</dd>
+                        </dl>
+                        <dl class="col-md-6">
+                            <dt>@Html.DisplayNameFor(model => model.Prototype.CreatedAt)</dt>
+                            <dd>@Html.DisplayFor(model => model.Prototype.CreatedAt)</dd>
+                        </dl>
+                        <dl class="col-md-6">
+                            <dt>@Html.DisplayNameFor(model => model.Prototype.Level)</dt>
+                            <dd><a href="#">@Html.DisplayFor(model => model.Prototype.Level.Name)</a></dd>
+                        </dl>
+                        <dl class="col-md-6">
+                            <dt>@Html.DisplayNameFor(model => model.Prototype.Idea)</dt>
+                            <dd><a href="#">@Html.DisplayFor(model => model.Prototype.Idea.Title)</a></dd>
+                        </dl>
+                        <dl class="col-md-12">
+                            <dt>@Html.DisplayNameFor(model => model.Prototype.Description)</dt>
+                            <dd><p style="word-wrap: break-word;">@Html.DisplayFor(model => model.Prototype.Description)</p></dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<div class="row no-gutters">
+    <div class="col-lg-3 col-md-4 col-sm-6 pb-2">
+        
+        <div class="documents">
+            <h4>Documentos</h4>
+            <ul>
+                    <li>
+                        <a href="#">name1</a>
+                    </li>
+                    <li>
+                        <a href="#">name2</a>
+                    </li>
+                    <li>
+                        <a href="#">name3</a>
+                    </li>
+            </ul>
+            @{
+            /*
+            
+                <ul>
+                @if(Model.DocumentBridges == null){
+                    <li>
+                        <a href="#">name1</a>
+                    </li>
+                    <li>
+                        <a href="#">name2</a>
+                    </li>
+                    <li>
+                        <a href="#">name3</a>
+                    </li>
+                }else{
+                    foreach (var doc in Model.DocumentBridges)
+                    {
+                        <li>
+                            <a href="#">@doc.Document.Name</a>
+                        </li>
+                    }
+                }
+            </ul>
+                */
+            }
+        </div>
+    </div>
+    <div class="col-lg-9 col-md-8 col-sm-6 pl-3">
+        @if (Model.Images == null)
+        {
+            string[] picturesSrc = { "/img/car1.jpg", "/img/car2.jpg", "/img/car3.jpg", "/img/car4.jpg" };
+            Random rand = new Random();
+            <div class="card-columns">
+                @for (int i = 0; i < 13; i++)
+                {
+                    int number = rand.Next(0, 4);
+                    var src = picturesSrc[number];
+                    <div class="card">
+                        <img class="card-img" src=@src alt="Card image">
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            foreach (var item in Model.Images)
+            {
+                <div class="card">
+                    <img class="card-img" src=@item.Id.@item.Extension alt="Card image">
+                </div>
+            }
+        }
+    </div>
+</div>
