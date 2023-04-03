@@ -502,6 +502,36 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
             return GetSuccessDeleteActionResult();
         }
 
+        [HttpPost]
+        [Route("edit/{key}/images/featured")]
+        [ValidateAntiForgeryToken]
+        [RequirePermissions(Constants.Permission.PrototypeEditor)]
+        public IActionResult FeaturedImage(System.Guid key, System.Guid imageId)
+        {
+            try
+            {
+                var entity = Repository.Get(key);
+
+                var bridge = entity.ImageBridges.First(b => b.ImageId == imageId);
+
+                entity.FeatureImageId = bridge.ImageId;
+
+                Repository.Update(entity, User.Identity.Name);
+
+                SetDefaultNotification(NotificationType.Success, GetEditionSuccessMessage());
+
+                return RedirectToAction("editimages", new { key });
+            }
+            catch (System.Exception e)
+            {
+                logger.LogError(e.InnerException, e.Message);
+            }
+
+            SetDefaultNotification(NotificationType.Danger, GetNotFoundMessage());
+
+            return GetSuccessDeleteActionResult();
+        }
+
         #endregion
 
         #region Executors
