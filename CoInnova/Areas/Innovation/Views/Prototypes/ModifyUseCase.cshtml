@@ -64,7 +64,20 @@
     @Html.ValidationSummary(true)
 
     <div class="card mb-3">
-        <div class="card-header"><h4 class="mb-0">@ViewData["Title"]</h4></div>
+        <div class="card-header">
+            <h4>@ViewData["Title"]</h4>
+            <ul class="nav nav-tabs card-header-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">Generales</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="@Url.Action("editusecasedocuments", new { key = Model.Prototype.Id, id = Model.Id })">Documentos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="@Url.Action("editusecaseimages", new { key = Model.Prototype.Id, id = Model.Id })">Imágenes</a>
+                </li>
+            </ul>
+        </div>
 
         <div class="card-body">
             <div class="alert alert-dark mb-4">
@@ -108,7 +121,7 @@
         </div>
         <div class="card-footer">
             <button type="submit" class="btn btn-primary">Modificar</button>
-            <a class="btn btn-light" href="@Url.Action("index")">Cancelar</a>
+            <a class="btn btn-light" href="@Url.Action("editusecases", new { key = Model.Prototype.Id })">Regresar al listado</a>
         </div>
     </div>
 }
