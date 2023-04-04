@@ -3,13 +3,119 @@
 @{
     ViewData["Title"] = GlobalViewLocalizationHelper.Localize("Home", ViewLocalizer);
 
-    ViewData[BreadcrumbViewModel.BREADCRUMBS_MAP_KEY] = new List<BreadcrumbViewModel>
-    {
-        new BreadcrumbViewModel
-        {
-            Caption = "<span class=\"mdi mdi-home\"></span> " + ViewData["Title"].ToString()
-        }
-    };
-
     Layout = "_FrontendLayout";
 }
+
+@section styles{
+    <style type="text/css">
+        .hero-image {
+            background-image: linear-gradient(90deg, rgba(240, 240, 240) 7%, rgba(240, 240, 240, 0.8) 35%, rgba(240, 240, 240, 0) 60%), url("/img/joven-empresario.jpg");
+            background-repeat: no-repeat;
+            background-size: cover;
+            height: calc(100vh - 56px);
+        }
+
+        .push-image{
+            height: 100%;
+            background: #f0f0f0;
+            margin-right: -17px;
+            z-index: 10;
+            position: inherit;
+        }
+        .caption-hero{
+            position: absolute;
+            z-index: 12;
+            width: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .hero-title {
+            font-size: 4.5rem;
+            font-weight: 800;
+            margin-bottom: 30px;
+        }
+
+        .subtitle{
+            line-height: 30px;
+            font-weight: 600;
+        }
+        #hero-button{
+            margin-top: 40px;
+            display: inline-block;
+        }
+
+        #hero-button a{
+            text-transform: uppercase;
+            border: 0;
+            color: white;
+            padding: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            z-index:30;
+        }
+        #hero-button a:hover{
+            //background: green;
+            color: black;
+        }
+
+        .button-container{
+            display: grid;
+            position: relative;
+            background: white;
+        }
+
+        .button-container:hover div{
+            width: 0;
+            transition: width 0.6s;
+            transform-origin: 0 0;
+            transition-timing-function: cubic-bezier(0.5, 1.6, 0.4, 0.7);
+        }
+
+        .button-background{
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            width: 100%;
+            background: rgb(250, 0, 0);
+            transition: width 0.6s;
+            transform-origin: 0 0;
+            transition-timing-function: cubic-bezier(0.5, 1.6, 0.4, 0.7);
+        }
+    </style>
+}
+
+    <div class="">
+
+    <div class="row" style="background: #f0f0f0;">
+        <div class="caption-hero">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-8 col-lg-7 col-md-8">
+                        <h1 class="hero-title">Union de informaticos de Cuba</h1>
+                        <div class="row">
+                            <div class="col-xl-8 col-lg-9 col-md-8">
+                                <p class="subtitle">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                            </div>
+                        </div>
+                        <div id="hero-button">
+                            <div class="button-container">
+                                <div class="button-background"></div>
+                                <a>servicios</a>
+                            </div>
+                            
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="push-image">
+
+            </div>
+        </div>
+        <div class="col-md-8 hero-image"></div>
+    </div>
+</div>
