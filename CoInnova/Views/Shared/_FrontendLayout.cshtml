@@ -75,11 +75,8 @@
 </nav>
 
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-lg-2 col-md-3 bg-light" style="padding: 0;">
-            @await Component.InvokeAsync("DefaultSidebar")
-        </div>
-        <div role="main" class="col-lg-10 col-md-9 ml-sm-auto px-4" style="padding-top: 80px;">
+    <div class="">
+        <div role="main" class="" style="padding-top: 56px;">
             @if (ViewData[BreadcrumbViewModel.BREADCRUMBS_MAP_KEY] != null)
             {
                 <nav aria-label="breadcrumb">
