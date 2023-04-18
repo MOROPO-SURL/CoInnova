@@ -113,22 +113,22 @@ namespace MOROPO.UIC.CoInnova.Extensions
                     Area = "auxiliars",
                     Role = Constants.Permission.SphereViewer
                 },
-                new ManagementDashboardSectionViewModel
-                {
-                    Title = "Comentarios a Retos",
-                    Controller = "challangecomments",
-                    Action = "index",
-                    Area = "auxiliars",
-                    Role = Constants.Permission.ChallangeCommentViewer
-                },
-                new ManagementDashboardSectionViewModel
-                {
-                    Title = "Comentarios a Ideas",
-                    Controller = "ideacomments",
-                    Action = "index",
-                    Area = "auxiliars",
-                    Role = Constants.Permission.IdeaCommentViewer
-                }
+                //new ManagementDashboardSectionViewModel
+                //{
+                //    Title = "Comentarios a Retos",
+                //    Controller = "challangecomments",
+                //    Action = "index",
+                //    Area = "auxiliars",
+                //    Role = Constants.Permission.ChallangeCommentViewer
+                //},
+                //new ManagementDashboardSectionViewModel
+                //{
+                //    Title = "Comentarios a Ideas",
+                //    Controller = "ideacomments",
+                //    Action = "index",
+                //    Area = "auxiliars",
+                //    Role = Constants.Permission.IdeaCommentViewer
+                //}
             };
 
             return new Dictionary<string, ICollection<ManagementDashboardSectionViewModel>>
