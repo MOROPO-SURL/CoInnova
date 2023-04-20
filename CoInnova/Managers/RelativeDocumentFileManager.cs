@@ -7,9 +7,9 @@ namespace MOROPO.UIC.CoInnova.Managers
         private const string MEDIA_ROOT_DIRECTORY_NAME = "media";
         private const string DOCUMENTS_DIRECTORY_NAME = "documents";
 
-        private readonly Microsoft.AspNetCore.Hosting.IHostingEnvironment env;
+        private readonly Microsoft.AspNetCore.Hosting.IWebHostEnvironment env;
 
-        public RelativeDocumentFileManager(Microsoft.AspNetCore.Hosting.IHostingEnvironment env)
+        public RelativeDocumentFileManager(Microsoft.AspNetCore.Hosting.IWebHostEnvironment env)
         {
             this.env = env;
         }

@@ -1,17 +1,17 @@
-﻿using MOROPO.SAPRESSC.Core.Web.Backend.Models.View;
+﻿using MOROPO.Framework.Guama.Core.Presentation.Web.Backend.Models.View;
 using System.Collections.Generic;
 
 namespace MOROPO.UIC.CoInnova.Extensions
 {
     public static class ManagementDashboardSectionProviderEnumerableExtensions
     {
-        public static Dictionary<string, ICollection<ManagementDashboardSectionViewModel>> ToManagementDashboardSectionGroups(this IEnumerable<SAPRESSC.Core.Web.Backend.Providers.Facade.IManagementDashboardSectionProviderFacade> self)
+        public static Dictionary<string, ICollection<ManagementDashboardSectionViewModel>> ToManagementDashboardSectionGroups(this IEnumerable<Framework.Guama.Core.Presentation.Web.Backend.Providers.Facade.IManagementDashboardSectionProviderFacade> self)
         {
             var securitySections = new List<ManagementDashboardSectionViewModel>();
 
             foreach (var provider in self)
             {
-                if (provider is SAPRESSC.Middleware.Security.Identity.Web.Backend.Providers.ManagementDashboardSectionProvider)
+                if (provider is Framework.Guama.Security.Personal.Presentation.Web.Backend.Providers.ManagementDashboardSectionProvider)
                 {
                     securitySections.AddRange(provider.GetManagementDashboardSections());
                 }

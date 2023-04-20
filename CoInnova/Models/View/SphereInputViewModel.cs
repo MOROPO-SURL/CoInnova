@@ -1,6 +1,6 @@
 ﻿namespace MOROPO.UIC.CoInnova.Models.View
 {
-    public class SphereInputViewModel : SAPRESSC.Core.Persistence.Models.IEntityInputModel<Persistence.Entities.Sphere, System.Guid>
+    public class SphereInputViewModel : Framework.Guama.Core.Persistence.Presentation.Models.Contract.IEntityInputModel<Persistence.Entities.Sphere, System.Guid>
     {
         public System.Guid Id { get; set; }
 

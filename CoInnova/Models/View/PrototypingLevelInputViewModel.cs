@@ -2,7 +2,7 @@
 
 namespace MOROPO.UIC.CoInnova.Models.View
 {
-    public class PrototypingLevelInputViewModel : SAPRESSC.Core.Persistence.Models.IEntityInputModel<Persistence.Entities.PrototypingLevel, System.Guid>
+    public class PrototypingLevelInputViewModel : Framework.Guama.Core.Persistence.Presentation.Models.Contract.IEntityInputModel<Persistence.Entities.PrototypingLevel, System.Guid>
     {
         public PrototypingLevelInputViewModel()
         {

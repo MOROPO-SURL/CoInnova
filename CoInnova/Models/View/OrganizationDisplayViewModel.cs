@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using MOROPO.SAPRESSC.Middleware.Media.Web.Common.Extensions;
+using MOROPO.Framework.Guama.Media.Presentation.Web.Common.Extensions;
 
 namespace MOROPO.UIC.CoInnova.Models.View
 {
-    public class OrganizationDisplayViewModel : SAPRESSC.Core.Persistence.Models.IEntityDisplayModel<SAPRESSC.Middleware.Identity.Persistence.Entities.OrganizationIdentity, System.Guid>
+    public class OrganizationDisplayViewModel : Framework.Guama.Core.Persistence.Presentation.Models.Contract.IEntityDisplayModel<Framework.Guama.Identity.Persistence.Entities.OrganizationIdentity, System.Guid>
     {
         public System.Guid Id { get; set; }
 
@@ -20,7 +20,7 @@ namespace MOROPO.UIC.CoInnova.Models.View
 
         public string ImageExtension { get; set; }
 
-        public void Import(SAPRESSC.Middleware.Identity.Persistence.Entities.OrganizationIdentity entity)
+        public void Import(Framework.Guama.Identity.Persistence.Entities.OrganizationIdentity entity)
         {
             Id = entity.Id;
             Name = entity.Name;

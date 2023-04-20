@@ -1,4 +1,4 @@
-﻿using MOROPO.SAPRESSC.Core.Persistence.Repositories;
+﻿using MOROPO.Framework.Guama.Core.Persistence.Repositories;
 
 namespace MOROPO.UIC.CoInnova.Providers
 {

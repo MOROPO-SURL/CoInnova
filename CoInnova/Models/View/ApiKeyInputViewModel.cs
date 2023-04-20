@@ -1,10 +1,10 @@
-﻿using MOROPO.SAPRESSC.Core.Common.Models.View;
+﻿using MOROPO.Framework.Guama.Core.Presentation.Models.View;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace MOROPO.UIC.CoInnova.Models.View
 {
-    public class ApiKeyInputViewModel : SAPRESSC.Core.Persistence.Models.IEntityInputModel<Persistence.Entities.ApiKey, System.Guid>
+    public class ApiKeyInputViewModel : Framework.Guama.Core.Persistence.Presentation.Models.Contract.IEntityInputModel<Persistence.Entities.ApiKey, System.Guid>
     {
         public ApiKeyInputViewModel()
         {

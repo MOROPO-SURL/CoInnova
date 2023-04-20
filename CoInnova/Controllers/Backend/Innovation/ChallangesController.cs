@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using MOROPO.SAPRESSC.Core.Persistence.Repositories;
-using MOROPO.SAPRESSC.Core.Web.Security.Attributes;
+using MOROPO.Framework.Guama.Core.Persistence.Repositories;
+using MOROPO.Framework.Guama.Core.Presentation.Web.Security.Attributes;
 using MOROPO.UIC.CoInnova.Models.View;
 using MOROPO.UIC.CoInnova.Persistence.Entities;
 using System.Linq;
@@ -9,9 +9,9 @@ using System.Linq;
 namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
 {
     [Microsoft.AspNetCore.Authorization.Authorize]
-    [RequirePermissions(SAPRESSC.Core.Security.Common.Web.Backend.Constants.Permission.ShellManager)]
+    [RequirePermissions(Framework.Guama.Core.Security.Presentation.Constants.Permissions.ShellManager)]
     [Area("innovation")]
-    public class ChallangesController : SAPRESSC.Core.Web.Backend.Controllers.AbstractEntityManagementController<Challange, System.Guid, ChallangeInputViewModel, ChallangeDisplayViewModel>
+    public class ChallangesController : Framework.Guama.Core.Presentation.Web.Backend.Controllers.AbstractEntityManagementController<Challange, System.Guid, ChallangeInputViewModel, ChallangeDisplayViewModel>
     {
         private readonly IEntityRepository<ChallangeWorkflow, System.Guid> challangeWorkflowRepository;
 

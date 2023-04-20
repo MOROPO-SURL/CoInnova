@@ -1,6 +1,6 @@
 ﻿namespace MOROPO.UIC.CoInnova.Persistence.Entities
 {
-    public class IdeaComment : SAPRESSC.Core.Persistence.Entities.IEntity<long>
+    public class IdeaComment : Framework.Guama.Core.Persistence.Entities.Contract.IEntity<long>
     {
         public IdeaComment()
         {
@@ -13,7 +13,7 @@
         public System.DateTime CreatedAt { get; set; }
 
         [System.ComponentModel.DataAnnotations.Schema.ForeignKey("AuthorId")]
-        public SAPRESSC.Middleware.Security.Identity.Persistence.Entities.User Author { get; set; }
+        public Framework.Guama.Security.Personal.Persistence.Entities.User Author { get; set; }
         [System.ComponentModel.DataAnnotations.Required]
         public string AuthorId { get; set; }
 

@@ -1,12 +1,12 @@
 ﻿namespace MOROPO.UIC.CoInnova.Models.View
 {
-    public class CollaboratorDisplayViewModel : SAPRESSC.Core.Persistence.Models.IEntityDisplayModel<Persistence.Entities.Collaborator, System.Guid>
+    public class CollaboratorDisplayViewModel : Framework.Guama.Core.Persistence.Presentation.Models.Contract.IEntityDisplayModel<Persistence.Entities.Collaborator, System.Guid>
     {
         public System.Guid Id { get; set; }
 
         public System.DateTime CreatedAt { get; set; }
 
-        public SAPRESSC.Middleware.Security.Identity.Web.Backend.Models.View.UserDisplayViewModel User { get; set; }
+        public Framework.Guama.Security.Personal.Presentation.Web.Backend.Models.View.UserDisplayViewModel User { get; set; }
 
         public OrganizationDisplayViewModel OrganizationIdentity { get; set; }
 
@@ -14,7 +14,7 @@
         {
             Id = entity.Id;
             CreatedAt = entity.CreatedAt;
-            User = new SAPRESSC.Middleware.Security.Identity.Web.Backend.Models.View.UserDisplayViewModel();
+            User = new Framework.Guama.Security.Personal.Presentation.Web.Backend.Models.View.UserDisplayViewModel();
 
             User.Import(entity.User);
 

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MOROPO.SAPRESSC.Core.Persistence.Repositories;
-using MOROPO.SAPRESSC.Core.Security.Common.Persistence.Entities;
-using MOROPO.SAPRESSC.Core.Web.Security.Attributes;
+using MOROPO.Framework.Guama.Core.Persistence.Repositories;
+using MOROPO.Framework.Guama.Core.Presentation.Web.Security.Attributes;
+using MOROPO.Framework.Guama.Core.Security.Common.Persistence.Entities;
 using MOROPO.UIC.CoInnova.Models.View;
 using MOROPO.UIC.CoInnova.Persistence.Entities;
 using System.Linq;
@@ -9,9 +9,9 @@ using System.Linq;
 namespace MOROPO.UIC.CoInnova.Controllers.Backend.Security
 {
     [Microsoft.AspNetCore.Authorization.Authorize]
-    [RequirePermissions(SAPRESSC.Core.Security.Common.Web.Backend.Constants.Permission.ShellManager)]
+    [RequirePermissions(Framework.Guama.Core.Security.Presentation.Constants.Permissions.ShellManager)]
     [Area("security")]
-    public class ApiKeysController : SAPRESSC.Core.Web.Backend.Controllers.AbstractHabilitableEntityManagementController<ApiKey, System.Guid, ApiKeyInputViewModel, ApiKeyDisplayViewModel>
+    public class ApiKeysController : Framework.Guama.Core.Presentation.Web.Backend.Controllers.AbstractHabilitableEntityManagementController<ApiKey, System.Guid, ApiKeyInputViewModel, ApiKeyDisplayViewModel>
     {
         private readonly IEntityRepository<Permission, int> permissionRepository;
 
@@ -78,23 +78,23 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Security
         {
             var unfamiliedPermissions = permissionRepository.FindBy(item => item.Family == null).ToArray();
 
-            modelInput.UngroupedSelectablePermissions = unfamiliedPermissions.Select(item => new SAPRESSC.Core.Common.Models.View.SelectionDescriptedItemInputViewModel<int>
+            modelInput.UngroupedSelectablePermissions = unfamiliedPermissions.Select(item => new Framework.Guama.Core.Presentation.Models.View.SelectionDescriptedItemInputViewModel<int>
             {
                 Id = item.Id,
-                Selected = entity != null && entity.PermissionBridges.Any(e => e.PermissionId.Equals(item.Id)),
+                Selected = entity != null && entity.PermissionBridges.Any(e => e.SternId.Equals(item.Id)),
                 Label = item.Name,
                 Description = item.Description
             }).ToArray();
 
             var familiedPermissionGroups = permissionRepository.FindBy(item => item.Family != null).GroupBy(item => item.Family).ToArray();
 
-            modelInput.GroupedSelectablePermissions = familiedPermissionGroups.Select(item => new System.Collections.Generic.KeyValuePair<string, SAPRESSC.Core.Common.Models.View.SelectionDescriptedItemInputViewModel<int>[]>
+            modelInput.GroupedSelectablePermissions = familiedPermissionGroups.Select(item => new System.Collections.Generic.KeyValuePair<string, Framework.Guama.Core.Presentation.Models.View.SelectionDescriptedItemInputViewModel<int>[]>
             (
                 item.Key,
-                item.Select(it3m => new SAPRESSC.Core.Common.Models.View.SelectionDescriptedItemInputViewModel<int>
+                item.Select(it3m => new Framework.Guama.Core.Presentation.Models.View.SelectionDescriptedItemInputViewModel<int>
                 {
                     Id = it3m.Id,
-                    Selected = entity != null && entity.PermissionBridges.Any(e => e.PermissionId.Equals(it3m.Id)),
+                    Selected = entity != null && entity.PermissionBridges.Any(e => e.SternId.Equals(it3m.Id)),
                     Label = it3m.Name,
                     Description = it3m.Description
                 }).ToArray()
@@ -133,7 +133,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Security
         {
             base.PostCreate(entity, modelInput);
 
-            entity.PermissionBridges = modelInput.UngroupedSelectablePermissions.Where(item => item.Selected).Select(item => new ApiKeyPermissionBridge { PermissionId = item.Id, ApiKey = entity }).ToList();
+            entity.PermissionBridges = modelInput.UngroupedSelectablePermissions.Where(item => item.Selected).Select(item => new ApiKeyPermissionBridge { SternId = item.Id, Prow = entity }).ToList();
         }
 
         protected override void PreEdit(ApiKey entity, ApiKeyInputViewModel modelInput)
@@ -142,7 +142,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Security
 
             entity.PermissionBridges.Clear();
 
-            entity.PermissionBridges = modelInput.UngroupedSelectablePermissions.Where(item => item.Selected).Select(item => new ApiKeyPermissionBridge { PermissionId = item.Id, ApiKeyId = entity.Id }).ToList();
+            entity.PermissionBridges = modelInput.UngroupedSelectablePermissions.Where(item => item.Selected).Select(item => new ApiKeyPermissionBridge { SternId = item.Id, ProwId = entity.Id }).ToList();
         }
     }
 }

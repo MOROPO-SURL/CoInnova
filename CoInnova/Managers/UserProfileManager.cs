@@ -1,12 +1,12 @@
-﻿using MOROPO.SAPRESSC.Core.Persistence.Repositories;
-using MOROPO.SAPRESSC.Middleware.Media.Persistence.Entities;
-using MOROPO.SAPRESSC.Middleware.Media.Web.Common.Extensions;
-using MOROPO.SAPRESSC.Middleware.Media.Web.Common.Managers.Facade;
-using MOROPO.SAPRESSC.Middleware.Security.Identity.Persistence.Entities;
+﻿using MOROPO.Framework.Guama.Core.Persistence.Repositories;
+using MOROPO.Framework.Guama.Media.Persistence.Entities;
+using MOROPO.Framework.Guama.Media.Presentation.Web.Common.Extensions;
+using MOROPO.Framework.Guama.Media.Presentation.Web.Common.Managers.Facade;
+using MOROPO.Framework.Guama.Security.Personal.Persistence.Entities;
 
 namespace MOROPO.UIC.CoInnova.Managers
 {
-    public class UserProfileManager : SAPRESSC.Core.Web.Security.Managers.Facade.IUserProfileManagerFacade
+    public class UserProfileManager : Framework.Guama.Core.Presentation.Web.Security.Managers.Facade.IUserProfileManagerFacade
     {
         private readonly IEntityRepository<User, string> userRepository;
         private readonly IEntityRepository<Image, System.Guid> imageRepository;
@@ -19,7 +19,7 @@ namespace MOROPO.UIC.CoInnova.Managers
             this.imageFileManager = imageFileManager;
         }
 
-        public SAPRESSC.Core.Web.Security.Models.View.Contrat.IUserProfileViewModel GetUserProfile(string username)
+        public Framework.Guama.Core.Presentation.Web.Security.Models.View.Contrat.IUserProfileViewModel GetUserProfile(string username)
         {
             Models.View.UserProfileViewModel result = null;
 
@@ -45,7 +45,7 @@ namespace MOROPO.UIC.CoInnova.Managers
             return result;
         }
 
-        public void PreValidateUserProfile(string username, SAPRESSC.Core.Web.Security.Models.View.Contrat.IUserProfileViewModel profileModel, Microsoft.AspNetCore.Mvc.Controller controller)
+        public void PreValidateUserProfile(string username, Framework.Guama.Core.Presentation.Web.Security.Models.View.Contrat.IUserProfileViewModel profileModel, Microsoft.AspNetCore.Mvc.Controller controller)
         {
             controller.ModelState.ClearValidationState("ImageFile");
             controller.ModelState.MarkFieldValid("ImageFile");
@@ -65,7 +65,7 @@ namespace MOROPO.UIC.CoInnova.Managers
             }
         }
 
-        public void UpdateUserProfile(string username, SAPRESSC.Core.Web.Security.Models.View.Contrat.IUserProfileViewModel profileModel)
+        public void UpdateUserProfile(string username, Framework.Guama.Core.Presentation.Web.Security.Models.View.Contrat.IUserProfileViewModel profileModel)
         {
             var concreteProfileModel = profileModel as Models.View.UserProfileViewModel;
 

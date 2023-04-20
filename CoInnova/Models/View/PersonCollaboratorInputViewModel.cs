@@ -1,6 +1,6 @@
 ﻿namespace MOROPO.UIC.CoInnova.Models.View
 {
-    public class PersonCollaboratorInputViewModel : SAPRESSC.Core.Persistence.Models.IEntityInputModel<Persistence.Entities.Collaborator, System.Guid>
+    public class PersonCollaboratorInputViewModel : Framework.Guama.Core.Persistence.Presentation.Models.Contract.IEntityInputModel<Persistence.Entities.Collaborator, System.Guid>
     {
         public System.Guid Id { get; set; }
 

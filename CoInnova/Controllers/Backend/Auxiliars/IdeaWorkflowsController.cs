@@ -1,17 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
-using MOROPO.SAPRESSC.Core.Persistence.Repositories;
-using MOROPO.SAPRESSC.Core.Web.Security.Attributes;
+using MOROPO.Framework.Guama.Core.Persistence.Repositories;
+using MOROPO.Framework.Guama.Core.Presentation.Web.Security.Attributes;
 using MOROPO.UIC.CoInnova.Models.View;
 using MOROPO.UIC.CoInnova.Persistence.Entities;
 
 namespace MOROPO.UIC.CoInnova.Controllers.Backend.Auxiliars
 {
     [Microsoft.AspNetCore.Authorization.Authorize]
-    [RequirePermissions(SAPRESSC.Core.Security.Common.Web.Backend.Constants.Permission.ShellManager)]
+    [RequirePermissions(Framework.Guama.Core.Security.Presentation.Constants.Permissions.ShellManager)]
     [Area("auxiliars")]
-    public class IdeaWorkflowsController : SAPRESSC.Core.Web.Backend.Controllers.AbstractEntityManagementController<IdeaWorkflow, System.Guid, IdeaWorkflowInputViewModel, IdeaWorkflowDisplayViewModel>
+    public class IdeaWorkflowsController : Framework.Guama.Core.Presentation.Web.Backend.Controllers.AbstractEntityManagementController<IdeaWorkflow, System.Guid, IdeaWorkflowInputViewModel, IdeaWorkflowDisplayViewModel>
     {
         private readonly IEntityRepository<IdeaWorkflowStep, System.Guid> stepRepository;
 
@@ -144,17 +144,17 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Auxiliars
 
                         stepRepository.Update(lastStep, User.Identity.Name);
 
-                        SetDefaultNotification(SAPRESSC.Core.Common.Models.View.NotificationType.Success, GetCreationSuccessMessage());
+                        SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Success, GetCreationSuccessMessage());
 
                         return RedirectToAction("steps", new { key = entity.Id });
                     }
-                    catch (SAPRESSC.Core.Web.Frontend.InvalidModelException e)
+                    catch (Framework.Guama.Core.Presentation.Web.Frontend.InvalidModelException e)
                     {
                         ModelState.AddModelError(e.ModelKey, e.ErrorMessage);
                     }
                 }
 
-                SetDefaultNotification(SAPRESSC.Core.Common.Models.View.NotificationType.Danger, GetInvalidMessage());
+                SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Danger, GetInvalidMessage());
 
                 return RedirectToAction("steps", new { key = entity.Id });
             }
@@ -163,7 +163,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Auxiliars
                 logger.LogError(e.InnerException, e.Message);
             }
 
-            SetDefaultNotification(SAPRESSC.Core.Common.Models.View.NotificationType.Danger, GetNotFoundMessage());
+            SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Danger, GetNotFoundMessage());
 
             return GetDefaultActionResult();
         }

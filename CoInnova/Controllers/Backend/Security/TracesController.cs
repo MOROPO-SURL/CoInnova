@@ -1,17 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MOROPO.SAPRESSC.Core.Persistence.EF.Entities;
-using MOROPO.SAPRESSC.Core.Persistence.Repositories;
-using MOROPO.SAPRESSC.Core.Web.Security.Attributes;
+using MOROPO.Framework.Guama.Core.Persistence.ORM.EF.Entities;
+using MOROPO.Framework.Guama.Core.Presentation.Web.Security.Attributes;
 using MOROPO.UIC.CoInnova.Models.View;
 
 namespace MOROPO.UIC.CoInnova.Controllers.Backend.Security
 {
     [Microsoft.AspNetCore.Authorization.Authorize]
-    [RequirePermissions(SAPRESSC.Core.Security.Common.Web.Backend.Constants.Permission.ShellManager)]
+    [RequirePermissions(Framework.Guama.Core.Security.Presentation.Constants.Permissions.ShellManager)]
     [Area("security")]
-    public class TracesController : SAPRESSC.Core.Web.Backend.Controllers.AbstractEntityManagementFilteredController<Trace, long, TraceInputViewModel, TraceDisplayViewModel, Models.View.Filter.TracesFilterViewModel>
+    public class TracesController : Framework.Guama.Core.Presentation.Web.Backend.Controllers.AbstractEntityManagementFilteredController<Trace, long, TraceInputViewModel, TraceDisplayViewModel, Models.View.Filter.TracesFilterViewModel>
     {
-        public TracesController(IEntityRepository<Trace, long> repository, Microsoft.Extensions.Localization.IStringLocalizer<TracesController> localizer, Microsoft.Extensions.Logging.ILogger<TracesController> logger) : base(repository, localizer, logger)
+        public TracesController(Framework.Guama.Core.Persistence.Repositories.IEntityRepository<Trace, long> repository, Microsoft.Extensions.Localization.IStringLocalizer<TracesController> localizer, Microsoft.Extensions.Logging.ILogger<TracesController> logger) : base(repository, localizer, logger)
         {
         }
 

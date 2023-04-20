@@ -1,6 +1,6 @@
 ﻿namespace MOROPO.UIC.CoInnova.Persistence.Entities
 {
-    public class Challange : SAPRESSC.Core.Persistence.Entities.IEntity<System.Guid>
+    public class Challange : Framework.Guama.Core.Persistence.Entities.Contract.IEntity<System.Guid>
     {
         public Challange()
         {
@@ -27,7 +27,7 @@
         public System.Guid? WorkflowId { get; set; }
 
         [System.ComponentModel.DataAnnotations.Schema.ForeignKey("FeatureImageId")]
-        public SAPRESSC.Middleware.Media.Persistence.Entities.Image FeatureImage { get; set; }
+        public Framework.Guama.Media.Persistence.Entities.Image FeatureImage { get; set; }
         public System.Guid? FeatureImageId { get; set; }
 
         public virtual System.Collections.Generic.List<ChallangeCollaboratorBridge> CollaboratorBridges { get; set; }

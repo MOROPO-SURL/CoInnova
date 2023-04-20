@@ -2,7 +2,7 @@
 
 namespace MOROPO.UIC.CoInnova.Models.View
 {
-    public class PrototypingLevelDisplayViewModel : SAPRESSC.Core.Persistence.Models.IEntityDisplayModel<Persistence.Entities.PrototypingLevel, System.Guid>
+    public class PrototypingLevelDisplayViewModel : Framework.Guama.Core.Persistence.Presentation.Models.Contract.IEntityDisplayModel<Persistence.Entities.PrototypingLevel, System.Guid>
     {
         public System.Guid Id { get; set; }
 

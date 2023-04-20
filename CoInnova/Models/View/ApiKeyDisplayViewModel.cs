@@ -2,7 +2,7 @@
 
 namespace MOROPO.UIC.CoInnova.Models.View
 {
-    public class ApiKeyDisplayViewModel : SAPRESSC.Core.Persistence.Models.IEntityDisplayModel<Persistence.Entities.ApiKey, System.Guid>
+    public class ApiKeyDisplayViewModel : Framework.Guama.Core.Persistence.Presentation.Models.Contract.IEntityDisplayModel<Persistence.Entities.ApiKey, System.Guid>
     {
         public System.Guid Id { get; set; }
 
@@ -22,9 +22,9 @@ namespace MOROPO.UIC.CoInnova.Models.View
         public string Host { get; set; }
 
         [Display(Name = "Permissions")]
-        public SAPRESSC.Core.Security.Common.Persistence.Entities.Permission[] UngroupedPermissions { get; set; }
+        public Framework.Guama.Core.Security.Common.Persistence.Entities.Permission[] UngroupedPermissions { get; set; }
 
-        public System.Collections.Generic.KeyValuePair<string, SAPRESSC.Core.Security.Common.Persistence.Entities.Permission[]>[] GroupedPermissions { get; set; }
+        public System.Collections.Generic.KeyValuePair<string, Framework.Guama.Core.Security.Common.Persistence.Entities.Permission[]>[] GroupedPermissions { get; set; }
 
         public void Import(Persistence.Entities.ApiKey entity)
         {

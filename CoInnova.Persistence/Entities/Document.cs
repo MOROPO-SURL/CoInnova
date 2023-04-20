@@ -1,6 +1,6 @@
 ﻿namespace MOROPO.UIC.CoInnova.Persistence.Entities
 {
-    public class Document : SAPRESSC.Core.Persistence.Entities.INamedEntity<System.Guid>
+    public class Document : Framework.Guama.Core.Persistence.Entities.Contract.INamedEntity<System.Guid>
     {
         public Document()
         {
@@ -21,7 +21,7 @@
         public string Description { get; set; }
 
         [System.ComponentModel.DataAnnotations.Schema.ForeignKey("ThumbnailId")]
-        public SAPRESSC.Middleware.Media.Persistence.Entities.Thumbnail Thumbnail { get; set; }
+        public Framework.Guama.Media.Persistence.Entities.Thumbnail Thumbnail { get; set; }
         public System.Guid? ThumbnailId { get; set; }
     }
 }

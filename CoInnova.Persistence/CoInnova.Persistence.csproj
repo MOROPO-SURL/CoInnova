@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SAPRESSC.Middleware.Security.Identity.Persistence" Version="2.2.6.6" />
+    <PackageReference Include="GuamaFramework.Security.Personal.Persistence" Version="6.0.0.9" />
   </ItemGroup>
 
 </Project>

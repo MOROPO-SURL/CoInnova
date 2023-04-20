@@ -1,6 +1,6 @@
 ﻿namespace MOROPO.UIC.CoInnova.Persistence.Entities
 {
-    public class ChallangeWorkflowIteration : SAPRESSC.Core.Persistence.Entities.IEntity<System.Guid>
+    public class ChallangeWorkflowIteration : Framework.Guama.Core.Persistence.Entities.Contract.IEntity<System.Guid>
     {
         public ChallangeWorkflowIteration()
         {

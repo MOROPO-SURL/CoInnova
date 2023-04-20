@@ -1,13 +1,13 @@
-﻿namespace MOROPO.UIC.CoInnova.Persistence.Entities
+﻿using MOROPO.Framework.Guama.Media.Persistence.Entities;
+
+namespace MOROPO.UIC.CoInnova.Persistence.Entities
 {
-    public class PrototypeImageBridge
+    public class PrototypeImageBridge : Framework.Guama.Core.Persistence.Entities.Contract.IBridge<Prototype, System.Guid, Image, System.Guid>
     {
-        public System.Guid PrototypeId { get; set; }
+        public System.Guid ProwId { get; set; }
+        public Prototype Prow { get; set; }
 
-        public System.Guid ImageId { get; set; }
-
-        public Prototype Prototype { get; set; }
-
-        public SAPRESSC.Middleware.Media.Persistence.Entities.Image Image { get; set; }
+        public System.Guid SternId { get; set; }
+        public Image Stern { get; set; }
     }
 }

@@ -1,13 +1,13 @@
-﻿using MOROPO.SAPRESSC.Core.Security.Common.Persistence.EF.Extensions;
+﻿using MOROPO.Framework.Guama.Core.Security.Common.Persistence.ORM.EF.Extensions;
 using System.Linq;
 
 namespace MOROPO.UIC.CoInnova.Helpers
 {
-    public class DataInitializationHelper : SAPRESSC.Core.Persistence.EF.Helpers.Facade.IDataInitializationHelper
+    public class DataInitializationHelper : Framework.Guama.Core.Persistence.ORM.EF.Helpers.Facade.IDataInitializationHelper
     {
         public void InitialiseData(Microsoft.EntityFrameworkCore.DbContext dbContext)
         {
-            var permissionDbSet = dbContext.Set<SAPRESSC.Core.Security.Common.Persistence.Entities.Permission>();
+            var permissionDbSet = dbContext.Set<Framework.Guama.Core.Security.Common.Persistence.Entities.Permission>();
 
             #region ApiKey
 
@@ -240,9 +240,9 @@ namespace MOROPO.UIC.CoInnova.Helpers
                 permissionDbSet.Add(Constants.Permission.TraceViewer.ToPermissionEntity());
             }
 
-            if (dbContext is SAPRESSC.Core.Persistence.EF.Context.ITraceableDbContext)
+            if (dbContext is Framework.Guama.Core.Persistence.ORM.EF.Context.Contract.ITraceableDbContext)
             {
-                (dbContext as SAPRESSC.Core.Persistence.EF.Context.ITraceableDbContext).SaveChanges("system");
+                (dbContext as Framework.Guama.Core.Persistence.ORM.EF.Context.Contract.ITraceableDbContext).SaveChanges("system");
             }
             else
             {

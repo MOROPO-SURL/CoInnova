@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MOROPO.SAPRESSC.Core.Persistence.Repositories;
-using MOROPO.SAPRESSC.Middleware.Security.Identity.Persistence.Entities;
+using MOROPO.Framework.Guama.Core.Persistence.Repositories;
+using MOROPO.Framework.Guama.Security.Personal.Persistence.Entities;
 using MOROPO.UIC.CoInnova.Persistence.Entities;
 using System.Linq;
 

@@ -1,9 +1,9 @@
-﻿using MOROPO.SAPRESSC.Middleware.Media.Web.Common.Extensions;
+﻿using MOROPO.Framework.Guama.Media.Presentation.Web.Common.Extensions;
 using System.ComponentModel.DataAnnotations;
 
 namespace MOROPO.UIC.CoInnova.Models.View
 {
-    public class PrototypeDisplayViewModel : SAPRESSC.Core.Persistence.Models.IEntityDisplayModel<Persistence.Entities.Prototype, System.Guid>
+    public class PrototypeDisplayViewModel : Framework.Guama.Core.Persistence.Presentation.Models.Contract.IEntityDisplayModel<Persistence.Entities.Prototype, System.Guid>
     {
         public System.Guid Id { get; set; }
 

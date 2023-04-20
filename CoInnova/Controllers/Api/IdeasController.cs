@@ -1,17 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MOROPO.SAPRESSC.Core.Common.Models;
+using MOROPO.Framework.Guama.Core.Presentation.Models;
 using MOROPO.UIC.CoInnova.Models.Api;
 using MOROPO.UIC.CoInnova.Persistence.Entities;
 
-namespace MOROPO.UIC.CoInnova.Controllers.Api
+namespace MOROPO.UIC.CoInnova.Controllers.API
 {
     [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = SmartSolucionesCuba.AspNetCore.Authentication.ApiKey.ApiKeyAuthenticationDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     [Swashbuckle.AspNetCore.Annotations.SwaggerTag("Idea's endpoints.")]
-    public class IdeasController : SAPRESSC.Core.Web.Api.Controllers.AbstractEntityApiConsultController<Idea, System.Guid, IdeaDisplayApiModel>
+    public class IdeasController : Framework.Guama.Core.Presentation.Web.API.Controllers.AbstractEntityApiConsultController<Idea, System.Guid, IdeaDisplayApiModel>
     {
-        public IdeasController(SAPRESSC.Core.Persistence.Repositories.IEntityRepository<Idea, System.Guid> repository, Microsoft.Extensions.Localization.IStringLocalizer<IdeasController> localizer, Microsoft.Extensions.Logging.ILogger<IdeasController> logger) : base(repository, localizer, logger)
+        public IdeasController(Framework.Guama.Core.Persistence.Repositories.IEntityRepository<Idea, System.Guid> repository, Microsoft.Extensions.Localization.IStringLocalizer<IdeasController> localizer, Microsoft.Extensions.Logging.ILogger<IdeasController> logger) : base(repository, localizer, logger)
         {
         }
 

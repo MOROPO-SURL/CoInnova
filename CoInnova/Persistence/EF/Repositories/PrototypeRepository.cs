@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace MOROPO.UIC.CoInnova.Persistence.EF.Repositories
 {
-    public class PrototypeRepository : SAPRESSC.Core.Persistence.EF.Repositories.AbstractEntityRepository<Entities.Prototype, System.Guid>
+    public class PrototypeRepository : Framework.Guama.Core.Persistence.ORM.EF.Repositories.AbstractEntityRepository<Entities.Prototype, System.Guid>
     {
         public PrototypeRepository(DbContext dbContext) : base(dbContext)
         {
@@ -17,8 +17,8 @@ namespace MOROPO.UIC.CoInnova.Persistence.EF.Repositories
                 .Include(entity => entity.Idea)
                 .Include(entity => entity.InnovationAgent).ThenInclude(entity => entity.User).ThenInclude(entity => entity.Identity)
                 .Include(entity => entity.InnovationAgent).ThenInclude(entity => entity.OrganizationIdentity).ThenInclude(entity => entity.Image)
-                .Include(entity => entity.DocumentBridges).ThenInclude(bridge => bridge.Document)
-                .Include(entity => entity.ImageBridges).ThenInclude(bridge => bridge.Image)
+                .Include(entity => entity.DocumentBridges).ThenInclude(bridge => bridge.Stern)
+                .Include(entity => entity.ImageBridges).ThenInclude(bridge => bridge.Stern)
                 .Include(entity => entity.CollaboratorBridges)
                 .Include(entity => entity.SphereBridges);
         }

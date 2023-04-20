@@ -1,8 +1,8 @@
-﻿using MOROPO.SAPRESSC.Middleware.Media.Web.Common.Extensions;
+﻿using MOROPO.Framework.Guama.Media.Presentation.Web.Common.Extensions;
 
 namespace MOROPO.UIC.CoInnova.Models
 {
-    public class ImageDisplayCommonModel : SAPRESSC.Core.Persistence.Models.IEntityDisplayModel<SAPRESSC.Middleware.Media.Persistence.Entities.Image, System.Guid>
+    public class ImageDisplayCommonModel : Framework.Guama.Core.Persistence.Presentation.Models.Contract.IEntityDisplayModel<Framework.Guama.Media.Persistence.Entities.Image, System.Guid>
     {
         public System.Guid Id { get; set; }
 
@@ -12,7 +12,7 @@ namespace MOROPO.UIC.CoInnova.Models
 
         public int Height { get; set; }
 
-        public void Import(SAPRESSC.Middleware.Media.Persistence.Entities.Image entity)
+        public void Import(Framework.Guama.Media.Persistence.Entities.Image entity)
         {
             Id = entity.Id;
             Extension = entity.ContentType.ContentTypeToExtension();

@@ -1,8 +1,6 @@
-﻿using MOROPO.SAPRESSC.Core.Persistence.EF.Entities;
-
-namespace MOROPO.UIC.CoInnova.Models.View
+﻿namespace MOROPO.UIC.CoInnova.Models.View
 {
-    public class TraceDisplayViewModel : SAPRESSC.Core.Persistence.Models.IEntityDisplayModel<Trace, long>
+    public class TraceDisplayViewModel : Framework.Guama.Core.Persistence.Presentation.Models.Contract.IEntityDisplayModel<Framework.Guama.Core.Persistence.ORM.EF.Entities.Trace, long>
     {
         public long Id { get; set; }
 
@@ -18,7 +16,7 @@ namespace MOROPO.UIC.CoInnova.Models.View
 
         public string AfterData { get; set; }
 
-        public void Import(Trace entity)
+        public void Import(Framework.Guama.Core.Persistence.ORM.EF.Entities.Trace entity)
         {
             Id = entity.Id;
             Type = entity.Type;

@@ -1,10 +1,10 @@
-﻿using MOROPO.SAPRESSC.Core.Web.Common.ComponentModel.DataAnnotations;
-using MOROPO.SAPRESSC.Middleware.Media.Web.Common.Extensions;
+﻿using MOROPO.Framework.Guama.Core.Presentation.Web.Common.ComponentModel.DataAnnotations;
+using MOROPO.Framework.Guama.Media.Presentation.Web.Common.Extensions;
 using System.ComponentModel.DataAnnotations;
 
 namespace MOROPO.UIC.CoInnova.Models.View
 {
-    public class OrganizationCollaboratorInputViewModel : SAPRESSC.Core.Persistence.Models.IEntityInputModel<Persistence.Entities.Collaborator, System.Guid>
+    public class OrganizationCollaboratorInputViewModel : Framework.Guama.Core.Persistence.Presentation.Models.Contract.IEntityInputModel<Persistence.Entities.Collaborator, System.Guid>
     {
         public System.Guid Id { get; set; }
 
@@ -42,7 +42,7 @@ namespace MOROPO.UIC.CoInnova.Models.View
         {
             var entity = new Persistence.Entities.Collaborator
             {
-                OrganizationIdentity = new SAPRESSC.Middleware.Identity.Persistence.Entities.OrganizationIdentity()
+                OrganizationIdentity = new Framework.Guama.Identity.Persistence.Entities.OrganizationIdentity()
             };
 
             Mergue(entity);

@@ -1,6 +1,6 @@
 ﻿namespace MOROPO.UIC.CoInnova.Persistence.Entities
 {
-    public class UseCase : SAPRESSC.Core.Persistence.Entities.IEntity<System.Guid>
+    public class UseCase : Framework.Guama.Core.Persistence.Entities.Contract.IEntity<System.Guid>
     {
         public UseCase()
         {
@@ -25,7 +25,7 @@
         public string About { get; set; }
 
         [System.ComponentModel.DataAnnotations.Schema.ForeignKey("FeatureImageId")]
-        public SAPRESSC.Middleware.Media.Persistence.Entities.Image FeatureImage { get; set; }
+        public Framework.Guama.Media.Persistence.Entities.Image FeatureImage { get; set; }
         public System.Guid? FeatureImageId { get; set; }
 
         public System.Collections.Generic.List<UseCaseImageBridge> ImageBridges { get; set; }

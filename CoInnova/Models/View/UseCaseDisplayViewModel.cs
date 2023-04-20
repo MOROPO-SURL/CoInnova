@@ -1,8 +1,8 @@
-﻿using MOROPO.SAPRESSC.Middleware.Media.Web.Common.Extensions;
+﻿using MOROPO.Framework.Guama.Media.Presentation.Web.Common.Extensions;
 
 namespace MOROPO.UIC.CoInnova.Models.View
 {
-    public class UseCaseDisplayViewModel : SAPRESSC.Core.Persistence.Models.IEntityDisplayModel<Persistence.Entities.UseCase, System.Guid>
+    public class UseCaseDisplayViewModel : Framework.Guama.Core.Persistence.Presentation.Models.Contract.IEntityDisplayModel<Persistence.Entities.UseCase, System.Guid>
     {
         public System.Guid Id { get; set; }
 

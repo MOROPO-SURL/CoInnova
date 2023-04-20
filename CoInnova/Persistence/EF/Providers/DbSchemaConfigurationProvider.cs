@@ -1,12 +1,12 @@
 ﻿namespace MOROPO.UIC.CoInnova.Persistence.EF.Providers
 {
-    public class DbSchemaConfigurationProvider : SAPRESSC.Core.Persistence.EF.Providers.Facade.IDbSchemaConfigurationProviderFacade
+    public class DbSchemaConfigurationProvider : Framework.Guama.Core.Persistence.ORM.EF.Providers.Facade.IDbSchemaConfigurationProviderFacade
     {
-        public System.Collections.Generic.ICollection<SAPRESSC.Core.Persistence.EF.Configurators.IEntityTypeConfigurator> EntityTypeConfigurators
+        public System.Collections.Generic.ICollection<Framework.Guama.Core.Persistence.ORM.EF.Configurators.IEntityTypeConfigurator> EntityTypeConfigurators
         {
             get
             {
-                return new System.Collections.Generic.List<SAPRESSC.Core.Persistence.EF.Configurators.IEntityTypeConfigurator>
+                return new System.Collections.Generic.List<Framework.Guama.Core.Persistence.ORM.EF.Configurators.IEntityTypeConfigurator>
                 {
                     new Configurators.ChallangeWorkflowIterationImageBridgeEntityTypeConfigurator(),
                     new Configurators.ChallangeCollaboratorBridgeEntityTypeConfigurator(),

@@ -1,6 +1,6 @@
 ﻿namespace MOROPO.UIC.CoInnova.Persistence.Entities
 {
-    public class PrototypingLevel : SAPRESSC.Core.Persistence.Entities.INamedEntity<System.Guid>
+    public class PrototypingLevel : Framework.Guama.Core.Persistence.Entities.Contract.INamedEntity<System.Guid>
     {
         public PrototypingLevel()
         {

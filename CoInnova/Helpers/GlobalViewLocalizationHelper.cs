@@ -37,7 +37,7 @@ namespace MOROPO.UIC.CoInnova.Helpers
 
         public IStringLocalizer WithCulture(System.Globalization.CultureInfo culture)
         {
-            return stringLocalizer.WithCulture(culture);
+            throw new System.NotImplementedException();
         }
     }
 }

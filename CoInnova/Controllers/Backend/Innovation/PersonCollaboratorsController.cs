@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MOROPO.SAPRESSC.Core.Persistence.Repositories;
-using MOROPO.SAPRESSC.Core.Web.Security.Attributes;
-using MOROPO.SAPRESSC.Middleware.Security.Identity.Persistence.Entities;
+using MOROPO.Framework.Guama.Core.Persistence.Repositories;
+using MOROPO.Framework.Guama.Core.Presentation.Web.Security.Attributes;
+using MOROPO.Framework.Guama.Security.Personal.Persistence.Entities;
 using MOROPO.UIC.CoInnova.Models.View;
 using MOROPO.UIC.CoInnova.Persistence.Entities;
 using System.Linq;
@@ -9,9 +9,9 @@ using System.Linq;
 namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
 {
     [Microsoft.AspNetCore.Authorization.Authorize]
-    [RequirePermissions(SAPRESSC.Core.Security.Common.Web.Backend.Constants.Permission.ShellManager)]
+    [RequirePermissions(Framework.Guama.Core.Security.Presentation.Constants.Permissions.ShellManager)]
     [Area("innovation")]
-    public class PersonCollaboratorsController : SAPRESSC.Core.Web.Backend.Controllers.AbstractEntityManagementController<Collaborator, System.Guid, PersonCollaboratorInputViewModel, CollaboratorDisplayViewModel>
+    public class PersonCollaboratorsController : Framework.Guama.Core.Presentation.Web.Backend.Controllers.AbstractEntityManagementController<Collaborator, System.Guid, PersonCollaboratorInputViewModel, CollaboratorDisplayViewModel>
     {
         private readonly IEntityRepository<User, string> userRepository;
 

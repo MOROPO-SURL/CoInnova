@@ -57,7 +57,7 @@
         <div class="collapse navbar-collapse" id="navigationNavbar">
             <form asp-action="logout" asp-controller="account" asp-area="security" asp-antiforgery="true" class="form-inline w-100">
                 <ul class="navbar-nav justify-content-end w-100">                
-                    @if (User.HasClaim(claim => claim.Type.Equals(MOROPO.SAPRESSC.Core.Web.Security.Constants.ClaimTypes.AccountWithFullAccess) && claim.Value.Equals(true.ToString())) || User.IsInRole(MOROPO.SAPRESSC.Core.Security.Common.Web.Backend.Constants.Permission.ShellManager))
+                    @if (User.HasClaim(claim => claim.Type.Equals(MOROPO.Framework.Guama.Core.Presentation.Web.Security.Constants.ClaimTypes.AccountWithFullAccess) && claim.Value.Equals(true.ToString())) || User.IsInRole(MOROPO.Framework.Guama.Core.Security.Presentation.Constants.Permissions.ShellManager))
                     {
                         <li>
                             <a class="btn btn-link" href="@Url.Action("index", "dashboard")">

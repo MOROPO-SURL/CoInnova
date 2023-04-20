@@ -1,6 +1,6 @@
 ﻿namespace MOROPO.UIC.CoInnova.Persistence.Entities
 {
-    public class Collaborator : SAPRESSC.Core.Persistence.Entities.IEntity<System.Guid>
+    public class Collaborator : Framework.Guama.Core.Persistence.Entities.Contract.IEntity<System.Guid>
     {
         public Collaborator()
         {
@@ -15,11 +15,11 @@
         public System.DateTime CreatedAt { get; set; }
 
         [System.ComponentModel.DataAnnotations.Schema.ForeignKey("UserId")]
-        public SAPRESSC.Middleware.Security.Identity.Persistence.Entities.User User { get; set; }
+        public Framework.Guama.Security.Personal.Persistence.Entities.User User { get; set; }
         [System.ComponentModel.DataAnnotations.Required]
         public string UserId { get; set; }
 
-        public SAPRESSC.Middleware.Identity.Persistence.Entities.OrganizationIdentity OrganizationIdentity { get; set; }
+        public Framework.Guama.Identity.Persistence.Entities.OrganizationIdentity OrganizationIdentity { get; set; }
         public System.Guid? OrganizationIdentityId { get; set; }
 
         public virtual System.Collections.Generic.List<ChallangeCollaboratorBridge> ChallangeBridges { get; set; }

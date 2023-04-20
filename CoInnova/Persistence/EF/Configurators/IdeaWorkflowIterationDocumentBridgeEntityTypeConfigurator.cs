@@ -1,15 +1,10 @@
 ﻿namespace MOROPO.UIC.CoInnova.Persistence.EF.Configurators
 {
-    public class IdeaWorkflowIterationDocumentBridgeEntityTypeConfigurator : SAPRESSC.Core.Persistence.EF.Configurators.AbstractEntityTypeConfigurator<Entities.IdeaWorkflowIterationDocumentBridge>
+    public class IdeaWorkflowIterationDocumentBridgeEntityTypeConfigurator : Framework.Guama.Core.Persistence.ORM.EF.Configurators.AbstractBridgeEntityTypeConfigurator<Entities.IdeaWorkflowIterationDocumentBridge, Entities.IdeaWorkflowIteration, System.Guid, Entities.Document, System.Guid>
     {
-        protected override void ApplayRules(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Entities.IdeaWorkflowIterationDocumentBridge> entityTypeBuilder)
+        public IdeaWorkflowIterationDocumentBridgeEntityTypeConfigurator()
         {
-            base.ApplayRules(entityTypeBuilder);
-
-            entityTypeBuilder.HasKey(bridge => new { bridge.IterationId, bridge.DocumentId });
-
-            entityTypeBuilder.HasOne(bridge => bridge.Iteration).WithMany(entity => entity.DocumentBridges).HasForeignKey(bridge => bridge.IterationId);
-            entityTypeBuilder.HasOne(bridge => bridge.Document).WithMany().HasForeignKey(bridge => bridge.DocumentId);
+            prowNavigationExpression = entity => entity.DocumentBridges;
         }
     }
 }

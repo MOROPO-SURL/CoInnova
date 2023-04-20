@@ -1,13 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MOROPO.SAPRESSC.Core.Web.Security.Managers.Facade;
 
 namespace MOROPO.UIC.CoInnova.Components
 {
     public class DefaultSidebarViewComponent : ViewComponent
     {
-        private readonly IUserProfileManagerFacade userProfileManager;
+        private readonly Framework.Guama.Core.Presentation.Web.Security.Managers.Facade.IUserProfileManagerFacade userProfileManager;
 
-        public DefaultSidebarViewComponent(IUserProfileManagerFacade userProfileManager)
+        public DefaultSidebarViewComponent(Framework.Guama.Core.Presentation.Web.Security.Managers.Facade.IUserProfileManagerFacade userProfileManager)
         {
             this.userProfileManager = userProfileManager;
         }

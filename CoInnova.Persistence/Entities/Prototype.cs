@@ -1,6 +1,6 @@
 ﻿namespace MOROPO.UIC.CoInnova.Persistence.Entities
 {
-    public class Prototype : SAPRESSC.Core.Persistence.Entities.IEntity<System.Guid>
+    public class Prototype : Framework.Guama.Core.Persistence.Entities.Contract.IEntity<System.Guid>
     {
         public Prototype()
         {
@@ -43,7 +43,7 @@
         public System.Guid? IdeaId { get; set; }
 
         [System.ComponentModel.DataAnnotations.Schema.ForeignKey("FeatureImageId")]
-        public SAPRESSC.Middleware.Media.Persistence.Entities.Image FeatureImage { get; set; }
+        public Framework.Guama.Media.Persistence.Entities.Image FeatureImage { get; set; }
         public System.Guid? FeatureImageId { get; set; }
 
         public System.Collections.Generic.List<PrototypeImageBridge> ImageBridges { get; set; }

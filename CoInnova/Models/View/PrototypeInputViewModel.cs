@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MOROPO.UIC.CoInnova.Models.View
 {
-    public class PrototypeInputViewModel : SAPRESSC.Core.Persistence.Models.IEntityInputModel<Prototype, System.Guid>
+    public class PrototypeInputViewModel : Framework.Guama.Core.Persistence.Presentation.Models.Contract.IEntityInputModel<Prototype, System.Guid>
     {
         public System.Guid Id { get; set; }
 

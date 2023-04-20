@@ -1,15 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MOROPO.SAPRESSC.Core.Web.Security.Attributes;
+using MOROPO.Framework.Guama.Core.Presentation.Web.Security.Attributes;
 using MOROPO.UIC.CoInnova.Models.View;
 
 namespace MOROPO.UIC.CoInnova.Controllers.Backend.Auxiliars
 {
     [Microsoft.AspNetCore.Authorization.Authorize]
-    [RequirePermissions(SAPRESSC.Core.Security.Common.Web.Backend.Constants.Permission.ShellManager)]
+    [RequirePermissions(Framework.Guama.Core.Security.Presentation.Constants.Permissions.ShellManager)]
     [Area("auxiliars")]
-    public class SpheresController : SAPRESSC.Core.Web.Backend.Controllers.AbstractEntityManagementController<Persistence.Entities.Sphere, System.Guid, SphereInputViewModel, SphereDisplayViewModel>
+    public class SpheresController : Framework.Guama.Core.Presentation.Web.Backend.Controllers.AbstractEntityManagementController<Persistence.Entities.Sphere, System.Guid, SphereInputViewModel, SphereDisplayViewModel>
     {
-        public SpheresController(SAPRESSC.Core.Persistence.Repositories.IEntityRepository<Persistence.Entities.Sphere, System.Guid> repository, Microsoft.Extensions.Localization.IStringLocalizer<SpheresController> localizer, Microsoft.Extensions.Logging.ILogger<SpheresController> logger) : base(repository, localizer, logger)
+        public SpheresController(Framework.Guama.Core.Persistence.Repositories.IEntityRepository<Persistence.Entities.Sphere, System.Guid> repository, Microsoft.Extensions.Localization.IStringLocalizer<SpheresController> localizer, Microsoft.Extensions.Logging.ILogger<SpheresController> logger) : base(repository, localizer, logger)
         {
         }
 

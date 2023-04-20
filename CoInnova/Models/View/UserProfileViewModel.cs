@@ -1,10 +1,10 @@
-﻿using MOROPO.SAPRESSC.Core.Web.Common.ComponentModel.DataAnnotations;
+﻿using MOROPO.Framework.Guama.Core.Presentation.Web.Common.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations;
 
 namespace MOROPO.UIC.CoInnova.Models.View
 {
-    [Microsoft.AspNetCore.Mvc.ModelMetadataType(typeof(SAPRESSC.Core.Web.Security.Models.View.Contrat.IUserProfileViewModel))]
-    public class UserProfileViewModel : SAPRESSC.Core.Web.Security.Models.View.Contrat.IUserProfileViewModel
+    [Microsoft.AspNetCore.Mvc.ModelMetadataType(typeof(Framework.Guama.Core.Presentation.Web.Security.Models.View.Contrat.IUserProfileViewModel))]
+    public class UserProfileViewModel : Framework.Guama.Core.Presentation.Web.Security.Models.View.Contrat.IUserProfileViewModel
     {
         [Required(ErrorMessage = "RequiredValidationErrorMessage")]
         [Display(Name = "Name")]
@@ -20,10 +20,10 @@ namespace MOROPO.UIC.CoInnova.Models.View
         public System.DateTime? BornDate { get; set; }
 
         [Display(Name = "CivilStatus")]
-        public SAPRESSC.Middleware.Identity.Persistence.Enumerations.CivilStatus CivilStatus { get; set; }
+        public Framework.Guama.Identity.Persistence.Enumerations.CivilStatus CivilStatus { get; set; }
 
         [Display(Name = "Sex")]
-        public SAPRESSC.Middleware.Identity.Persistence.Enumerations.Sex Sex { get; set; }
+        public Framework.Guama.Identity.Persistence.Enumerations.Sex Sex { get; set; }
 
         [Display(Name = "About")]
         public string About { get; set; }

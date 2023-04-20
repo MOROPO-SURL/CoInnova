@@ -1,4 +1,4 @@
-﻿using MOROPO.SAPRESSC.Core.Web.Common.ComponentModel.DataAnnotations;
+﻿using MOROPO.Framework.Guama.Core.Presentation.Web.Common.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations;
 
 namespace MOROPO.UIC.CoInnova.Models.View

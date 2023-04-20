@@ -1,13 +1,11 @@
 ﻿namespace MOROPO.UIC.CoInnova.Persistence.Entities
 {
-    public class PrototypeCollaboratorBridge
+    public class PrototypeCollaboratorBridge : Framework.Guama.Core.Persistence.Entities.Contract.IBridge<Prototype, System.Guid, Collaborator, System.Guid>
     {
-        public System.Guid CollaboratorId { get; set; }
+        public System.Guid ProwId { get; set; }
+        public Prototype Prow { get; set; }
 
-        public System.Guid PrototypeId { get; set; }
-
-        public Collaborator Collaborator { get; set; }
-
-        public Prototype Prototype { get; set; }
+        public System.Guid SternId { get; set; }
+        public Collaborator Stern { get; set; }
     }
 }

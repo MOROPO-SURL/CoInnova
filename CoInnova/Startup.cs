@@ -5,13 +5,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MOROPO.SAPRESSC.Core.Persistence.EF.Extensions;
-using MOROPO.SAPRESSC.Core.Persistence.Repositories;
-using MOROPO.SAPRESSC.Core.Security.Common.Persistence.Extensions;
-using MOROPO.SAPRESSC.Core.Security.Common.Web.Frontend.Extensions;
-using MOROPO.SAPRESSC.Middleware.Media.Web.Common.Extensions;
-using MOROPO.SAPRESSC.Middleware.Security.Identity.Web.Backend.Extensions;
-using MOROPO.SAPRESSC.Middleware.Security.Identity.Web.Common.Extensions;
+using Microsoft.Extensions.Hosting;
+using MOROPO.Framework.Guama.Core.Persistence.Repositories;
+using MOROPO.Framework.Guama.Core.Security.Common.Persistence.Extensions;
+using MOROPO.Framework.Guama.Core.Security.Common.Presentation.Web.Frontend.Extensions;
+using MOROPO.Framework.Guama.Media.Presentation.Web.Common.Extensions;
+using MOROPO.Framework.Guama.Security.Personal.Presentation.Web.Backend.Extensions;
 using MOROPO.UIC.CoInnova.Persistence.Entities;
 using Serilog;
 using SmartSolucionesCuba.AspNetCore.Authentication.ApiKey.Extensions;
@@ -22,9 +21,9 @@ namespace MOROPO.UIC.CoInnova
     public class Startup
     {
         private readonly IConfiguration configuration;
-        private readonly IHostingEnvironment env;
+        private readonly IWebHostEnvironment env;
 
-        public Startup(IConfiguration configuration, IHostingEnvironment env)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(configuration).CreateLogger();
 
@@ -35,7 +34,7 @@ namespace MOROPO.UIC.CoInnova
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<Options.MediaThumbnailResizeOptions>(configuration.GetSection("MediaThumbnailResize"));
-            services.Configure<SAPRESSC.Middleware.Media.Web.Common.Options.RelativeMediaFileManagementOptions>(configuration.GetSection("FileManagement"));
+            services.Configure<Framework.Guama.Media.Presentation.Web.Common.Options.RelativeMediaFileManagementOptions>(configuration.GetSection("FileManagement"));
             services.Configure<Models.View.PrototypeDisplayViewModel>(configuration.GetSection("prototypeDefault"));
 
             services.AddDbContext<Persistence.EF.ApplicationDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
@@ -43,11 +42,10 @@ namespace MOROPO.UIC.CoInnova
             services.AddScoped<DbContext, Persistence.EF.ApplicationDbContext>();
 
             services.PerformCoreWebSecurityCommonFrontendServiceRegistration();
-            services.PerformMiddlewareSecurityIdentityWebCommonServiceRegistration();
-            services.PerformMiddlewareSecurityIdentityWebBackendServiceRegistration();
-            services.PerformMiddlewareMediaWebCommonRelativePathFileManagementServiceRegistration();
+            services.PerformSecurityPersonalWebBackendServiceRegistration();
+            services.PerformMediaWebCommonRelativePathFileManagementServiceRegistration();
 
-            services.AddScoped<IEntityRepository<SAPRESSC.Core.Persistence.EF.Entities.Trace, long>, SAPRESSC.Core.Persistence.EF.Repositories.TraceRepository>();
+            services.AddScoped<IEntityRepository<Framework.Guama.Core.Persistence.ORM.EF.Entities.Trace, long>, Framework.Guama.Core.Persistence.ORM.EF.Repositories.TraceRepository>();
             services.AddScoped<IEntityRepository<ApiKey, System.Guid>, Persistence.EF.Repositories.ApiKeyRepository>();
             services.AddScoped<IEntityRepository<PrototypingLevel, System.Guid>, Persistence.EF.Repositories.PrototypingLevelRepository>();
             services.AddScoped<IEntityRepository<Collaborator, System.Guid>, Persistence.EF.Repositories.CollaboratorRepository>();
@@ -63,9 +61,9 @@ namespace MOROPO.UIC.CoInnova
 
             services.AddSingleton<Managers.RelativeDocumentFileManager>();
 
-            services.AddSingleton<SAPRESSC.Core.Persistence.EF.Providers.Facade.IDbSchemaConfigurationProviderFacade, Persistence.EF.Providers.DbSchemaConfigurationProvider>();
+            services.AddSingleton<Framework.Guama.Core.Persistence.ORM.EF.Providers.Facade.IDbSchemaConfigurationProviderFacade, Persistence.EF.Providers.DbSchemaConfigurationProvider>();
 
-            services.AddSingleton<SAPRESSC.Core.Persistence.EF.Helpers.Facade.IDataInitializationHelper, Helpers.DataInitializationHelper>();
+            services.AddSingleton<Framework.Guama.Core.Persistence.ORM.EF.Helpers.Facade.IDataInitializationHelper, Helpers.DataInitializationHelper>();
 
             services.AddHttpContextAccessor();
 
@@ -88,13 +86,15 @@ namespace MOROPO.UIC.CoInnova
             });
 
             #region Security concreter dependencies configuration
-            services.AddSingleton<SAPRESSC.Core.Web.Security.Helpers.Facade.ILicenseValidationHelperFacade, Helpers.WillcardLicenseValidationHelper>();
+            services.AddSingleton<Framework.Guama.Core.Presentation.Web.Security.Helpers.Facade.ILicenseValidationHelperFacade, Helpers.WillcardLicenseValidationHelper>();
 
-            services.AddTransient<SAPRESSC.Core.Web.Security.Models.View.Contrat.IUserProfileViewModel, Models.View.UserProfileViewModel>();
+            services.AddTransient<Framework.Guama.Core.Presentation.Web.Security.Models.View.Contrat.IUserProfileViewModel, Models.View.UserProfileViewModel>();
 
-            services.AddSingleton<SAPRESSC.Core.Web.Common.ModelBinding.IConcretModelBindHelper, Helpers.ConcretModelBindHelper>();
+            services.AddSingleton<Framework.Guama.Core.Presentation.Web.Common.ModelBinding.Contract.IConcretModelBindHelper, Helpers.ConcretModelBindHelper>();
 
-            services.AddScoped<SAPRESSC.Core.Web.Security.Managers.Facade.IUserProfileManagerFacade, Managers.UserProfileManager>();
+            services.AddScoped<Framework.Guama.Core.Presentation.Web.Security.Managers.Facade.IUserProfileManagerFacade, Managers.UserProfileManager>();
+
+            services.AddSingleton<Framework.Guama.Core.Presentation.Web.Security.Providers.Facade.IRoleIdProviderFacade>(Framework.Guama.Core.Security.Common.Presentation.Web.Frontend.Providers.RoleMemoryProvider.Instance);
             #endregion
 
             #region Globalization configuration
@@ -108,7 +108,7 @@ namespace MOROPO.UIC.CoInnova
                 options.SupportedCultures = new[] { defaultCulture };
                 options.SupportedUICultures = new[] { defaultCulture };
 
-                options.RequestCultureProviders = new[] { new SAPRESSC.Core.Web.Common.Localization.UrlRequestCultureProvider() };
+                options.RequestCultureProviders = new[] { new Framework.Guama.Core.Presentation.Web.Common.Localization.UrlRequestCultureProvider() };
             });
 
             services.AddSingleton<Helpers.GlobalViewLocalizationHelper>();
@@ -121,16 +121,17 @@ namespace MOROPO.UIC.CoInnova
             services.AddSession();
 
             services.AddMvc(mvc =>
-                mvc.ModelBinderProviders.Insert(0, new SAPRESSC.Core.Web.Common.ModelBinding.AbstractsModelBinderProvider())
-            )
+            {
+                mvc.EnableEndpointRouting = false;
+                mvc.ModelBinderProviders.Insert(0, new Framework.Guama.Core.Presentation.Web.Common.ModelBinding.AbstractsModelBinderProvider());
+            })
             .AddViewLocalization(Microsoft.AspNetCore.Mvc.Razor.LanguageViewLocationExpanderFormat.Suffix)
             .AddDataAnnotationsLocalization(options =>
                 options.DataAnnotationLocalizerProvider = (type, factory) =>
                 {
                     return factory.Create(typeof(SharedResources));
                 }
-            )
-            .SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_2_0);
+            );
 
             services.AddDataProtection().PersistKeysToFileSystem(new System.IO.DirectoryInfo(System.IO.Path.Combine(env.ContentRootPath, "dpkeys")));
 
@@ -164,8 +165,10 @@ namespace MOROPO.UIC.CoInnova
             });
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, Microsoft.Extensions.Options.IOptions<RequestLocalizationOptions> requestLocalizationOptions, Microsoft.Extensions.Logging.ILoggerFactory loggerFactory, DbContext dbContext)
+        public void Configure(IApplicationBuilder app, Microsoft.Extensions.Options.IOptions<RequestLocalizationOptions> requestLocalizationOptions, Microsoft.Extensions.Logging.ILoggerFactory loggerFactory, DbContext dbContext)
         {
+            System.AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
             loggerFactory.AddSerilog(Log.Logger);
 
             app.UseRequestLocalization(requestLocalizationOptions.Value);
@@ -173,38 +176,47 @@ namespace MOROPO.UIC.CoInnova
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
             }
             else if (env.IsStaging())
             {
                 dbContext.Database.Migrate();
 
-                app.PerformDatabaseInitialization();
+                var dataInitializationHelpers = app.ApplicationServices.GetServices<Framework.Guama.Core.Persistence.ORM.EF.Helpers.Facade.IDataInitializationHelper>();
+
+                using (var serviceScope = app.ApplicationServices.CreateScope())
+                {
+                    var scopedDbContext = serviceScope.ServiceProvider.GetService<DbContext>();
+
+                    foreach (var dataInitializationHelper in dataInitializationHelpers)
+                    {
+                        dataInitializationHelper.InitialiseData(scopedDbContext);
+                    }
+                }
 
                 if (!(dbContext as Persistence.EF.ApplicationDbContext).Users.Any())
                 {
                     var userId = configuration["DefaultUser:Id"];
 
-                    var defaultUser = new SAPRESSC.Middleware.Security.Identity.Persistence.Entities.User
+                    var defaultUser = new Framework.Guama.Security.Personal.Persistence.Entities.User
                     {
                         Id = userId,
                         Password = configuration["DefaultUser:Password"].ToHashedPassword(),
                         Enabled = true,
                         HasFullAccess = true,
                         PasswordChangeRequired = true,
-                        Identity = new SAPRESSC.Middleware.Identity.Persistence.Entities.PersonIdentity
+                        Identity = new Framework.Guama.Identity.Persistence.Entities.PersonIdentity
                         {
                             Name = userId,
-                            Sex = SAPRESSC.Middleware.Identity.Persistence.Enumerations.Sex.Unknown,
-                            CivilStatus = SAPRESSC.Middleware.Identity.Persistence.Enumerations.CivilStatus.Unknow
+                            Sex = Framework.Guama.Identity.Persistence.Enumerations.Sex.Unknown,
+                            CivilStatus = Framework.Guama.Identity.Persistence.Enumerations.CivilStatus.Unknow
                         }
                     };
 
-                    defaultUser.Signature = SAPRESSC.Middleware.Security.Identity.Persistence.EF.Helpers.Integrity.UserIntegrityHelper.GetSignature(defaultUser);
+                    defaultUser.Signature = Framework.Guama.Security.Personal.Persistence.ORM.EF.Helpers.Integrity.UserIntegrityHelper.GetSignature(defaultUser);
 
-                    dbContext.Set<SAPRESSC.Middleware.Security.Identity.Persistence.Entities.User>().Add(defaultUser);
+                    dbContext.Set<Framework.Guama.Security.Personal.Persistence.Entities.User>().Add(defaultUser);
 
-                    (dbContext as SAPRESSC.Core.Persistence.EF.Context.AbstractTraceableDbContext).SaveChanges("system");
+                    (dbContext as Framework.Guama.Core.Persistence.ORM.EF.Context.Contract.AbstractTraceableDbContext).SaveChanges("system");
                 }
             }
             else
@@ -212,6 +224,13 @@ namespace MOROPO.UIC.CoInnova
                 app.UseExceptionHandler("/error");
 
                 app.UseHsts();
+            }
+
+            var atStartUpRoles = dbContext.Set<Framework.Guama.Core.Security.Common.Persistence.Entities.Role>().Include(e => e.PermissionBridges).ThenInclude(b => b.Stern).ToArray();
+
+            foreach (var item in atStartUpRoles)
+            {
+                Framework.Guama.Core.Security.Common.Presentation.Web.Frontend.Providers.RoleMemoryProvider.Instance.Roles.Add(item);
             }
 
             app.UseStaticFiles();

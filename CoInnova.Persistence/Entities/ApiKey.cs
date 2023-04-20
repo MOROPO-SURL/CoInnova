@@ -1,6 +1,6 @@
 ﻿namespace MOROPO.UIC.CoInnova.Persistence.Entities
 {
-    public class ApiKey : SAPRESSC.Core.Persistence.Entities.INamedEntity<System.Guid>, SAPRESSC.Core.Persistence.Entities.IHabilitableEntity<System.Guid>
+    public class ApiKey : Framework.Guama.Core.Persistence.Entities.Contract.INamedEntity<System.Guid>, Framework.Guama.Core.Persistence.Entities.Contract.IHabilitableEntity<System.Guid>
     {
         public ApiKey()
         {

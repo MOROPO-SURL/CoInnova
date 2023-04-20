@@ -1,17 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MOROPO.SAPRESSC.Core.Common.Models;
+using MOROPO.Framework.Guama.Core.Presentation.Models;
 using MOROPO.UIC.CoInnova.Models.Api;
 using MOROPO.UIC.CoInnova.Persistence.Entities;
 
-namespace MOROPO.UIC.CoInnova.Controllers.Api
+namespace MOROPO.UIC.CoInnova.Controllers.API
 {
     [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = SmartSolucionesCuba.AspNetCore.Authentication.ApiKey.ApiKeyAuthenticationDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     [Swashbuckle.AspNetCore.Annotations.SwaggerTag("Challange's endpoints.")]
-    public class ChallangesController : SAPRESSC.Core.Web.Api.Controllers.AbstractEntityApiConsultController<Challange, System.Guid, ChallangeDisplayApiModel>
+    public class ChallangesController : Framework.Guama.Core.Presentation.Web.API.Controllers.AbstractEntityApiConsultController<Challange, System.Guid, ChallangeDisplayApiModel>
     {
-        public ChallangesController(SAPRESSC.Core.Persistence.Repositories.IEntityRepository<Challange, System.Guid> repository, Microsoft.Extensions.Localization.IStringLocalizer<ChallangesController> localizer, Microsoft.Extensions.Logging.ILogger<ChallangesController> logger) : base(repository, localizer, logger)
+        public ChallangesController(Framework.Guama.Core.Persistence.Repositories.IEntityRepository<Challange, System.Guid> repository, Microsoft.Extensions.Localization.IStringLocalizer<ChallangesController> localizer, Microsoft.Extensions.Logging.ILogger<ChallangesController> logger) : base(repository, localizer, logger)
         {
         }
 

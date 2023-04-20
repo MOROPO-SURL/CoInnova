@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MOROPO.SAPRESSC.Core.Web.Backend.Providers.Facade;
+using MOROPO.Framework.Guama.Core.Presentation.Web.Backend.Providers.Facade;
 using MOROPO.UIC.CoInnova.Extensions;
 
 namespace MOROPO.UIC.CoInnova.Components

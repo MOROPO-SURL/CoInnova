@@ -1,13 +1,11 @@
 ﻿namespace MOROPO.UIC.CoInnova.Persistence.Entities
 {
-    public class IdeaWorkflowIterationDocumentBridge
+    public class IdeaWorkflowIterationDocumentBridge : Framework.Guama.Core.Persistence.Entities.Contract.IBridge<IdeaWorkflowIteration, System.Guid, Document, System.Guid>
     {
-        public System.Guid IterationId { get; set; }
+        public System.Guid ProwId { get; set; }
+        public IdeaWorkflowIteration Prow { get; set; }
 
-        public System.Guid DocumentId { get; set; }
-
-        public IdeaWorkflowIteration Iteration { get; set; }
-
-        public Document Document { get; set; }
+        public System.Guid SternId { get; set; }
+        public Document Stern { get; set; }
     }
 }

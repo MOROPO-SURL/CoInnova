@@ -2,7 +2,7 @@
 
 namespace MOROPO.UIC.CoInnova.Models.Api
 {
-    public class IdeaDisplayApiModel : SAPRESSC.Core.Persistence.Models.IEntityDisplayModel<Persistence.Entities.Idea, System.Guid>
+    public class IdeaDisplayApiModel : Framework.Guama.Core.Persistence.Presentation.Models.Contract.IEntityDisplayModel<Persistence.Entities.Idea, System.Guid>
     {
         public System.Guid Id { get; set; }
 
@@ -32,7 +32,7 @@ namespace MOROPO.UIC.CoInnova.Models.Api
             {
                 var result = new DocumentDisplayCommonModel();
 
-                result.Import(bridge.Document);
+                result.Import(bridge.Stern);
 
                 return result;
             }).ToList();

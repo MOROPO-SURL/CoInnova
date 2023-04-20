@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using MOROPO.SAPRESSC.Core.Common.Models.View;
-using MOROPO.SAPRESSC.Core.Persistence.Repositories;
-using MOROPO.SAPRESSC.Core.Web.Security.Attributes;
-using MOROPO.SAPRESSC.Middleware.Media.Persistence.Entities;
-using MOROPO.SAPRESSC.Middleware.Media.Web.Common.Managers.Facade;
+using MOROPO.Framework.Guama.Core.Persistence.Repositories;
+using MOROPO.Framework.Guama.Core.Presentation.Models.View;
+using MOROPO.Framework.Guama.Core.Presentation.Web.Security.Attributes;
+using MOROPO.Framework.Guama.Media.Persistence.Entities;
+using MOROPO.Framework.Guama.Media.Presentation.Web.Common.Managers.Facade;
 using MOROPO.UIC.CoInnova.Models.View;
 using MOROPO.UIC.CoInnova.Persistence.Entities;
 using System.Linq;
@@ -12,9 +12,9 @@ using System.Linq;
 namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
 {
     [Microsoft.AspNetCore.Authorization.Authorize]
-    [RequirePermissions(SAPRESSC.Core.Security.Common.Web.Backend.Constants.Permission.ShellManager)]
+    [RequirePermissions(Framework.Guama.Core.Security.Presentation.Constants.Permissions.ShellManager)]
     [Area("innovation")]
-    public class PrototypesController : SAPRESSC.Core.Web.Backend.Controllers.AbstractEntityManagementController<Prototype, System.Guid, PrototypeInputViewModel, PrototypeDisplayViewModel>
+    public class PrototypesController : Framework.Guama.Core.Presentation.Web.Backend.Controllers.AbstractEntityManagementController<Prototype, System.Guid, PrototypeInputViewModel, PrototypeDisplayViewModel>
     {
         private readonly IEntityRepository<Idea, System.Guid> ideaRepository;
         private readonly IEntityRepository<PrototypingLevel, System.Guid> levelRepository;
@@ -193,7 +193,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
                 {
                     var result = new Models.DocumentDisplayCommonModel();
 
-                    result.Import(item.Document);
+                    result.Import(item.Stern);
 
                     return result;
                 }).ToArray()
@@ -238,8 +238,8 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
 
                             entity.DocumentBridges.Add(new PrototypeDocumentBridge
                             {
-                                PrototypeId = entity.Id,
-                                Document = document
+                                ProwId = entity.Id,
+                                Stern = document
                             });
 
                             documentManager.SaveFileContent(document.Id, memoryStream.ToArray(), document.ContentType);
@@ -251,7 +251,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
 
                         return RedirectToAction("editdocuments", new { key = entity.Id });
                     }
-                    catch (SAPRESSC.Core.Web.Frontend.InvalidModelException e)
+                    catch (Framework.Guama.Core.Presentation.Web.Frontend.InvalidModelException e)
                     {
                         ModelState.AddModelError(e.ModelKey, e.ErrorMessage);
                     }
@@ -281,7 +281,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
             {
                 var entity = Repository.Get(key);
 
-                var bridge = entity.DocumentBridges.First(b => b.DocumentId == documentId);
+                var bridge = entity.DocumentBridges.First(b => b.SternId == documentId);
 
                 entity.DocumentBridges.Remove(bridge);
 
@@ -289,7 +289,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
 
                 try
                 {
-                    documentManager.DeleteFile(bridge.Document);
+                    documentManager.DeleteFile(bridge.Stern);
                 }
                 catch { }
 
@@ -332,10 +332,10 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
 
                     try
                     {
-                        var bridge = entity.DocumentBridges.First(b => b.DocumentId == modelInput.Id);
+                        var bridge = entity.DocumentBridges.First(b => b.SternId == modelInput.Id);
 
-                        bridge.Document.Name = modelInput.Name;
-                        bridge.Document.Description = modelInput.Description;
+                        bridge.Stern.Name = modelInput.Name;
+                        bridge.Stern.Description = modelInput.Description;
 
                         Repository.Update(entity, User.Identity.Name);
 
@@ -343,7 +343,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
 
                         return RedirectToAction("editdocuments", new { key = entity.Id });
                     }
-                    catch (SAPRESSC.Core.Web.Frontend.InvalidModelException e)
+                    catch (Framework.Guama.Core.Presentation.Web.Frontend.InvalidModelException e)
                     {
                         ModelState.AddModelError(e.ModelKey, e.ErrorMessage);
                     }
@@ -382,7 +382,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
                 {
                     var result = new Models.ImageDisplayCommonModel();
 
-                    result.Import(bridge.Image);
+                    result.Import(bridge.Stern);
 
                     return result;
                 }).ToArray()
@@ -423,8 +423,8 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
 
                             entity.ImageBridges.Add(new PrototypeImageBridge
                             {
-                                PrototypeId = entity.Id,
-                                Image = image
+                                ProwId = entity.Id,
+                                Stern = image
                             });
                         }
 
@@ -434,7 +434,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
 
                         return RedirectToAction("editimages", new { key = entity.Id });
                     }
-                    catch (SAPRESSC.Core.Web.Frontend.InvalidModelException e)
+                    catch (Framework.Guama.Core.Presentation.Web.Frontend.InvalidModelException e)
                     {
                         ModelState.AddModelError(e.ModelKey, e.ErrorMessage);
                     }
@@ -464,7 +464,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
             {
                 var entity = Repository.Get(key);
 
-                var bridge = entity.ImageBridges.First(b => b.ImageId == imageId);
+                var bridge = entity.ImageBridges.First(b => b.SternId == imageId);
 
                 entity.ImageBridges.Remove(bridge);
 
@@ -476,9 +476,9 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
 
                 Repository.Update(entity, User.Identity.Name);
 
-                imageRepository.Delete(bridge.Image, User.Identity.Name);
+                imageRepository.Delete(bridge.Stern, User.Identity.Name);
 
-                imageFileManager.DeleteImageFile(bridge.Image);
+                imageFileManager.DeleteImageFile(bridge.Stern);
 
                 SetDefaultNotification(NotificationType.Success, GetDeletionSuccessMessage());
 
@@ -512,9 +512,9 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
             {
                 var entity = Repository.Get(key);
 
-                var bridge = entity.ImageBridges.First(b => b.ImageId == imageId);
+                var bridge = entity.ImageBridges.First(b => b.SternId == imageId);
 
-                entity.FeatureImageId = bridge.ImageId;
+                entity.FeatureImageId = bridge.SternId;
 
                 Repository.Update(entity, User.Identity.Name);
 
@@ -550,7 +550,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
 
                 foreach (var bridge in entity.CollaboratorBridges)
                 {
-                    var executor = availableCollaborators.First(item => item.Id == bridge.CollaboratorId);
+                    var executor = availableCollaborators.First(item => item.Id == bridge.SternId);
 
                     prototypeExecutors.Add(executor);
 
@@ -599,7 +599,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
                 {
                     try
                     {
-                        entity.CollaboratorBridges.Add(new PrototypeCollaboratorBridge { PrototypeId = entity.Id, CollaboratorId = executorId.Value });
+                        entity.CollaboratorBridges.Add(new PrototypeCollaboratorBridge { ProwId = entity.Id, SternId = executorId.Value });
 
                         Repository.Update(entity, User.Identity.Name);
 
@@ -607,7 +607,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
 
                         return RedirectToAction("editexecutors", new { key = entity.Id });
                     }
-                    catch (SAPRESSC.Core.Web.Frontend.InvalidModelException e)
+                    catch (Framework.Guama.Core.Presentation.Web.Frontend.InvalidModelException e)
                     {
                         ModelState.AddModelError(e.ModelKey, e.ErrorMessage);
                     }
@@ -639,7 +639,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
             {
                 var entity = Repository.Get(key);
 
-                var bridge = entity.CollaboratorBridges.First(b => b.CollaboratorId == executorId);
+                var bridge = entity.CollaboratorBridges.First(b => b.SternId == executorId);
 
                 entity.CollaboratorBridges.Remove(bridge);
 
@@ -685,7 +685,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
 
                 foreach (var bridge in entity.SphereBridges)
                 {
-                    var sphere = availableSpheres.First(item => item.Id == bridge.SphereId);
+                    var sphere = availableSpheres.First(item => item.Id == bridge.SternId);
 
                     prototypeSpheres.Add(sphere);
 
@@ -734,7 +734,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
                 {
                     try
                     {
-                        entity.SphereBridges.Add(new PrototypeSphereBridge { PrototypeId = entity.Id, SphereId = sphereId.Value });
+                        entity.SphereBridges.Add(new PrototypeSphereBridge { ProwId = entity.Id, SternId = sphereId.Value });
 
                         Repository.Update(entity, User.Identity.Name);
 
@@ -742,7 +742,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
 
                         return RedirectToAction("editspheres", new { key = entity.Id });
                     }
-                    catch (SAPRESSC.Core.Web.Frontend.InvalidModelException e)
+                    catch (Framework.Guama.Core.Presentation.Web.Frontend.InvalidModelException e)
                     {
                         ModelState.AddModelError(e.ModelKey, e.ErrorMessage);
                     }
@@ -774,7 +774,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
             {
                 var entity = Repository.Get(key);
 
-                var bridge = entity.SphereBridges.First(b => b.SphereId == sphereId);
+                var bridge = entity.SphereBridges.First(b => b.SternId == sphereId);
 
                 entity.SphereBridges.Remove(bridge);
 
@@ -902,7 +902,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
 
                         return RedirectToAction("editusecases", new { key = entity.Id });
                     }
-                    catch (SAPRESSC.Core.Web.Frontend.InvalidModelException e)
+                    catch (Framework.Guama.Core.Presentation.Web.Frontend.InvalidModelException e)
                     {
                         ModelState.AddModelError(e.ModelKey, e.ErrorMessage);
                     }
@@ -987,7 +987,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
                 }
                 catch (System.Exception e)
                 {
-                    if (!(e.InnerException is SAPRESSC.Core.Web.Frontend.InvalidModelException))
+                    if (!(e.InnerException is Framework.Guama.Core.Presentation.Web.Frontend.InvalidModelException))
                     {
                         logger.LogError(e.InnerException, e.Message);
 
@@ -1068,7 +1068,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
                 {
                     var result = new Models.DocumentDisplayCommonModel();
 
-                    result.Import(item.Document);
+                    result.Import(item.Stern);
 
                     return result;
                 }).ToArray()
@@ -1121,8 +1121,8 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
 
                             target.DocumentBridges.Add(new UseCaseDocumentBridge
                             {
-                                UseCaseId = target.Id,
-                                Document = document
+                                ProwId = target.Id,
+                                Stern = document
                             });
 
                             documentManager.SaveFileContent(document.Id, memoryStream.ToArray(), document.ContentType);
@@ -1134,7 +1134,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
 
                         return RedirectToAction("editusecasedocuments", new { key = entity.Id, id = target.Id });
                     }
-                    catch (SAPRESSC.Core.Web.Frontend.InvalidModelException e)
+                    catch (Framework.Guama.Core.Presentation.Web.Frontend.InvalidModelException e)
                     {
                         ModelState.AddModelError(e.ModelKey, e.ErrorMessage);
                     }
@@ -1171,7 +1171,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
 
                 var entity = Repository.Get(key);
 
-                var bridge = target.DocumentBridges.First(b => b.DocumentId == documentId);
+                var bridge = target.DocumentBridges.First(b => b.SternId == documentId);
 
                 target.DocumentBridges.Remove(bridge);
 
@@ -1179,7 +1179,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
 
                 try
                 {
-                    documentManager.DeleteFile(bridge.Document);
+                    documentManager.DeleteFile(bridge.Stern);
                 }
                 catch { }
 
@@ -1229,10 +1229,10 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
 
                     try
                     {
-                        var bridge = target.DocumentBridges.First(b => b.DocumentId == modelInput.Id);
+                        var bridge = target.DocumentBridges.First(b => b.SternId == modelInput.Id);
 
-                        bridge.Document.Name = modelInput.Name;
-                        bridge.Document.Description = modelInput.Description;
+                        bridge.Stern.Name = modelInput.Name;
+                        bridge.Stern.Description = modelInput.Description;
 
                         useCaseRepository.Update(target, User.Identity.Name);
 
@@ -1240,7 +1240,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
 
                         return RedirectToAction("editusecasedocuments", new { key = entity.Id, id = target.Id });
                     }
-                    catch (SAPRESSC.Core.Web.Frontend.InvalidModelException e)
+                    catch (Framework.Guama.Core.Presentation.Web.Frontend.InvalidModelException e)
                     {
                         ModelState.AddModelError(e.ModelKey, e.ErrorMessage);
                     }
@@ -1289,7 +1289,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
                 {
                     var result = new Models.ImageDisplayCommonModel();
 
-                    result.Import(bridge.Image);
+                    result.Import(bridge.Stern);
 
                     return result;
                 }).ToArray()
@@ -1345,8 +1345,8 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
 
                                 target.ImageBridges.Add(new UseCaseImageBridge
                                 {
-                                    UseCaseId = target.Id,
-                                    Image = image
+                                    ProwId = target.Id,
+                                    Stern = image
                                 });
                             }
                         }
@@ -1357,7 +1357,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
 
                         return RedirectToAction("editusecaseimages", new { key = entity.Id, id = target.Id });
                     }
-                    catch (SAPRESSC.Core.Web.Frontend.InvalidModelException e)
+                    catch (Framework.Guama.Core.Presentation.Web.Frontend.InvalidModelException e)
                     {
                         ModelState.AddModelError(e.ModelKey, e.ErrorMessage);
                     }
@@ -1394,7 +1394,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
 
                 var entity = Repository.Get(key);
 
-                var bridge = target.ImageBridges.First(b => b.ImageId == imageId);
+                var bridge = target.ImageBridges.First(b => b.SternId == imageId);
 
                 target.ImageBridges.Remove(bridge);
 
@@ -1406,9 +1406,9 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
 
                 useCaseRepository.Update(target, User.Identity.Name);
 
-                imageRepository.Delete(bridge.Image, User.Identity.Name);
+                imageRepository.Delete(bridge.Stern, User.Identity.Name);
 
-                imageFileManager.DeleteImageFile(bridge.Image);
+                imageFileManager.DeleteImageFile(bridge.Stern);
 
                 SetDefaultNotification(NotificationType.Success, GetDeletionSuccessMessage());
 
@@ -1449,9 +1449,9 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
 
                 var entity = Repository.Get(key);
 
-                var bridge = target.ImageBridges.First(b => b.ImageId == imageId);
+                var bridge = target.ImageBridges.First(b => b.SternId == imageId);
 
-                target.FeatureImageId = bridge.ImageId;
+                target.FeatureImageId = bridge.SternId;
 
                 useCaseRepository.Update(target, User.Identity.Name);
 

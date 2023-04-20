@@ -1,4 +1,4 @@
-﻿@model MOROPO.SAPRESSC.Core.Web.Security.Models.View.LoginViewModel
+﻿@model MOROPO.Framework.Guama.Core.Presentation.Web.Security.Models.View.LoginViewModel
 
 @{
     ViewData["Title"] = "Control de Acceso";
@@ -99,7 +99,7 @@
 
     @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Contraseña" })
 
-    @if (Context.Session.Keys.Contains(MOROPO.SAPRESSC.Core.Web.Security.Constants.HttpSessionMapKeys.CaptchaCodeKey))
+    @if (Context.Session.Keys.Contains(MOROPO.Framework.Guama.Core.Presentation.Web.Security.Constants.HttpSessionMapKeys.CaptchaCodeKey))
     {
         <div style="margin:20px 0; text-align: left;">
             @Html.LabelFor(model => model.CaptchaCode, new { @class = "control-label", style = "text-align: left;" })

@@ -2,7 +2,7 @@
 
 namespace MOROPO.UIC.CoInnova.Persistence.EF.Repositories
 {
-    public class CollaboratorRepository : SAPRESSC.Core.Persistence.EF.Repositories.AbstractEntityRepository<Entities.Collaborator, System.Guid>
+    public class CollaboratorRepository : Framework.Guama.Core.Persistence.ORM.EF.Repositories.AbstractEntityRepository<Entities.Collaborator, System.Guid>
     {
         public CollaboratorRepository(DbContext dbContext) : base(dbContext)
         {
@@ -17,15 +17,15 @@ namespace MOROPO.UIC.CoInnova.Persistence.EF.Repositories
         {
             return base.GetQueryableDbSet()
                 .Include(entity => entity.User).ThenInclude(entity => entity.Identity).ThenInclude(entity => entity.Image)
-                .Include(entity => entity.User).ThenInclude(entity => entity.Identity).ThenInclude(entity => entity.PersonPhoneContactItemBridges).ThenInclude(bridge => bridge.ContactItem)
-                .Include(entity => entity.User).ThenInclude(entity => entity.Identity).ThenInclude(entity => entity.PersonEmailContactItemBridges).ThenInclude(bridge => bridge.ContactItem)
-                .Include(entity => entity.User).ThenInclude(entity => entity.Identity).ThenInclude(entity => entity.PersonSocialContactItemBridges).ThenInclude(bridge => bridge.ContactItem)
-                .Include(entity => entity.User).ThenInclude(entity => entity.Identity).ThenInclude(entity => entity.PersonPostalContactItemBridges).ThenInclude(bridge => bridge.ContactItem)
+                .Include(entity => entity.User).ThenInclude(entity => entity.Identity).ThenInclude(entity => entity.PhoneContactItemBridges).ThenInclude(bridge => bridge.Stern)
+                .Include(entity => entity.User).ThenInclude(entity => entity.Identity).ThenInclude(entity => entity.EmailContactItemBridges).ThenInclude(bridge => bridge.Stern)
+                .Include(entity => entity.User).ThenInclude(entity => entity.Identity).ThenInclude(entity => entity.SocialContactItemBridges).ThenInclude(bridge => bridge.Stern)
+                .Include(entity => entity.User).ThenInclude(entity => entity.Identity).ThenInclude(entity => entity.PostalContactItemBridges).ThenInclude(bridge => bridge.Stern)
                 .Include(entity => entity.OrganizationIdentity).ThenInclude(entity => entity.Image)
-                .Include(entity => entity.OrganizationIdentity).ThenInclude(entity => entity.OrganizationPhoneContactItemBridges).ThenInclude(bridge => bridge.ContactItem)
-                .Include(entity => entity.OrganizationIdentity).ThenInclude(entity => entity.OrganizationEmailContactItemBridges).ThenInclude(bridge => bridge.ContactItem)
-                .Include(entity => entity.OrganizationIdentity).ThenInclude(entity => entity.OrganizationSocialContactItemBridges).ThenInclude(bridge => bridge.ContactItem)
-                .Include(entity => entity.OrganizationIdentity).ThenInclude(entity => entity.OrganizationPostalContactItemBridges).ThenInclude(bridge => bridge.ContactItem);
+                .Include(entity => entity.OrganizationIdentity).ThenInclude(entity => entity.PhoneContactItemBridges).ThenInclude(bridge => bridge.Stern)
+                .Include(entity => entity.OrganizationIdentity).ThenInclude(entity => entity.EmailContactItemBridges).ThenInclude(bridge => bridge.Stern)
+                .Include(entity => entity.OrganizationIdentity).ThenInclude(entity => entity.SocialContactItemBridges).ThenInclude(bridge => bridge.Stern)
+                .Include(entity => entity.OrganizationIdentity).ThenInclude(entity => entity.PostalContactItemBridges).ThenInclude(bridge => bridge.Stern);
         }
     }
 }

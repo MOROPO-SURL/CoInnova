@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MOROPO.SAPRESSC.Core.Web.Security.Attributes;
+using MOROPO.Framework.Guama.Core.Presentation.Web.Security.Attributes;
 using MOROPO.UIC.CoInnova.Models.View;
 using MOROPO.UIC.CoInnova.Persistence.Entities;
 using System.Linq;
@@ -7,11 +7,11 @@ using System.Linq;
 namespace MOROPO.UIC.CoInnova.Controllers.Backend.Auxiliars
 {
     [Microsoft.AspNetCore.Authorization.Authorize]
-    [RequirePermissions(SAPRESSC.Core.Security.Common.Web.Backend.Constants.Permission.ShellManager)]
+    [RequirePermissions(Framework.Guama.Core.Security.Presentation.Constants.Permissions.ShellManager)]
     [Area("auxiliars")]
-    public class PrototypingLevelsController : SAPRESSC.Core.Web.Backend.Controllers.AbstractEntityManagementController<PrototypingLevel, System.Guid, PrototypingLevelInputViewModel, PrototypingLevelDisplayViewModel>
+    public class PrototypingLevelsController : Framework.Guama.Core.Presentation.Web.Backend.Controllers.AbstractEntityManagementController<PrototypingLevel, System.Guid, PrototypingLevelInputViewModel, PrototypingLevelDisplayViewModel>
     {
-        public PrototypingLevelsController(SAPRESSC.Core.Persistence.Repositories.IEntityRepository<PrototypingLevel, System.Guid> repository, Microsoft.Extensions.Localization.IStringLocalizer<PrototypingLevelsController> localizer, Microsoft.Extensions.Logging.ILogger<PrototypingLevelsController> logger) : base(repository, localizer, logger)
+        public PrototypingLevelsController(Framework.Guama.Core.Persistence.Repositories.IEntityRepository<PrototypingLevel, System.Guid> repository, Microsoft.Extensions.Localization.IStringLocalizer<PrototypingLevelsController> localizer, Microsoft.Extensions.Logging.ILogger<PrototypingLevelsController> logger) : base(repository, localizer, logger)
         {
         }
 

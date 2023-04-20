@@ -1,6 +1,6 @@
 ﻿namespace MOROPO.UIC.CoInnova.Models.View
 {
-    public class ChallangeWorkflowDisplayViewModel : SAPRESSC.Core.Persistence.Models.IEntityDisplayModel<Persistence.Entities.ChallangeWorkflow, System.Guid>
+    public class ChallangeWorkflowDisplayViewModel : Framework.Guama.Core.Persistence.Presentation.Models.Contract.IEntityDisplayModel<Persistence.Entities.ChallangeWorkflow, System.Guid>
     {
         public System.Guid Id { get; set; }
 

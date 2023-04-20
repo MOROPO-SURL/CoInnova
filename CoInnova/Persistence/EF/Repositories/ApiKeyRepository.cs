@@ -2,7 +2,7 @@
 
 namespace MOROPO.UIC.CoInnova.Persistence.EF.Repositories
 {
-    public class ApiKeyRepository : SAPRESSC.Core.Persistence.EF.Repositories.AbstractEntityRepository<Entities.ApiKey, System.Guid>
+    public class ApiKeyRepository : Framework.Guama.Core.Persistence.ORM.EF.Repositories.AbstractEntityRepository<Entities.ApiKey, System.Guid>
     {
         public ApiKeyRepository(DbContext dbContext) : base(dbContext)
         {
@@ -15,7 +15,7 @@ namespace MOROPO.UIC.CoInnova.Persistence.EF.Repositories
 
         protected override System.Linq.IQueryable<Entities.ApiKey> GetQueryableDbSet()
         {
-            return base.GetQueryableDbSet().Include(entity => entity.PermissionBridges).ThenInclude(bridge => bridge.Permission);
+            return base.GetQueryableDbSet().Include(entity => entity.PermissionBridges).ThenInclude(bridge => bridge.Stern);
         }
     }
 }

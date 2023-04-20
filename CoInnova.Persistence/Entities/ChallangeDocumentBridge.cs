@@ -1,13 +1,11 @@
 ﻿namespace MOROPO.UIC.CoInnova.Persistence.Entities
 {
-    public class ChallangeDocumentBridge
+    public class ChallangeDocumentBridge : Framework.Guama.Core.Persistence.Entities.Contract.IBridge<Challange, System.Guid, Document, System.Guid>
     {
-        public System.Guid ChallangeId { get; set; }
+        public System.Guid ProwId { get; set; }
+        public Challange Prow { get; set; }
 
-        public System.Guid DocumentId { get; set; }
-
-        public Challange Challange { get; set; }
-
-        public Document Document { get; set; }
+        public System.Guid SternId { get; set; }
+        public Document Stern { get; set; }
     }
 }

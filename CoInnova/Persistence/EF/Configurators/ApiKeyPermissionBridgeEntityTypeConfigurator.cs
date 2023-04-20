@@ -1,15 +1,10 @@
 ﻿namespace MOROPO.UIC.CoInnova.Persistence.EF.Configurators
 {
-    public class ApiKeyPermissionBridgeEntityTypeConfigurator : SAPRESSC.Core.Persistence.EF.Configurators.AbstractEntityTypeConfigurator<Entities.ApiKeyPermissionBridge>
+    public class ApiKeyPermissionBridgeEntityTypeConfigurator : Framework.Guama.Core.Persistence.ORM.EF.Configurators.AbstractBridgeEntityTypeConfigurator<Entities.ApiKeyPermissionBridge, Entities.ApiKey, System.Guid, Framework.Guama.Core.Security.Common.Persistence.Entities.Permission, int>
     {
-        protected override void ApplayRules(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Entities.ApiKeyPermissionBridge> entityTypeBuilder)
+        public ApiKeyPermissionBridgeEntityTypeConfigurator()
         {
-            base.ApplayRules(entityTypeBuilder);
-
-            entityTypeBuilder.HasKey(bridge => new { bridge.ApiKeyId, bridge.PermissionId });
-
-            entityTypeBuilder.HasOne(bridge => bridge.ApiKey).WithMany(entity => entity.PermissionBridges).HasForeignKey(bridge => bridge.ApiKeyId);
-            entityTypeBuilder.HasOne(bridge => bridge.Permission).WithMany().HasForeignKey(bridge => bridge.PermissionId);
+            prowNavigationExpression = entity => entity.PermissionBridges;
         }
     }
 }

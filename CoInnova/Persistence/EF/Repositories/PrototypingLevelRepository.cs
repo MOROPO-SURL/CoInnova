@@ -1,6 +1,6 @@
 ﻿namespace MOROPO.UIC.CoInnova.Persistence.EF.Repositories
 {
-    public class PrototypingLevelRepository : SAPRESSC.Core.Persistence.EF.Repositories.AbstractEntityRepository<Entities.PrototypingLevel, System.Guid>
+    public class PrototypingLevelRepository : Framework.Guama.Core.Persistence.ORM.EF.Repositories.AbstractEntityRepository<Entities.PrototypingLevel, System.Guid>
     {
         public PrototypingLevelRepository(Microsoft.EntityFrameworkCore.DbContext dbContext) : base(dbContext)
         {

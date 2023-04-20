@@ -1,17 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MOROPO.SAPRESSC.Core.Common.Models;
+using MOROPO.Framework.Guama.Core.Presentation.Models;
 using MOROPO.UIC.CoInnova.Models.Api;
 using MOROPO.UIC.CoInnova.Persistence.Entities;
 
-namespace MOROPO.UIC.CoInnova.Controllers.Api
+namespace MOROPO.UIC.CoInnova.Controllers.API
 {
     [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = SmartSolucionesCuba.AspNetCore.Authentication.ApiKey.ApiKeyAuthenticationDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     [Swashbuckle.AspNetCore.Annotations.SwaggerTag("Prototype's endpoints.")]
-    public class PrototypesController : SAPRESSC.Core.Web.Api.Controllers.AbstractEntityApiConsultController<Prototype, System.Guid, PrototypeDisplayApiModel>
+    public class PrototypesController : Framework.Guama.Core.Presentation.Web.API.Controllers.AbstractEntityApiConsultController<Prototype, System.Guid, PrototypeDisplayApiModel>
     {
-        public PrototypesController(SAPRESSC.Core.Persistence.Repositories.IEntityRepository<Prototype, System.Guid> repository, Microsoft.Extensions.Localization.IStringLocalizer<PrototypesController> localizer, Microsoft.Extensions.Logging.ILogger<PrototypesController> logger) : base(repository, localizer, logger)
+        public PrototypesController(Framework.Guama.Core.Persistence.Repositories.IEntityRepository<Prototype, System.Guid> repository, Microsoft.Extensions.Localization.IStringLocalizer<PrototypesController> localizer, Microsoft.Extensions.Logging.ILogger<PrototypesController> logger) : base(repository, localizer, logger)
         {
         }
 

@@ -1,6 +1,6 @@
 ﻿namespace MOROPO.UIC.CoInnova.Persistence.Entities
 {
-    public class Idea : SAPRESSC.Core.Persistence.Entities.IEntity<System.Guid>
+    public class Idea : Framework.Guama.Core.Persistence.Entities.Contract.IEntity<System.Guid>
     {
         public Idea()
         {
@@ -23,7 +23,7 @@
         public System.DateTime CreatedAt { get; set; }
 
         [System.ComponentModel.DataAnnotations.Schema.ForeignKey("FeatureImageId")]
-        public SAPRESSC.Middleware.Media.Persistence.Entities.Image FeatureImage { get; set; }
+        public Framework.Guama.Media.Persistence.Entities.Image FeatureImage { get; set; }
         public System.Guid? FeatureImageId { get; set; }
 
         [System.ComponentModel.DataAnnotations.Schema.ForeignKey("WorkflowId")]

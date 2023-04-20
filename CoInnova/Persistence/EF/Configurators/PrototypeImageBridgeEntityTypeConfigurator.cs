@@ -1,15 +1,10 @@
 ﻿namespace MOROPO.UIC.CoInnova.Persistence.EF.Configurators
 {
-    public class PrototypeImageBridgeEntityTypeConfigurator : SAPRESSC.Core.Persistence.EF.Configurators.AbstractEntityTypeConfigurator<Entities.PrototypeImageBridge>
+    public class PrototypeImageBridgeEntityTypeConfigurator : Framework.Guama.Core.Persistence.ORM.EF.Configurators.AbstractBridgeEntityTypeConfigurator<Entities.PrototypeImageBridge, Entities.Prototype, System.Guid, Framework.Guama.Media.Persistence.Entities.Image, System.Guid>
     {
-        protected override void ApplayRules(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Entities.PrototypeImageBridge> entityTypeBuilder)
+        public PrototypeImageBridgeEntityTypeConfigurator()
         {
-            base.ApplayRules(entityTypeBuilder);
-
-            entityTypeBuilder.HasKey(bridge => new { bridge.PrototypeId, bridge.ImageId });
-
-            entityTypeBuilder.HasOne(bridge => bridge.Prototype).WithMany(entity => entity.ImageBridges).HasForeignKey(bridge => bridge.PrototypeId);
-            entityTypeBuilder.HasOne(bridge => bridge.Image).WithMany().HasForeignKey(bridge => bridge.ImageId);
+            prowNavigationExpression = entity => entity.ImageBridges;
         }
     }
 }

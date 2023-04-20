@@ -1,4 +1,5 @@
-﻿@using MOROPO.UIC.CoInnova.Extensions;
+﻿@using MOROPO.Framework.Guama.Core.Security.Common.Presentation.Web.Frontend.Extensions
+@using MOROPO.UIC.CoInnova.Extensions;
 @using MOROPO.UIC.CoInnova.Models.View;
 
 @model ManagementDashboardViewModel
@@ -138,7 +139,7 @@
                         @foreach (var item in group.Value)
                         {
                             <div class="col-sm-4" style="text-align: center; padding-bottom: 15px; padding-top: 15px;">
-                                @if (User.HasClaim(claim => claim.Type.Equals(MOROPO.SAPRESSC.Core.Web.Security.Constants.ClaimTypes.AccountWithFullAccess) && claim.Value.Equals(true.ToString())) || User.IsInRole(item.Role))
+                                @if (User.IsAuthorized(item.Role))
                                 {
                                     <a href="@Url.Action(item.Action, item.Controller, new { item.Area })">
                                         @item.ToIconographyHtmlString()

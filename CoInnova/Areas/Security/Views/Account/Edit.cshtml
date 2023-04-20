@@ -127,9 +127,9 @@
                     @Html.LabelFor(model => model.Sex, new { @class = "control-label" })
                     @Html.DropDownListFor(model => model.Sex, new SelectListItem[] 
                     {
-                        new SelectListItem { Value = MOROPO.SAPRESSC.Middleware.Identity.Persistence.Enumerations.Sex.Unknown.ToString(), Text = GlobalViewLocalizationHelper.Localize("Unknown")  },
-                        new SelectListItem { Value = MOROPO.SAPRESSC.Middleware.Identity.Persistence.Enumerations.Sex.Male.ToString(), Text = GlobalViewLocalizationHelper.Localize("Male")  },
-                        new SelectListItem { Value = MOROPO.SAPRESSC.Middleware.Identity.Persistence.Enumerations.Sex.Famale.ToString(), Text = GlobalViewLocalizationHelper.Localize("Famale")  }
+                        new SelectListItem { Value = MOROPO.Framework.Guama.Identity.Persistence.Enumerations.Sex.Unknown.ToString(), Text = GlobalViewLocalizationHelper.Localize("Unknown")  },
+                        new SelectListItem { Value = MOROPO.Framework.Guama.Identity.Persistence.Enumerations.Sex.Male.ToString(), Text = GlobalViewLocalizationHelper.Localize("Male")  },
+                        new SelectListItem { Value = MOROPO.Framework.Guama.Identity.Persistence.Enumerations.Sex.Famale.ToString(), Text = GlobalViewLocalizationHelper.Localize("Famale")  }
                     }, new { @class = "form-control" })
                     @Html.ValidationMessageFor(model => model.Sex, null, new { @class = "text-danger" })
                 </div>
