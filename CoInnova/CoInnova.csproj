@@ -24,10 +24,10 @@
 
   <ItemGroup>
 	<PackageReference Include="AspNetCore.Authentication.ApiKey" Version="1.0.0" />
-	<PackageReference Include="GuamaFramework.Core.Presentation.Web.API" Version="6.0.0.9" />
-	<PackageReference Include="GuamaFramework.Core.Security.Common.Presentation.Web.Frontend" Version="6.0.0.9" />
-	<PackageReference Include="GuamaFramework.Media.Presentation.Web.Common" Version="6.0.0.9" />
-	<PackageReference Include="GuamaFramework.Security.Personal.Presentation.Web.Backend" Version="6.0.0.9" />
+	<PackageReference Include="GuamaFramework.Core.Presentation.Web.API" Version="6.0.0.10" />
+	<PackageReference Include="GuamaFramework.Core.Security.Common.Presentation.Web.Frontend" Version="6.0.0.10" />
+	<PackageReference Include="GuamaFramework.Media.Presentation.Web.Common" Version="6.0.0.10" />
+	<PackageReference Include="GuamaFramework.Security.Personal.Presentation.Web.Backend" Version="6.0.0.10" />
 	<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.5">
 	  <PrivateAssets>all</PrivateAssets>
 	  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

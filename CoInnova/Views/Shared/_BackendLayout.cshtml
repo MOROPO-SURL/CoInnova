@@ -51,6 +51,9 @@
             <form asp-action="logout" asp-controller="account" asp-area="security" asp-antiforgery="true" class="nav form-inline">
                 <ul class="navbar-nav justify-content-end">
                     <li>
+                        <a href="/" class="btn btn-link text-light"><span class="mdi mdi-home-modern" style="margin-right: 4px;"></span>Inicio</a>
+                    </li>
+                    <li>
                         <a asp-action="index" asp-controller="account" asp-area="security" class="btn btn-link text-light"><span class="mdi mdi-account-circle" style="margin-right: 4px;"></span>@User.Identity.Name</a>
                     </li>
                     <li>

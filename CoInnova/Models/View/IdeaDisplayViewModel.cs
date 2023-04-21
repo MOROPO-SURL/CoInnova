@@ -16,12 +16,32 @@
         [System.ComponentModel.DataAnnotations.Display(Name = "Description")]
         public string Description { get; set; }
 
+        [System.ComponentModel.DataAnnotations.Display(Name = "Workflow")]
+        public IdeaWorkflowDisplayViewModel Workflow { get; set; }
+
+        [System.ComponentModel.DataAnnotations.Display(Name = "Challange")]
+        public ChallangeDisplayViewModel Challange { get; set; }
+
         public void Import(Persistence.Entities.Idea entity)
         {
             Id = entity.Id;
             Title = entity.Title;
             Description = entity.Description;
             IsPublic = entity.IsPublic;
+
+            if (entity.WorkflowId != null)
+            {
+                Workflow = new IdeaWorkflowDisplayViewModel();
+
+                Workflow.Import(entity.Workflow);
+            }
+
+            if (entity.ChallangeId != null)
+            {
+                Challange = new ChallangeDisplayViewModel();
+
+                Challange.Import(entity.Challange);
+            }
         }
     }
 }

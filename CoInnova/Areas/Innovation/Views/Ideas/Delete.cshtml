@@ -1,0 +1,40 @@
+﻿@model MOROPO.UIC.CoInnova.Models.View.IdeaDisplayViewModel
+
+@{
+    ViewData["Title"] = "Eliminar Idea Innovadora";
+
+    ViewData[BreadcrumbViewModel.BREADCRUMBS_MAP_KEY] = new List<BreadcrumbViewModel>
+    {
+        new BreadcrumbViewModel
+        {
+            Caption = "<span class=\"mdi mdi-cogs\" style=\"margin-right: 4px;\"></span>" + GlobalViewLocalizationHelper.Localize("Dashboard", ViewLocalizer),
+            Url = Url.Action("index", "dashboard", new { Area = string.Empty })
+        },
+        new BreadcrumbViewModel
+        {
+            Caption = "Administración de Ideas Innovadoras",
+            Url = Url.Action("index")
+        },
+        new BreadcrumbViewModel
+        {
+            Caption = ViewData["Title"].ToString()
+        }
+    };
+
+    Layout = "_BackendLayout";
+}
+
+<h3>Esta seguro que desea eliminar la idea de innovación detallada a continuación?</h3>
+
+<dl>
+    <dt>@Html.DisplayNameFor(model => model.Title)</dt>
+    <dd>@Html.DisplayFor(model => model.Title)</dd>
+</dl>
+@using (Html.BeginForm("delete", "ideas", new { Area = "innovation", key = string.Empty }, FormMethod.Post, true, null))
+{
+    @Html.HiddenFor(model => model.Id)
+    <div>
+        <button type="submit" class="btn btn-danger">Eliminar</button>
+        <a class="btn btn-light" href="@Url.Action("index")">Cancelar</a>
+    </div>
+}

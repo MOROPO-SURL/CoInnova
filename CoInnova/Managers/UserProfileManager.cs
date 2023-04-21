@@ -103,8 +103,11 @@ namespace MOROPO.UIC.CoInnova.Managers
 
                     var image = new Image { ContentType = concreteProfileModel.ImageFile.ContentType, Length = concreteProfileModel.ImageFile.Length, About = "User " + entity.Id };
 
+                    imageRepository.Add(image, username, false);
+
                     imageFileManager.SaveImageFileContent(image.Id, memoryStream.ToArray(), concreteProfileModel.ImageFile.ContentType);
 
+                    entity.Identity.ImageId = image.Id;
                     entity.Identity.Image = image;
                 }
             }

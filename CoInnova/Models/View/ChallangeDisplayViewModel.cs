@@ -21,9 +21,13 @@
             Description = entity.Description;
             CreatedAt = entity.CreatedAt;
             IsPublic = entity.IsPublic;
-            Workflow = new ChallangeWorkflowDisplayViewModel();
 
-            Workflow.Import(entity.Workflow);
+            if (entity.WorkflowId != null)
+            {
+                Workflow = new ChallangeWorkflowDisplayViewModel();
+
+                Workflow.Import(entity.Workflow);
+            }
         }
     }
 }

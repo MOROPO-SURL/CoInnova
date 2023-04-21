@@ -42,7 +42,7 @@ namespace MOROPO.UIC.CoInnova.Managers
 
         private string GetAbsoluteFilePath(System.Guid id, string contentType)
         {
-            return env.WebRootFileProvider.GetFileInfo(System.IO.Path.Combine(MEDIA_ROOT_DIRECTORY_NAME, DOCUMENTS_DIRECTORY_NAME, string.Format("{0}.{1}", id, contentType.AsContentTypeToExtension()))).PhysicalPath;
+            return System.IO.Path.Combine(env.WebRootPath, MEDIA_ROOT_DIRECTORY_NAME, DOCUMENTS_DIRECTORY_NAME, string.Format("{0}.{1}", id, contentType.AsContentTypeToExtension()));
         }
 
         public string GetRelativeFilePath(Persistence.Entities.Document entity)

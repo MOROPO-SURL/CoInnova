@@ -1,0 +1,180 @@
+﻿@using MOROPO.UIC.CoInnova.Extensions;
+
+@model MOROPO.UIC.CoInnova.Models.View.IdeaDocumentsViewModel
+
+@{
+    ViewData["Title"] = "Modificar Idea Innovadora (Documentos)";
+
+    ViewData[BreadcrumbViewModel.BREADCRUMBS_MAP_KEY] = new List<BreadcrumbViewModel>
+    {
+        new BreadcrumbViewModel
+        {
+            Caption = "<span class=\"mdi mdi-cogs\" style=\"margin-right: 4px;\"></span>" + GlobalViewLocalizationHelper.Localize("Dashboard", ViewLocalizer),
+            Url = Url.Action("index", "dashboard", new { Area = string.Empty })
+        },
+        new BreadcrumbViewModel
+        {
+            Caption = "Administración de Ideas Innovadoras",
+            Url = Url.Action("index")
+        },
+        new BreadcrumbViewModel
+        {
+            Caption = ViewData["Title"].ToString()
+        }
+    };
+
+    Layout = "_BackendLayout";
+}
+
+<div class="card" style="margin-bottom: 20px;">
+    <div class="card-header">
+        <h4>Modificar Idea Innovadora</h4>
+        <ul class="nav nav-tabs card-header-tabs">
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("edit", @Model.Idea.Id)">Generales</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("editexecutors", @Model.Idea.Id)">Colaboradores</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active">Documentos</a>
+            </li>
+        </ul>
+    </div>
+    <div class="card-body">
+        <div class="alert alert-dark mb-4">
+            <details>
+                <summary class="h4 mb-0">@Model.Idea.Title</summary>
+                <hr />
+                <dl>
+                    <dt>@Html.DisplayNameFor(model => model.Idea.Workflow)</dt>
+                    @if (Model.Idea.Workflow == null)
+                    {
+                        <dd>---</dd>
+                    }
+                    else
+                    {
+                        <dd>@Model.Idea.Workflow.Name</dd>
+                    }
+                </dl>
+                <dl class="mb-0">
+                    <dt>@Html.DisplayNameFor(model => model.Idea.Challange)</dt>
+                    @if (Model.Idea.Challange == null)
+                    {
+                        <dd>---</dd>
+                    }
+                    else
+                    {
+                        <dd>@Model.Idea.Challange.Title</dd>
+                    }
+                </dl>
+            </details>
+        </div>
+        <div class="modal fade" id="add-document" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="add-document-title">Agregar Archivo</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    @using (Html.BeginForm("adddocument", "ideas", new { key = Model.Idea.Id }, FormMethod.Post, true, new { enctype = "multipart/form-data" }))
+                    {
+                        @await Html.PartialAsync("_DocumentCreationModalBodyPartial", new MOROPO.UIC.CoInnova.Models.View.DocumentInputViewModel())
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Agregar</button>
+                            <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        @if (Model.Documents.Length <= 0)
+        {
+            <p class="text-muted mb-0">Sin elementos que mostrar</p>
+        }
+        else
+        {
+            <div class="row">
+                @foreach (var item in Model.Documents)
+                {
+                    <div class="col-lg-3 col-md-4 col-sm-6">
+                        <div class="modal fade" id="delete-document-@item.Id" tabindex="-1" role="dialog" aria-labelledby="delete-document-@item.Id-lable" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    @using (Html.BeginForm("removedocument", "ideas", new { key = Model.Idea.Id }, FormMethod.Post, true, new { @class = "modal-content" }))
+                                    {
+                                        @Html.Hidden("documentId", item.Id)
+
+                                        <div class="modal-header">
+                                            <h4 class="modal-title" id="delete-document-@item.Id-lable">Eliminar Documento</h4>
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>Esta seguro que desea eliminar el documento seleccionado?</p>
+                                        </div>
+                                        <div class="modal-footer" style="margin-top: 0;">
+                                            <button type="submit" class="btn btn-danger">Eliminar</button>
+                                            <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-center mt-2">
+                            <span class="mdi @item.ContentType.AsContentTypeToMDICssClass()" style="font-size: 114px"></span>
+                            <h5>@item.Name</h5>
+                            @if (item.Description == null)
+                            {
+                                <span class="text-muted italic">Sin descripción</span>
+                            }
+                            else
+                            {
+                                <p style="color: #6c757d; word-wrap: break-word;">@item.Description</p>
+                            }
+                            <div class="mt-3">
+                                <div class="btn-group btn-group-sm">
+                                    <a class="btn btn-light" href="#">Descargar</a>
+                                    <a class="btn btn-light" href="#" data-toggle="modal" data-target="#edit-document-@item.Id">Modificar</a>
+                                    <a class="btn btn-danger" href="#" data-toggle="modal" data-target="#delete-document-@item.Id">Eliminar</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="edit-document-@item.Id" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="edit-document-title">Modificar Datos de Documento</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                @using (Html.BeginForm("editdocument", "ideas", new { key = Model.Idea.Id }, FormMethod.Post, true, null))
+                                {
+                                    @await Html.PartialAsync("_DocumentEditionModalBodyPartial", new MOROPO.UIC.CoInnova.Models.View.DocumentInputViewModel
+                                    {
+                                        Id = item.Id,
+                                        Name = item.Name,
+                                        Description = item.Description
+                                    })
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-primary">Modificar</button>
+                                        <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+    <div class="card-footer">
+        <a class="btn btn-primary" href="#" data-toggle="modal" data-target="#add-document">Agregar</a>
+        <a class="btn btn-light" href="@Url.Action("index")">Regresar al listado</a>
+    </div>
+</div>
+
+
