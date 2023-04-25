@@ -18,9 +18,15 @@
         [System.ComponentModel.DataAnnotations.Required]
         public string Summary { get; set; }
 
+        [System.ComponentModel.DataAnnotations.Schema.ForeignKey("ChallangeId")]
+        public Challange Challange { get; set; }
+        [System.ComponentModel.DataAnnotations.Required]
+        public System.Guid? ChallangeId { get; set; }
+
         [System.ComponentModel.DataAnnotations.Schema.ForeignKey("WorkflowStepId")]
         public ChallangeWorkflowStep WorkflowStep { get; set; }
-        public System.Guid WorkflowStepId { get; set; }
+        [System.ComponentModel.DataAnnotations.Required]
+        public System.Guid? WorkflowStepId { get; set; }
 
         public virtual System.Collections.Generic.List<ChallangeWorkflowIterationImageBridge> ImageBridges { get; set; }
 

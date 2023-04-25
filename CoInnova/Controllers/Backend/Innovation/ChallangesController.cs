@@ -16,13 +16,17 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
         private readonly IEntityRepository<ChallangeWorkflow, System.Guid> challangeWorkflowRepository;
         private readonly IEntityRepository<Document, System.Guid> documentRepository;
         private readonly IEntityRepository<Collaborator, System.Guid> collaboratorRepository;
+        private readonly IEntityRepository<ChallangeWorkflowIteration, System.Guid> challangeWorkflowIterationRepository;
+        private readonly IEntityRepository<ChallangeWorkflowStep, System.Guid> challangeWorkflowStepRepository;
         private readonly Managers.RelativeDocumentFileManager documentManager;
 
-        public ChallangesController(Managers.RelativeDocumentFileManager documentManager, IEntityRepository<Collaborator, System.Guid> collaboratorRepository, IEntityRepository<Document, System.Guid> documentRepository, IEntityRepository<ChallangeWorkflow, System.Guid> challangeWorkflowRepository, IEntityRepository<Challange, System.Guid> repository, Microsoft.Extensions.Localization.IStringLocalizer<ChallangesController> localizer, ILogger<ChallangesController> logger) : base(repository, localizer, logger)
+        public ChallangesController(Managers.RelativeDocumentFileManager documentManager, IEntityRepository<ChallangeWorkflowStep, System.Guid> challangeWorkflowStepRepository, IEntityRepository<ChallangeWorkflowIteration, System.Guid> challangeWorkflowIterationRepository, IEntityRepository<Collaborator, System.Guid> collaboratorRepository, IEntityRepository<Document, System.Guid> documentRepository, IEntityRepository<ChallangeWorkflow, System.Guid> challangeWorkflowRepository, IEntityRepository<Challange, System.Guid> repository, Microsoft.Extensions.Localization.IStringLocalizer<ChallangesController> localizer, ILogger<ChallangesController> logger) : base(repository, localizer, logger)
         {
             this.challangeWorkflowRepository = challangeWorkflowRepository;
             this.documentRepository = documentRepository;
             this.collaboratorRepository = collaboratorRepository;
+            this.challangeWorkflowIterationRepository = challangeWorkflowIterationRepository;
+            this.challangeWorkflowStepRepository = challangeWorkflowStepRepository;
             this.documentManager = documentManager;
         }
 
@@ -594,6 +598,350 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
 
             return GetSuccessDeleteActionResult();
         }
+
+        #endregion
+
+        #region WorkflowIterations
+
+        [HttpGet]
+        [Route("edit/{key}/workflow/iterations")]
+        [RequirePermissions(Constants.Permission.ChallangeEditor)]
+        public ActionResult EditWorkflowIterations(System.Guid key)
+        {
+            var entity = Repository.Get(key);
+
+            if (entity.WorkflowId ==  null)
+            {
+                SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Warning, "Flujo de Trabajo", "No se ha especificado el flujo de trabajo a utilizar en el proceso de innovación para este reto. Puede especificarlo en este formulario.", null);
+
+                return RedirectToAction("Edit", new { key = entity.Id });
+            }
+
+            var model = new ChallangeWorkflowIterationsViewModel
+            {
+                Challange = new ChallangeDisplayViewModel(),
+                WorkflowIterations = challangeWorkflowIterationRepository.FindBy(ent1ty => ent1ty.ChallangeId == entity.Id).OrderBy(ent1ty => ent1ty.CreatedAt).ToArray().Select(item =>
+                {
+                    var result = new ChallangeWorkflowIterationDisplayViewModel();
+
+                    result.Import(item);
+
+                    return result;
+                }).ToArray()
+            };
+
+            var pendingWorkflowSteps = new System.Collections.Generic.List<ChallangeWorkflowStepDisplayViewModel>();
+
+            var currentWorkflowStep = challangeWorkflowStepRepository.Get(entity.Workflow.StartStepId.Value);
+
+            while (currentWorkflowStep != null)
+            {
+                if (!model.WorkflowIterations.Any(item => item.WorkflowStep.Id == currentWorkflowStep.Id))
+                {
+                    if (model.NextChallangeWorkflowStep == null)
+                    {
+                        model.NextChallangeWorkflowStep = new ChallangeWorkflowStepDisplayViewModel
+                        {
+                            Id = currentWorkflowStep.Id,
+                            Name = currentWorkflowStep.Name,
+                            Description = currentWorkflowStep.Description
+                        };
+                    }
+                    else
+                    {
+                        pendingWorkflowSteps.Add(new ChallangeWorkflowStepDisplayViewModel
+                        {
+                            Id = currentWorkflowStep.Id,
+                            Name = currentWorkflowStep.Name,
+                            Description = currentWorkflowStep.Description
+                        });
+                    }
+                }
+
+                currentWorkflowStep = currentWorkflowStep.NextId == null ? null : challangeWorkflowStepRepository.Get(currentWorkflowStep.NextId.Value);
+            }
+
+            model.PendingWorkflowSteps = pendingWorkflowSteps.ToArray();
+
+            model.Challange.Import(entity);
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Route("edit/{key}/workflow/iterations/next")]
+        [ValidateAntiForgeryToken]
+        [RequirePermissions(Constants.Permission.ChallangeEditor)]
+        public IActionResult StartNextIteration(System.Guid key, string summary)
+        {
+            try
+            {
+                var entity = Repository.Get(key);
+
+                if (ModelState.IsValid)
+                {
+                    try
+                    {
+                        var workflowIterations = challangeWorkflowIterationRepository.FindBy(ent1ty => ent1ty.ChallangeId == entity.Id).OrderBy(ent1ty => ent1ty.CreatedAt).ToArray();
+
+                        var targetWorkflowStep = challangeWorkflowStepRepository.Get(entity.Workflow.StartStepId.Value);
+
+                        while (targetWorkflowStep != null)
+                        {
+                            if (!workflowIterations.Any(item => item.WorkflowStep.Id == targetWorkflowStep.Id))
+                            {
+                                break;
+                            }
+
+                            targetWorkflowStep = targetWorkflowStep.NextId == null ? null : challangeWorkflowStepRepository.Get(targetWorkflowStep.NextId.Value);
+                        }
+
+                        challangeWorkflowIterationRepository.Add(new ChallangeWorkflowIteration
+                        {
+                            Challange = entity,
+                            ChallangeId = entity.Id,
+                            Summary = summary,
+                            WorkflowStepId = targetWorkflowStep.Id,
+                            WorkflowStep = targetWorkflowStep
+                        }, User.Identity.Name);
+
+                        SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Success, GetCreationSuccessMessage());
+
+                        return RedirectToAction("EditWorkflowIterations", new { key = entity.Id });
+                    }
+                    catch (Framework.Guama.Core.Presentation.Web.Frontend.InvalidModelException e)
+                    {
+                        ModelState.AddModelError(e.ModelKey, e.ErrorMessage);
+                    }
+                }
+
+                SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Danger, GetInvalidMessage());
+
+                return RedirectToAction("EditWorkflowIterations", new { key = entity.Id });
+            }
+            catch (System.Exception e)
+            {
+                logger.LogError(e.InnerException, e.Message);
+            }
+
+            SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Danger, GetNotFoundMessage());
+
+            return GetDefaultActionResult();
+        }
+
+        [HttpPost]
+        [Route("edit/{key}/workflow/iterations/{id}/edit")]
+        [ValidateAntiForgeryToken]
+        [RequirePermissions(Constants.Permission.ChallangeEditor)]
+        public IActionResult EditIteration(System.Guid key, System.Guid id, string summary)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var entity = challangeWorkflowIterationRepository.Get(id);
+
+                    if (entity.ChallangeId.Value != key)
+                    {
+                        SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Danger, GetInvalidMessage());
+
+                        return RedirectToAction("EditWorkflowIterations", new { key });
+                    }
+
+                    try
+                    {
+                        entity.Summary = summary;
+
+                        challangeWorkflowIterationRepository.Update(entity, User.Identity.Name);
+
+                        SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Success, GetEditionSuccessMessage());
+
+                        return RedirectToAction("EditWorkflowIterations", new { key });
+                    }
+                    catch (Framework.Guama.Core.Presentation.Web.Frontend.InvalidModelException e)
+                    {
+                        ModelState.AddModelError(e.ModelKey, e.ErrorMessage);
+                    }
+
+                    SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Danger, GetInvalidMessage());
+
+                    return RedirectToAction("EditWorkflowIterations", new { key });
+                }
+                catch (System.Exception e)
+                {
+                    logger.LogError(e.InnerException, e.Message);
+                }
+            }
+
+            SetDefaultNotification(notificationType: Framework.Guama.Core.Presentation.Models.View.NotificationType.Danger, GetNotFoundMessage());
+
+            return GetDefaultActionResult();
+        }
+
+        #region Documents
+
+        [HttpPost]
+        [Route("edit/{key}/workflow/iterations/{iterationId}/documents/add")]
+        [ValidateAntiForgeryToken]
+        [RequirePermissions(Constants.Permission.ChallangeEditor)]
+        public IActionResult AddWorkflowIterationDocument(System.Guid key, System.Guid iterationId, DocumentInputViewModel model)
+        {
+            try
+            {
+                var entity = challangeWorkflowIterationRepository.Get(iterationId);
+
+                ModelState.ClearValidationState("File");
+
+                model.File = Request.Form.Files[0];
+
+                TryValidateModel(model);
+
+                if (ModelState.IsValid)
+                {
+                    try
+                    {
+                        using (var memoryStream = new System.IO.MemoryStream())
+                        {
+                            model.File.CopyTo(memoryStream);
+
+                            var document = new Document
+                            {
+                                Name = model.Name,
+                                Description = model.Description,
+                                ContentType = model.File.ContentType,
+                                Length = model.File.Length
+                            };
+
+                            documentRepository.Add(document, User.Identity.Name, false);
+
+                            entity.DocumentBridges.Add(new ChallangeWorkflowIterationDocumentBridge
+                            {
+                                ProwId = entity.Id,
+                                SternId = document.Id
+                            });
+
+                            documentManager.SaveFileContent(document.Id, memoryStream.ToArray(), document.ContentType);
+
+                            challangeWorkflowIterationRepository.Update(entity, User.Identity.Name);
+                        }
+
+                        SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Success, GetCreationSuccessMessage());
+
+                        return RedirectToAction("EditWorkflowIterations", new { key });
+                    }
+                    catch (Framework.Guama.Core.Presentation.Web.Frontend.InvalidModelException e)
+                    {
+                        ModelState.AddModelError(e.ModelKey, e.ErrorMessage);
+                    }
+                }
+
+                SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Danger, GetInvalidMessage());
+
+                return RedirectToAction("EditWorkflowIterations", new { key });
+            }
+            catch (System.Exception e)
+            {
+                logger.LogError(e.InnerException, e.Message);
+            }
+
+            SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Danger, GetNotFoundMessage());
+
+            return GetDefaultActionResult();
+        }
+
+        [HttpPost]
+        [Route("edit/{key}/workflow/iterations/{iterationId}/documents/remove")]
+        [ValidateAntiForgeryToken]
+        [RequirePermissions(Constants.Permission.ChallangeEditor)]
+        public IActionResult RemoveWorkflowIterationDocument(System.Guid key, System.Guid iterationId, System.Guid documentId)
+        {
+            try
+            {
+                var entity = challangeWorkflowIterationRepository.Get(iterationId);
+
+                var bridge = entity.DocumentBridges.First(b => b.SternId == documentId);
+
+                entity.DocumentBridges.Remove(bridge);
+
+                challangeWorkflowIterationRepository.Update(entity, User.Identity.Name);
+
+                try
+                {
+                    documentManager.DeleteFile(bridge.Stern);
+                }
+                catch { }
+
+                SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Success, GetDeletionSuccessMessage());
+
+                return RedirectToAction("EditWorkflowIterations", new { key });
+            }
+            catch (Microsoft.EntityFrameworkCore.DbUpdateException e)
+            {
+                logger.LogError(e.InnerException, e.Message);
+
+                SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Warning, GetOnDeletionDependecyConstrainErrorMessage());
+
+                return RedirectToAction("EditWorkflowIterations", new { key });
+            }
+            catch (System.Exception e)
+            {
+                logger.LogError(e.InnerException, e.Message);
+            }
+
+            SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Danger, GetNotFoundMessage());
+
+            return GetSuccessDeleteActionResult();
+        }
+
+        [HttpPost]
+        [Route("edit/{key}/workflow/iterations/{iterationId}/documents/edit")]
+        [ValidateAntiForgeryToken]
+        [RequirePermissions(Constants.Permission.ChallangeEditor)]
+        public IActionResult EditWorkflowIterationDocument(System.Guid key,System.Guid iterationId, DocumentInputViewModel modelInput)
+        {
+            ModelState.ClearValidationState("File");
+            ModelState.MarkFieldValid("File");
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var entity = challangeWorkflowIterationRepository.Get(iterationId);
+
+                    try
+                    {
+                        var bridge = entity.DocumentBridges.First(b => b.SternId == modelInput.Id);
+
+                        bridge.Stern.Name = modelInput.Name;
+                        bridge.Stern.Description = modelInput.Description;
+
+                        challangeWorkflowIterationRepository.Update(entity, User.Identity.Name);
+
+                        SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Success, GetEditionSuccessMessage());
+
+                        return RedirectToAction("EditWorkflowIterations", new { key });
+                    }
+                    catch (Framework.Guama.Core.Presentation.Web.Frontend.InvalidModelException e)
+                    {
+                        ModelState.AddModelError(e.ModelKey, e.ErrorMessage);
+                    }
+
+                    SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Danger, GetInvalidMessage());
+
+                    return RedirectToAction("EditWorkflowIterations", new { key });
+                }
+                catch (System.Exception e)
+                {
+                    logger.LogError(e.InnerException, e.Message);
+                }
+            }
+
+            SetDefaultNotification(notificationType: Framework.Guama.Core.Presentation.Models.View.NotificationType.Danger, GetNotFoundMessage());
+
+            return GetDefaultActionResult();
+        }
+
+        #endregion
 
         #endregion
     }

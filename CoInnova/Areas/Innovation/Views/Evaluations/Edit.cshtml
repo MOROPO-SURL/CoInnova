@@ -1,0 +1,158 @@
+﻿@model MOROPO.UIC.CoInnova.Models.View.EvaluationInputViewModel
+
+@{
+    ViewData["Title"] = "Modificar Evaluación";
+
+    ViewData[BreadcrumbViewModel.BREADCRUMBS_MAP_KEY] = new List<BreadcrumbViewModel>
+    {
+        new BreadcrumbViewModel
+        {
+            Caption = "<span class=\"mdi mdi-cogs\" style=\"margin-right: 4px;\"></span>" + GlobalViewLocalizationHelper.Localize("Dashboard", ViewLocalizer),
+            Url = Url.Action("index", "dashboard", new { Area = string.Empty })
+        },
+        new BreadcrumbViewModel
+        {
+            Caption = "Administración de Evaluaciones",
+            Url = Url.Action("index")
+        },
+        new BreadcrumbViewModel
+        {
+            Caption = ViewData["Title"].ToString()
+        }
+    };
+
+    Layout = "_BackendLayout";
+}
+
+@using (Html.BeginForm("edit", "evaluations", new { Area = "innovation", key = string.Empty }, FormMethod.Post, true, null))
+{
+    @Html.ValidationSummary(true)
+
+    @Html.HiddenFor(model => model.Id)
+
+    <div class="card mb-3">
+        <div class="card-header">
+            <h4>@ViewData["Title"]</h4>
+            <ul class="nav nav-tabs card-header-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">Generales</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="@Url.Action("editcollaborators", @Model.Id)">Autores</a>
+                </li>
+            </ul>
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                @Html.LabelFor(model => model.IdeaId, new { @class = "control-label" })
+                @Html.DropDownListFor(model => model.IdeaId, Model.AvailableIdeaSelectListItems, null, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.IdeaId, null, new { @class = "text-danger" })
+            </div>
+            <div class="mb-3">
+                @Html.LabelFor(model => model.Valoration, new { @class = "control-label" })
+                <div>
+                    <div class="form-check">
+                        @Html.RadioButtonFor(model => model.Valoration, 1, new { id="valoration-1", @class = "form-check-input" })
+                        <span class="mdi mdi-star-half"></span>
+                        <span class="mdi mdi-star-outline"></span>
+                        <span class="mdi mdi-star-outline"></span>
+                        <span class="mdi mdi-star-outline"></span>
+                        <span class="mdi mdi-star-outline"></span>
+                        <label class="form-check-label" for="valoration-1">(1/10)</label>
+                    </div>
+                    <div class="form-check">
+                        @Html.RadioButtonFor(model => model.Valoration, 2, new { id="valoration-2", @class = "form-check-input" })
+                        <span class="mdi mdi-star"></span>
+                        <span class="mdi mdi-star-outline"></span>
+                        <span class="mdi mdi-star-outline"></span>
+                        <span class="mdi mdi-star-outline"></span>
+                        <span class="mdi mdi-star-outline"></span>
+                        <label class="form-check-label" for="valoration-2">(2/10)</label>
+                    </div>
+                    <div class="form-check">
+                        @Html.RadioButtonFor(model => model.Valoration, 3, new { id="valoration-3", @class = "form-check-input" })
+                        <span class="mdi mdi-star"></span>
+                        <span class="mdi mdi-star-half"></span>
+                        <span class="mdi mdi-star-outline"></span>
+                        <span class="mdi mdi-star-outline"></span>
+                        <span class="mdi mdi-star-outline"></span>
+                        <label class="form-check-label" for="valoration-3">(3/10)</label>
+                    </div>
+                    <div class="form-check">
+                        @Html.RadioButtonFor(model => model.Valoration, 4, new { id="valoration-4", @class = "form-check-input" })
+                        <span class="mdi mdi-star"></span>
+                        <span class="mdi mdi-star"></span>
+                        <span class="mdi mdi-star-outline"></span>
+                        <span class="mdi mdi-star-outline"></span>
+                        <span class="mdi mdi-star-outline"></span>
+                        <label class="form-check-label" for="valoration-4">(4/10)</label>
+                    </div>
+                    <div class="form-check">
+                        @Html.RadioButtonFor(model => model.Valoration, 5, new { id="valoration-5", @class = "form-check-input" })
+                        <span class="mdi mdi-star"></span>
+                        <span class="mdi mdi-star"></span>
+                        <span class="mdi mdi-star-half"></span>
+                        <span class="mdi mdi-star-outline"></span>
+                        <span class="mdi mdi-star-outline"></span>
+                        <label class="form-check-label" for="valoration-5">(5/10)</label>
+                    </div>
+                    <div class="form-check">
+                        @Html.RadioButtonFor(model => model.Valoration, 6, new { id="valoration-6", @class = "form-check-input" })
+                        <span class="mdi mdi-star"></span>
+                        <span class="mdi mdi-star"></span>
+                        <span class="mdi mdi-star"></span>
+                        <span class="mdi mdi-star-outline"></span>
+                        <span class="mdi mdi-star-outline"></span>
+                        <label class="form-check-label" for="valoration-6">(6/10)</label>
+                    </div>
+                    <div class="form-check">
+                        @Html.RadioButtonFor(model => model.Valoration, 7, new { id="valoration-7", @class = "form-check-input" })
+                        <span class="mdi mdi-star"></span>
+                        <span class="mdi mdi-star"></span>
+                        <span class="mdi mdi-star"></span>
+                        <span class="mdi mdi-star-half"></span>
+                        <span class="mdi mdi-star-outline"></span>
+                        <label class="form-check-label" for="valoration-7">(7/10)</label>
+                    </div>
+                    <div class="form-check">
+                        @Html.RadioButtonFor(model => model.Valoration, 8, new { id="valoration-8", @class = "form-check-input" })
+                        <span class="mdi mdi-star"></span>
+                        <span class="mdi mdi-star"></span>
+                        <span class="mdi mdi-star"></span>
+                        <span class="mdi mdi-star"></span>
+                        <span class="mdi mdi-star-outline"></span>
+                        <label class="form-check-label" for="valoration-8">(8/10)</label>
+                    </div>
+                    <div class="form-check">
+                        @Html.RadioButtonFor(model => model.Valoration, 9, new { id="valoration-9", @class = "form-check-input" })
+                        <span class="mdi mdi-star"></span>
+                        <span class="mdi mdi-star"></span>
+                        <span class="mdi mdi-star"></span>
+                        <span class="mdi mdi-star"></span>
+                        <span class="mdi mdi-star-half"></span>
+                        <label class="form-check-label" for="valoration-9">(9/10)</label>
+                    </div>
+                    <div class="form-check">
+                        @Html.RadioButtonFor(model => model.Valoration, 10, new { id="valoration-10", @class = "form-check-input" })
+                        <span class="mdi mdi-star"></span>
+                        <span class="mdi mdi-star"></span>
+                        <span class="mdi mdi-star"></span>
+                        <span class="mdi mdi-star"></span>
+                        <span class="mdi mdi-star"></span>
+                        <label class="form-check-label" for="valoration-10">(10/10)</label>
+                    </div>
+                </div>
+                @Html.ValidationMessageFor(model => model.Valoration, null, new { @class = "text-danger" })
+            </div>
+            <div>
+                @Html.LabelFor(model => model.Argument, new { @class = "control-label" })
+                @Html.TextAreaFor(model => model.Argument, 18, 0, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Argument, null, new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="card-footer">
+            <button type="submit" class="btn btn-primary">Modificar</button>
+            <a class="btn btn-light" href="@Url.Action("index")">Regresar al listado</a>
+        </div>
+    </div>
+}
