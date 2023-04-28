@@ -1,0 +1,363 @@
+﻿@using MOROPO.UIC.CoInnova.Extensions;
+
+@model MOROPO.UIC.CoInnova.Models.View.IdeaWorkflowIterationsViewModel
+
+@{
+    ViewData["Title"] = "Modificar Idea Innovadora (Proceso de Innovación)";
+
+    ViewData[BreadcrumbViewModel.BREADCRUMBS_MAP_KEY] = new List<BreadcrumbViewModel>
+    {
+        new BreadcrumbViewModel
+        {
+            Caption = "<span class=\"mdi mdi-cogs\" style=\"margin-right: 4px;\"></span>" + GlobalViewLocalizationHelper.Localize("Dashboard", ViewLocalizer),
+            Url = Url.Action("index", "dashboard", new { Area = string.Empty })
+        },
+        new BreadcrumbViewModel
+        {
+            Caption = "Administración de Ideas Innovadoras",
+            Url = Url.Action("index")
+        },
+        new BreadcrumbViewModel
+        {
+            Caption = ViewData["Title"].ToString()
+        }
+    };
+
+    Layout = "_BackendLayout";
+}
+
+<div class="card" style="margin-bottom: 20px;">
+    <div class="card-header">
+        <h4>Modificar Reto de Innovación</h4>
+        <ul class="nav nav-tabs card-header-tabs">
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("edit", @Model.Idea.Id)">Generales</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("editpersoncollaborations", @Model.Idea.Id)">Colaboradores</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("editdocuments", @Model.Idea.Id)">Documentos</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="#">Proceso de Innovación</a>
+            </li>
+        </ul>
+    </div>
+    <div class="card-body">
+        <div class="alert alert-dark mb-4">
+            <details>
+                <summary class="h4 mb-0">@Model.Idea.Title</summary>
+                <hr />
+                <dl class="mb-0">
+                    <dt>@Html.DisplayNameFor(model => model.Idea.Workflow)</dt>
+                    @if (Model.Idea.Workflow == null)
+                    {
+                        <dd>---</dd>
+                    }
+                    else
+                    {
+                        <dd>@Model.Idea.Workflow.Name</dd>
+                    }
+                </dl>
+            </details>
+        </div>
+        <div class="modal fade" id="start-next-iteration" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="start-next-iteration-title">Iniciar Etapa</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    @using (Html.BeginForm("StartNextIteration", "ideas", new { key = Model.Idea.Id }, FormMethod.Post, true, null))
+                    {
+                        <div class="card-body">
+                            <div>
+                                @Html.Label("Summary", @GlobalViewLocalizationHelper.Localize("Summary"), new { @class = "control-label" })
+                                @Html.TextArea("Summary", string.Empty, 18, 0, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Iniciar</button>
+                            <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        @for (int i = 0; i < Model.WorkflowIterations.Length; i++)
+        {
+            var item = Model.WorkflowIterations.ElementAt(i);
+
+            if (i > 0)
+            {
+                <div class="text-center"><span class="mdi mdi-arrow-down mdi-48px mt-4 mb-4"></span></div>
+            }
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="alert alert-dark mb-4  text-center">
+                        <h4 class="card-title mb-0">@item.WorkflowStep.Name</h4>
+                        @if (string.IsNullOrEmpty(item.WorkflowStep.Description))
+                        {
+                            <p class="card-text text-muted" style="font-style: italic;">Descripción no especificada</p>
+                        }
+                        else
+                        {
+                            <p class="card-text">@item.WorkflowStep.Description</p>
+                        }
+                    </div>
+                    <h5>Sumario</h5>
+                    <p>@item.Summary</p>
+                    <h5 class="border-bottom pb-2">Imágenes</h5>
+                    @if (item.Images.Length <= 0)
+                    {
+                        <p class="text-muted" style="margin-bottom: 1.25rem !important;">Sin elementos que mostrar</p>
+                    }
+                    else
+                    {
+                        <div class="card-columns mt-3 mb-0" >
+                            @foreach (var it3m in item.Images)
+                            {
+                                <div class="card" style="margin-bottom: 1.25rem !important;">
+                                    <img class="card-img" src="~/media/images/@it3m.Id.@it3m.Extension" />
+                                    <div class="card-img-overlay">                        
+                                        <div class="btn-group btn-group-sm float-right">
+                                            <a class="btn btn-danger" href="#" data-toggle="modal" data-target="#delete-image-@it3m.Id"><span class="mdi mdi-trash-can"></span></a>
+                                        </div>
+                                    </div>
+                                    <div class="modal fade" id="delete-image-@it3m.Id" tabindex="-1" role="dialog" aria-labelledby="delete-image-@it3m.Id-lable" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                @using (Html.BeginForm("DeleteWorkflowIterationImage", "ideas", new { key = Model.Idea.Id, iterationId = item.Id }, FormMethod.Post, true, new { @class = "modal-content" }))
+                                                {
+                                                    @Html.Hidden("imageId", it3m.Id)
+
+                                                    <div class="modal-header">
+                                                        <h4 class="modal-title" id="delete-image-@it3m.Id-lable">Eliminar Imagen</h4>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p class="mb-0">Esta seguro que desea eliminar la imagen seleccionada?</p>
+                                                    </div>
+                                                    <div class="modal-footer" style="margin-top: 0;">
+                                                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                                                        <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    <h5 class="border-bottom pb-2">Documentos</h5>
+                    @if (item.Documents.Length <= 0)
+                    {
+                        <p class="text-muted mb-0">Sin elementos que mostrar</p>
+                    }
+                    else
+                    {
+                        <div class="row">
+                            @foreach (var it3m in item.Documents)
+                            {
+                                <div class="col-lg-3 col-md-4 col-sm-6">
+                                    <div class="modal fade" id="delete-document-@it3m.Id" tabindex="-1" role="dialog" aria-labelledby="delete-document-@it3m.Id-lable" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                @using (Html.BeginForm("RemoveWorkflowIterationDocument", "ideas", new { key = Model.Idea.Id, iterationId = item.Id }, FormMethod.Post, true, new { @class = "modal-content" }))
+                                                {
+                                                    @Html.Hidden("documentId", it3m.Id)
+
+                                                    <div class="modal-header">
+                                                        <h4 class="modal-title" id="delete-document-@item.Id-lable">Eliminar Documento</h4>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p class="mb-0">Esta seguro que desea eliminar el documento seleccionado?</p>
+                                                    </div>
+                                                    <div class="modal-footer" style="margin-top: 0;">
+                                                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                                                        <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="text-center mt-2">
+                                        <span class="mdi @it3m.ContentType.AsContentTypeToMDICssClass()" style="font-size: 114px"></span>
+                                        <h5>@it3m.Name</h5>
+                                        @if (it3m.Description == null)
+                                        {
+                                            <span class="text-muted italic">Sin descripción</span>
+                                        }
+                                        else
+                                        {
+                                            <p style="color: #6c757d; word-wrap: break-word;">@it3m.Description</p>
+                                        }
+                                        <div class="mt-3">
+                                            <div class="btn-group btn-group-sm">
+                                                <a class="btn btn-light" href="#">Descargar</a>
+                                                <a class="btn btn-light" href="#" data-toggle="modal" data-target="#edit-document-@it3m.Id">Modificar</a>
+                                                <a class="btn btn-danger" href="#" data-toggle="modal" data-target="#delete-document-@it3m.Id">Eliminar</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal fade" id="edit-document-@it3m.Id" tabindex="-1" role="dialog" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="edit-document-@it3m-title">Modificar Datos de Documento</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            @using (Html.BeginForm("EditWorkflowIterationDocument", "ideas", new { key = Model.Idea.Id, iterationId = item.Id }, FormMethod.Post, true, null))
+                                            {
+                                                @await Html.PartialAsync("_DocumentEditionModalBodyPartial", new MOROPO.UIC.CoInnova.Models.View.DocumentInputViewModel
+                                                {
+                                                    Id = it3m.Id,
+                                                    Name = it3m.Name,
+                                                    Description = it3m.Description
+                                                })
+                                                <div class="modal-footer">
+                                                    <button type="submit" class="btn btn-primary">Modificar</button>
+                                                    <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+                
+                <div class="modal fade" id="iteration-@item.Id-edit" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="iteration-@item.Id-edit-title">Modificar Sumario de Etapa</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            @using (Html.BeginForm("EditIteration", "ideas", new { key = Model.Idea.Id, id = item.Id  }, FormMethod.Post, true, null))
+                            {
+                                <div class="card-body">
+                                    <div>
+                                        @Html.Label("Summary", @GlobalViewLocalizationHelper.Localize("Summary"), new { @class = "control-label" })
+                                        @Html.TextArea("Summary", item.Summary, 18, 0, new { @class = "form-control" })
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Modificar</button>
+                                    <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="iteration-@item.Id-document-add" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="iteration-@item.Id-document-add-title">Agregar Archivo</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            @using (Html.BeginForm("AddWorkflowIterationDocument", "ideas", new { key = Model.Idea.Id, iterationId = item.Id }, FormMethod.Post, true, new { enctype = "multipart/form-data" }))
+                            {
+                                @await Html.PartialAsync("_DocumentCreationModalBodyPartial", new MOROPO.UIC.CoInnova.Models.View.DocumentInputViewModel())
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Agregar</button>
+                                    <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div class="modal fade" id="iteration-@item.Id-image-add" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="iteration-@item.Id-image-add">Agregar Imagen</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            @using (Html.BeginForm("AddWorkflowIterationImage", "ideas", new { key = Model.Idea.Id, iterationId = item.Id }, FormMethod.Post, true, new { enctype = "multipart/form-data" }))
+                            {
+                                <div class="modal-body">
+                                    <input type="file" class="form-control" id="imageFile" name="imageFile" />
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Agregar</button>
+                                    <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer text-right">
+                    <button class="btn btn-light" data-toggle="modal" data-target="#iteration-@item.Id-image-add">Agregar Imagen</button>
+                    <button class="btn btn-light" data-toggle="modal" data-target="#iteration-@item.Id-document-add">Agregar Documento</button>
+                    <button class="btn btn-light" data-toggle="modal" data-target="#iteration-@item.Id-edit">Modificar Sumario</button>
+                </div>
+            </div>
+        }
+
+        @if (Model.NextIdeaWorkflowStep != null)
+        {
+            if (Model.WorkflowIterations.Length > 0)
+            {
+                <div class="text-center"><span class="mdi mdi-arrow-down mdi-48px mt-4 mb-4"></span></div>
+            }
+
+            <div class="alert alert-info text-center p-5 mb-0">
+                <h3 class="card-title">Siguiente Etapa</h3>
+                <h4 class="mb-0">@Model.NextIdeaWorkflowStep.Name</h4>
+                @if (string.IsNullOrEmpty(Model.NextIdeaWorkflowStep.Description))
+                {
+                    <p class="card-text text-muted" style="font-style: italic;">Descripción no especificada</p>
+                }
+                else
+                {
+                    <p class="card-text">@Model.NextIdeaWorkflowStep.Description</p>
+                }
+                <button class="btn btn-info btn-lg" data-toggle="modal" data-target="#start-next-iteration">Iniciar</button>
+            </div>
+        }
+
+        @foreach (var item in Model.PendingWorkflowSteps)
+        {
+            <div class="text-center"><span class="mdi mdi-arrow-down mdi-48px mt-4 mb-4"></span></div>
+
+            <div class="alert alert-light text-center">
+                <h4 class="mb-0">@item.Name</h4>
+                @if (string.IsNullOrEmpty(item.Description))
+                {
+                    <p class="card-text text-muted" style="font-style: italic;">Descripción no especificada</p>
+                }
+                else
+                {
+                    <p class="card-text">@item.Description</p>
+                }
+            </div>
+        }
+    </div>
+    <div class="card-footer">
+        <a class="btn btn-light" href="@Url.Action("index")">Regresar al listado</a>
+    </div>
+</div>
+
+

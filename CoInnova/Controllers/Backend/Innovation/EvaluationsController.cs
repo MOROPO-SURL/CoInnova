@@ -202,7 +202,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
 
                         SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Success, GetCreationSuccessMessage());
 
-                        return RedirectToAction("EditCollaborators", new { key = entity.Id });
+                        return RedirectToAction("EditCollaborators", new { key });
                     }
                     catch (Framework.Guama.Core.Presentation.Web.Frontend.InvalidModelException e)
                     {
@@ -214,7 +214,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
 
                 SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Danger, GetInvalidMessage());
 
-                return RedirectToAction("EditCollaborators", new { key = entity.Id });
+                return RedirectToAction("EditCollaborators", new { key });
             }
             catch (System.Exception e)
             {

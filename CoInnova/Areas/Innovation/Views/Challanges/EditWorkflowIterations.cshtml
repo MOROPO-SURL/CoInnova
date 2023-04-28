@@ -114,11 +114,11 @@
                     <h5 class="border-bottom pb-2">Imágenes</h5>
                     @if (item.Images.Length <= 0)
                     {
-                        <p class="text-muted mb-0">Sin elementos que mostrar</p>
+                        <p class="text-muted" style="margin-bottom: 1.25rem !important;">Sin elementos que mostrar</p>
                     }
                     else
                     {
-                        <div class="card-columns">
+                        <div class="card-columns mt-3 mb-0" >
                             @foreach (var it3m in item.Images)
                             {
                                 <div class="card" style="margin-bottom: 1.25rem !important;">
@@ -131,16 +131,16 @@
                                     <div class="modal fade" id="delete-image-@it3m.Id" tabindex="-1" role="dialog" aria-labelledby="delete-image-@it3m.Id-lable" aria-hidden="true">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
-                                                @using (Html.BeginForm("iterationdeleteimage", "challanges", new { key = Model.Challange.Id, id = item.Id }, FormMethod.Post, true, new { @class = "modal-content" }))
+                                                @using (Html.BeginForm("DeleteWorkflowIterationImage", "challanges", new { key = Model.Challange.Id, iterationId = item.Id }, FormMethod.Post, true, new { @class = "modal-content" }))
                                                 {
-                                                    @Html.Hidden("imageId", item.Id)
+                                                    @Html.Hidden("imageId", it3m.Id)
 
                                                     <div class="modal-header">
-                                                        <h4 class="modal-title" id="delete-image-@item.Id-lable">Eliminar Imagen</h4>
+                                                        <h4 class="modal-title" id="delete-image-@it3m.Id-lable">Eliminar Imagen</h4>
                                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <p>Esta seguro que desea eliminar la imagen seleccionada?</p>
+                                                        <p class="mb-0">Esta seguro que desea eliminar la imagen seleccionada?</p>
                                                     </div>
                                                     <div class="modal-footer" style="margin-top: 0;">
                                                         <button type="submit" class="btn btn-danger">Eliminar</button>
@@ -154,7 +154,7 @@
                             }
                         </div>
                     }
-                    <h5 class="border-bottom pb-2 mt-3">Documentos</h5>
+                    <h5 class="border-bottom pb-2">Documentos</h5>
                     @if (item.Documents.Length <= 0)
                     {
                         <p class="text-muted mb-0">Sin elementos que mostrar</p>
@@ -275,6 +275,30 @@
                             @using (Html.BeginForm("AddWorkflowIterationDocument", "challanges", new { key = Model.Challange.Id, iterationId = item.Id }, FormMethod.Post, true, new { enctype = "multipart/form-data" }))
                             {
                                 @await Html.PartialAsync("_DocumentCreationModalBodyPartial", new MOROPO.UIC.CoInnova.Models.View.DocumentInputViewModel())
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Agregar</button>
+                                    <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div class="modal fade" id="iteration-@item.Id-image-add" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="iteration-@item.Id-image-add">Agregar Imagen</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            @using (Html.BeginForm("AddWorkflowIterationImage", "challanges", new { key = Model.Challange.Id, iterationId = item.Id }, FormMethod.Post, true, new { enctype = "multipart/form-data" }))
+                            {
+                                <div class="modal-body">
+                                    <input type="file" class="form-control" id="imageFile" name="imageFile" />
+                                </div>
                                 <div class="modal-footer">
                                     <button type="submit" class="btn btn-primary">Agregar</button>
                                     <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>

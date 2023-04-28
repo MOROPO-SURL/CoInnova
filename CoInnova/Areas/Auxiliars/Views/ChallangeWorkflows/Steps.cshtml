@@ -17,12 +17,7 @@
         },
         new BreadcrumbViewModel
         {
-            Caption = "Modificar Modelo de Gestión de Retos",
-            Url = Url.Action("edit", "artworks", new { key = Model.Workflow.Id })
-        },
-        new BreadcrumbViewModel
-        {
-            Caption = "Etapas"
+            Caption = ViewData["Title"].ToString()
         }
     };
 

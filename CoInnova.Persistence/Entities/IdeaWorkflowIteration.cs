@@ -24,7 +24,7 @@
         public System.Guid? IdeaId { get; set; }
 
         [System.ComponentModel.DataAnnotations.Schema.ForeignKey("WorkflowStepId")]
-        public ChallangeWorkflowStep WorkflowStep { get; set; }
+        public IdeaWorkflowStep WorkflowStep { get; set; }
         [System.ComponentModel.DataAnnotations.Required]
         public System.Guid? WorkflowStepId { get; set; }
 

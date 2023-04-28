@@ -22,10 +22,11 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
         private readonly IEntityRepository<Sphere, System.Guid> sphereRepository;
         private readonly IEntityRepository<UseCase, System.Guid> useCaseRepository;
         private readonly IEntityRepository<Image, System.Guid> imageRepository;
+        private readonly IEntityRepository<Document, System.Guid> documentRepository;
         private readonly Managers.RelativeDocumentFileManager documentManager;
         private readonly IImageFileManagerFacade imageFileManager;
 
-        public PrototypesController(IImageFileManagerFacade imageFileManager, Managers.RelativeDocumentFileManager documentManager, IEntityRepository<Image, System.Guid> imageRepository, IEntityRepository<UseCase, System.Guid> useCaseRepository, IEntityRepository<Sphere, System.Guid> sphereRepository, IEntityRepository<Collaborator, System.Guid> collaboratorRepository, IEntityRepository<PrototypingLevel, System.Guid> levelRepository, IEntityRepository<Idea, System.Guid> ideaRepository, IEntityRepository<Prototype, System.Guid> repository, Microsoft.Extensions.Localization.IStringLocalizer<PrototypesController> localizer, Microsoft.Extensions.Logging.ILogger<PrototypesController> logger) : base(repository, localizer, logger)
+        public PrototypesController(IImageFileManagerFacade imageFileManager, Managers.RelativeDocumentFileManager documentManager, IEntityRepository<Document, System.Guid> documentRepository, IEntityRepository<Image, System.Guid> imageRepository, IEntityRepository<UseCase, System.Guid> useCaseRepository, IEntityRepository<Sphere, System.Guid> sphereRepository, IEntityRepository<Collaborator, System.Guid> collaboratorRepository, IEntityRepository<PrototypingLevel, System.Guid> levelRepository, IEntityRepository<Idea, System.Guid> ideaRepository, IEntityRepository<Prototype, System.Guid> repository, Microsoft.Extensions.Localization.IStringLocalizer<PrototypesController> localizer, Microsoft.Extensions.Logging.ILogger<PrototypesController> logger) : base(repository, localizer, logger)
         {
             this.ideaRepository = ideaRepository;
             this.levelRepository = levelRepository;
@@ -33,6 +34,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
             this.sphereRepository = sphereRepository;
             this.useCaseRepository = useCaseRepository;
             this.imageRepository = imageRepository;
+            this.documentRepository = documentRepository;
             this.documentManager = documentManager;
             this.imageFileManager = imageFileManager;
         }
@@ -236,10 +238,12 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
                                 Length = model.File.Length
                             };
 
+                            documentRepository.Add(document, User.Identity.Name, false);
+
                             entity.DocumentBridges.Add(new PrototypeDocumentBridge
                             {
                                 ProwId = entity.Id,
-                                Stern = document
+                                SternId = document.Id
                             });
 
                             documentManager.SaveFileContent(document.Id, memoryStream.ToArray(), document.ContentType);
@@ -419,12 +423,14 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
 
                             var image = new Image { ContentType = imageFile.ContentType, Length = imageFile.Length, About = "For Prototype " + entity.Id };
 
+                            imageRepository.Add(image, User.Identity.Name, false);
+
                             imageFileManager.SaveImageFileContent(image.Id, memoryStream.ToArray(), imageFile.ContentType);
 
                             entity.ImageBridges.Add(new PrototypeImageBridge
                             {
                                 ProwId = entity.Id,
-                                Stern = image
+                                SternId = image.Id
                             });
                         }
 

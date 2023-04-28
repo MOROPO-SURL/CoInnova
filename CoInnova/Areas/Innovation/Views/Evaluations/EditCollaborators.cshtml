@@ -91,7 +91,7 @@
                         <div class="modal-body">
                             @if (Model.AvailableCollaborators.Length > 0)
                             {
-                                @Html.DropDownList("executorId", Model.AvailableCollaborators, "Seleccione o búsque aquí ...", new { @class = "form-control" })
+                                @Html.DropDownList("collaboratorId", Model.AvailableCollaborators, "Seleccione o búsque aquí ...", new { @class = "form-control" })
                             }else{
                                 <div class="text-muted font-italic mb-0">No hay otras personas disponibles para agregar</div>
                             }

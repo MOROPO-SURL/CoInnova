@@ -2,6 +2,8 @@
 using Microsoft.Extensions.Logging;
 using MOROPO.Framework.Guama.Core.Persistence.Repositories;
 using MOROPO.Framework.Guama.Core.Presentation.Web.Security.Attributes;
+using MOROPO.Framework.Guama.Media.Persistence.Entities;
+using MOROPO.Framework.Guama.Media.Presentation.Web.Common.Managers.Facade;
 using MOROPO.UIC.CoInnova.Models.View;
 using MOROPO.UIC.CoInnova.Persistence.Entities;
 using System.Linq;
@@ -17,15 +19,23 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
         private readonly IEntityRepository<Challange, System.Guid> challangeRepository;
         private readonly IEntityRepository<Document, System.Guid> documentRepository;
         private readonly IEntityRepository<Collaborator, System.Guid> collaboratorRepository;
+        private readonly IEntityRepository<IdeaWorkflowIteration, System.Guid> ideaWorkflowIterationRepository;
+        private readonly IEntityRepository<IdeaWorkflowStep, System.Guid> ideaWorkflowStepRepository;
+        private readonly IEntityRepository<Image, System.Guid> imageRepository;
         private readonly Managers.RelativeDocumentFileManager documentManager;
+        private readonly IImageFileManagerFacade imageFileManager;
 
-        public IdeasController(Managers.RelativeDocumentFileManager documentManager, IEntityRepository<Collaborator, System.Guid> collaboratorRepository, IEntityRepository<Document, System.Guid> documentRepository, IEntityRepository<Challange, System.Guid> challangeRepository, IEntityRepository<IdeaWorkflow, System.Guid> ideaWorkflowRepository, IEntityRepository<Idea, System.Guid> repository, Microsoft.Extensions.Localization.IStringLocalizer<IdeasController> localizer, ILogger<IdeasController> logger) : base(repository, localizer, logger)
+        public IdeasController(IImageFileManagerFacade imageFileManager, Managers.RelativeDocumentFileManager documentManager, IEntityRepository<Image, System.Guid> imageRepository, IEntityRepository<IdeaWorkflowStep, System.Guid> ideaWorkflowStepRepository, IEntityRepository<IdeaWorkflowIteration, System.Guid> ideaWorkflowIterationRepository, IEntityRepository<Collaborator, System.Guid> collaboratorRepository, IEntityRepository<Document, System.Guid> documentRepository, IEntityRepository<Challange, System.Guid> challangeRepository, IEntityRepository<IdeaWorkflow, System.Guid> ideaWorkflowRepository, IEntityRepository<Idea, System.Guid> repository, Microsoft.Extensions.Localization.IStringLocalizer<IdeasController> localizer, ILogger<IdeasController> logger) : base(repository, localizer, logger)
         {
             this.ideaWorkflowRepository = ideaWorkflowRepository;
             this.challangeRepository = challangeRepository;
             this.documentRepository = documentRepository;
             this.collaboratorRepository = collaboratorRepository;
+            this.ideaWorkflowIterationRepository = ideaWorkflowIterationRepository;
+            this.ideaWorkflowStepRepository = ideaWorkflowStepRepository;
+            this.imageRepository = imageRepository;
             this.documentManager = documentManager;
+            this.imageFileManager = imageFileManager;
         }
 
         [RequirePermissions(Constants.Permission.IdeaViewer)]
@@ -621,6 +631,457 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
 
             return GetSuccessDeleteActionResult();
         }
+
+        #endregion
+
+        #region WorkflowIterations
+
+        [HttpGet]
+        [Route("edit/{key}/workflow/iterations")]
+        [RequirePermissions(Constants.Permission.IdeaEditor)]
+        public ActionResult EditWorkflowIterations(System.Guid key)
+        {
+            var entity = Repository.Get(key);
+
+            if (entity.WorkflowId == null)
+            {
+                SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Warning, "Flujo de Trabajo", "No se ha especificado el flujo de trabajo a utilizar en el proceso de innovación para esta idea. Puede especificarlo en este formulario.", null);
+
+                return RedirectToAction("Edit", new { key = entity.Id });
+            }
+
+            var model = new IdeaWorkflowIterationsViewModel
+            {
+                Idea = new IdeaDisplayViewModel(),
+                WorkflowIterations = ideaWorkflowIterationRepository.FindBy(ent1ty => ent1ty.IdeaId == entity.Id && ent1ty.WorkflowStep.WorkflowId == entity.WorkflowId).OrderBy(ent1ty => ent1ty.CreatedAt).ToArray().Select(item =>
+                {
+                    var result = new IdeaWorkflowIterationDisplayViewModel();
+
+                    result.Import(item);
+
+                    return result;
+                }).ToArray()
+            };
+
+            var pendingWorkflowSteps = new System.Collections.Generic.List<IdeaWorkflowStepDisplayViewModel>();
+
+            var currentWorkflowStep = ideaWorkflowStepRepository.Get(entity.Workflow.StartStepId.Value);
+
+            while (currentWorkflowStep != null)
+            {
+                if (!model.WorkflowIterations.Any(item => item.WorkflowStep.Id == currentWorkflowStep.Id))
+                {
+                    if (model.NextIdeaWorkflowStep == null)
+                    {
+                        model.NextIdeaWorkflowStep = new IdeaWorkflowStepDisplayViewModel
+                        {
+                            Id = currentWorkflowStep.Id,
+                            Name = currentWorkflowStep.Name,
+                            Description = currentWorkflowStep.Description
+                        };
+                    }
+                    else
+                    {
+                        pendingWorkflowSteps.Add(new IdeaWorkflowStepDisplayViewModel
+                        {
+                            Id = currentWorkflowStep.Id,
+                            Name = currentWorkflowStep.Name,
+                            Description = currentWorkflowStep.Description
+                        });
+                    }
+                }
+
+                currentWorkflowStep = currentWorkflowStep.NextId == null ? null : ideaWorkflowStepRepository.Get(currentWorkflowStep.NextId.Value);
+            }
+
+            model.PendingWorkflowSteps = pendingWorkflowSteps.ToArray();
+
+            model.Idea.Import(entity);
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Route("edit/{key}/workflow/iterations/next")]
+        [ValidateAntiForgeryToken]
+        [RequirePermissions(Constants.Permission.IdeaEditor)]
+        public IActionResult StartNextIteration(System.Guid key, string summary)
+        {
+            try
+            {
+                var entity = Repository.Get(key);
+
+                if (ModelState.IsValid)
+                {
+                    try
+                    {
+                        var workflowIterations = ideaWorkflowIterationRepository.FindBy(ent1ty => ent1ty.IdeaId == entity.Id).OrderBy(ent1ty => ent1ty.CreatedAt).ToArray();
+
+                        var targetWorkflowStep = ideaWorkflowStepRepository.Get(entity.Workflow.StartStepId.Value);
+
+                        while (targetWorkflowStep != null)
+                        {
+                            if (!workflowIterations.Any(item => item.WorkflowStep.Id == targetWorkflowStep.Id))
+                            {
+                                break;
+                            }
+
+                            targetWorkflowStep = targetWorkflowStep.NextId == null ? null : ideaWorkflowStepRepository.Get(targetWorkflowStep.NextId.Value);
+                        }
+
+                        ideaWorkflowIterationRepository.Add(new IdeaWorkflowIteration
+                        {
+                            Idea = entity,
+                            IdeaId = entity.Id,
+                            Summary = summary,
+                            WorkflowStepId = targetWorkflowStep.Id,
+                            WorkflowStep = targetWorkflowStep
+                        }, User.Identity.Name);
+
+                        SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Success, GetCreationSuccessMessage());
+
+                        return RedirectToAction("EditWorkflowIterations", new { key = entity.Id });
+                    }
+                    catch (Framework.Guama.Core.Presentation.Web.Frontend.InvalidModelException e)
+                    {
+                        ModelState.AddModelError(e.ModelKey, e.ErrorMessage);
+                    }
+                }
+
+                SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Danger, GetInvalidMessage());
+
+                return RedirectToAction("EditWorkflowIterations", new { key = entity.Id });
+            }
+            catch (System.Exception e)
+            {
+                logger.LogError(e.InnerException, e.Message);
+            }
+
+            SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Danger, GetNotFoundMessage());
+
+            return GetDefaultActionResult();
+        }
+
+        [HttpPost]
+        [Route("edit/{key}/workflow/iterations/{id}/edit")]
+        [ValidateAntiForgeryToken]
+        [RequirePermissions(Constants.Permission.IdeaEditor)]
+        public IActionResult EditIteration(System.Guid key, System.Guid id, string summary)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var entity = ideaWorkflowIterationRepository.Get(id);
+
+                    if (entity.IdeaId.Value != key)
+                    {
+                        SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Danger, GetInvalidMessage());
+
+                        return RedirectToAction("EditWorkflowIterations", new { key });
+                    }
+
+                    try
+                    {
+                        entity.Summary = summary;
+
+                        ideaWorkflowIterationRepository.Update(entity, User.Identity.Name);
+
+                        SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Success, GetEditionSuccessMessage());
+
+                        return RedirectToAction("EditWorkflowIterations", new { key });
+                    }
+                    catch (Framework.Guama.Core.Presentation.Web.Frontend.InvalidModelException e)
+                    {
+                        ModelState.AddModelError(e.ModelKey, e.ErrorMessage);
+                    }
+
+                    SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Danger, GetInvalidMessage());
+
+                    return RedirectToAction("EditWorkflowIterations", new { key });
+                }
+                catch (System.Exception e)
+                {
+                    logger.LogError(e.InnerException, e.Message);
+                }
+            }
+
+            SetDefaultNotification(notificationType: Framework.Guama.Core.Presentation.Models.View.NotificationType.Danger, GetNotFoundMessage());
+
+            return GetDefaultActionResult();
+        }
+
+        #region Documents
+
+        [HttpPost]
+        [Route("edit/{key}/workflow/iterations/{iterationId}/documents/add")]
+        [ValidateAntiForgeryToken]
+        [RequirePermissions(Constants.Permission.IdeaEditor)]
+        public IActionResult AddWorkflowIterationDocument(System.Guid key, System.Guid iterationId, DocumentInputViewModel model)
+        {
+            try
+            {
+                var entity = ideaWorkflowIterationRepository.Get(iterationId);
+
+                ModelState.ClearValidationState("File");
+
+                model.File = Request.Form.Files[0];
+
+                TryValidateModel(model);
+
+                if (ModelState.IsValid)
+                {
+                    try
+                    {
+                        using (var memoryStream = new System.IO.MemoryStream())
+                        {
+                            model.File.CopyTo(memoryStream);
+
+                            var document = new Document
+                            {
+                                Name = model.Name,
+                                Description = model.Description,
+                                ContentType = model.File.ContentType,
+                                Length = model.File.Length
+                            };
+
+                            documentRepository.Add(document, User.Identity.Name, false);
+
+                            entity.DocumentBridges.Add(new IdeaWorkflowIterationDocumentBridge
+                            {
+                                ProwId = entity.Id,
+                                SternId = document.Id
+                            });
+
+                            documentManager.SaveFileContent(document.Id, memoryStream.ToArray(), document.ContentType);
+
+                            ideaWorkflowIterationRepository.Update(entity, User.Identity.Name);
+                        }
+
+                        SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Success, GetCreationSuccessMessage());
+
+                        return RedirectToAction("EditWorkflowIterations", new { key });
+                    }
+                    catch (Framework.Guama.Core.Presentation.Web.Frontend.InvalidModelException e)
+                    {
+                        ModelState.AddModelError(e.ModelKey, e.ErrorMessage);
+                    }
+                }
+
+                SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Danger, GetInvalidMessage());
+
+                return RedirectToAction("EditWorkflowIterations", new { key });
+            }
+            catch (System.Exception e)
+            {
+                logger.LogError(e.InnerException, e.Message);
+            }
+
+            SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Danger, GetNotFoundMessage());
+
+            return GetDefaultActionResult();
+        }
+
+        [HttpPost]
+        [Route("edit/{key}/workflow/iterations/{iterationId}/documents/remove")]
+        [ValidateAntiForgeryToken]
+        [RequirePermissions(Constants.Permission.IdeaEditor)]
+        public IActionResult RemoveWorkflowIterationDocument(System.Guid key, System.Guid iterationId, System.Guid documentId)
+        {
+            try
+            {
+                var entity = ideaWorkflowIterationRepository.Get(iterationId);
+
+                var bridge = entity.DocumentBridges.First(b => b.SternId == documentId);
+
+                entity.DocumentBridges.Remove(bridge);
+
+                ideaWorkflowIterationRepository.Update(entity, User.Identity.Name);
+
+                try
+                {
+                    documentManager.DeleteFile(bridge.Stern);
+                }
+                catch { }
+
+                SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Success, GetDeletionSuccessMessage());
+
+                return RedirectToAction("EditWorkflowIterations", new { key });
+            }
+            catch (Microsoft.EntityFrameworkCore.DbUpdateException e)
+            {
+                logger.LogError(e.InnerException, e.Message);
+
+                SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Warning, GetOnDeletionDependecyConstrainErrorMessage());
+
+                return RedirectToAction("EditWorkflowIterations", new { key });
+            }
+            catch (System.Exception e)
+            {
+                logger.LogError(e.InnerException, e.Message);
+            }
+
+            SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Danger, GetNotFoundMessage());
+
+            return GetSuccessDeleteActionResult();
+        }
+
+        [HttpPost]
+        [Route("edit/{key}/workflow/iterations/{iterationId}/documents/edit")]
+        [ValidateAntiForgeryToken]
+        [RequirePermissions(Constants.Permission.IdeaEditor)]
+        public IActionResult EditWorkflowIterationDocument(System.Guid key, System.Guid iterationId, DocumentInputViewModel modelInput)
+        {
+            ModelState.ClearValidationState("File");
+            ModelState.MarkFieldValid("File");
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var entity = ideaWorkflowIterationRepository.Get(iterationId);
+
+                    try
+                    {
+                        var bridge = entity.DocumentBridges.First(b => b.SternId == modelInput.Id);
+
+                        bridge.Stern.Name = modelInput.Name;
+                        bridge.Stern.Description = modelInput.Description;
+
+                        ideaWorkflowIterationRepository.Update(entity, User.Identity.Name);
+
+                        SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Success, GetEditionSuccessMessage());
+
+                        return RedirectToAction("EditWorkflowIterations", new { key });
+                    }
+                    catch (Framework.Guama.Core.Presentation.Web.Frontend.InvalidModelException e)
+                    {
+                        ModelState.AddModelError(e.ModelKey, e.ErrorMessage);
+                    }
+
+                    SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Danger, GetInvalidMessage());
+
+                    return RedirectToAction("EditWorkflowIterations", new { key });
+                }
+                catch (System.Exception e)
+                {
+                    logger.LogError(e.InnerException, e.Message);
+                }
+            }
+
+            SetDefaultNotification(notificationType: Framework.Guama.Core.Presentation.Models.View.NotificationType.Danger, GetNotFoundMessage());
+
+            return GetDefaultActionResult();
+        }
+
+        #endregion
+
+        #region Images
+
+        [HttpPost]
+        [Route("edit/{key}/workflow/iterations/{iterationId}/images/add")]
+        [ValidateAntiForgeryToken]
+        [RequirePermissions(Constants.Permission.IdeaEditor)]
+        public IActionResult AddWorkflowIterationImage(System.Guid key, System.Guid iterationId)
+        {
+            try
+            {
+                var imageFile = Request.Form.Files[0];
+
+                var entity = ideaWorkflowIterationRepository.Get(iterationId);
+
+                // TODO Validate imageFile
+
+                if (ModelState.IsValid)
+                {
+                    try
+                    {
+                        using (var memoryStream = new System.IO.MemoryStream())
+                        {
+                            imageFile.CopyTo(memoryStream);
+
+                            var image = new Image { ContentType = imageFile.ContentType, Length = imageFile.Length, About = "For Idea Workflow Iteration " + entity.Id };
+
+                            imageRepository.Add(image, User.Identity.Name, false);
+
+                            imageFileManager.SaveImageFileContent(image.Id, memoryStream.ToArray(), imageFile.ContentType);
+
+                            entity.ImageBridges.Add(new IdeaWorkflowIterationImageBridge
+                            {
+                                ProwId = entity.Id,
+                                SternId = image.Id
+                            });
+                        }
+
+                        ideaWorkflowIterationRepository.Update(entity, User.Identity.Name);
+
+                        SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Success, GetCreationSuccessMessage());
+
+                        return RedirectToAction("EditWorkflowIterations", new { key });
+                    }
+                    catch (Framework.Guama.Core.Presentation.Web.Frontend.InvalidModelException e)
+                    {
+                        ModelState.AddModelError(e.ModelKey, e.ErrorMessage);
+                    }
+                }
+
+                SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Danger, GetInvalidMessage());
+
+                return RedirectToAction("EditWorkflowIterations", new { key });
+            }
+            catch (System.Exception e)
+            {
+                logger.LogError(e.InnerException, e.Message);
+            }
+
+            SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Danger, GetNotFoundMessage());
+
+            return GetDefaultActionResult();
+        }
+
+        [HttpPost]
+        [Route("edit/{key}/workflow/iterations/{iterationId}/images/delete")]
+        [ValidateAntiForgeryToken]
+        [RequirePermissions(Constants.Permission.PrototypeEditor)]
+        public IActionResult DeleteWorkflowIterationImage(System.Guid key, System.Guid iterationId, System.Guid imageId)
+        {
+            try
+            {
+                var entity = ideaWorkflowIterationRepository.Get(iterationId);
+
+                var bridge = entity.ImageBridges.First(b => b.SternId == imageId);
+
+                entity.ImageBridges.Remove(bridge);
+
+                ideaWorkflowIterationRepository.Update(entity, User.Identity.Name);
+
+                imageRepository.Delete(bridge.Stern, User.Identity.Name);
+
+                imageFileManager.DeleteImageFile(bridge.Stern);
+
+                SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Success, GetDeletionSuccessMessage());
+
+                return RedirectToAction("EditWorkflowIterations", new { key });
+            }
+            catch (Microsoft.EntityFrameworkCore.DbUpdateException e)
+            {
+                logger.LogError(e.InnerException, e.Message);
+
+                SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Warning, GetOnDeletionDependecyConstrainErrorMessage());
+
+                return RedirectToAction("EditWorkflowIterations", new { key });
+            }
+            catch (System.Exception e)
+            {
+                logger.LogError(e.InnerException, e.Message);
+            }
+
+            SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Danger, GetNotFoundMessage());
+
+            return GetSuccessDeleteActionResult();
+        }
+
+        #endregion
 
         #endregion
     }

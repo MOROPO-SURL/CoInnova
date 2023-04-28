@@ -2,6 +2,8 @@
 using Microsoft.Extensions.Logging;
 using MOROPO.Framework.Guama.Core.Persistence.Repositories;
 using MOROPO.Framework.Guama.Core.Presentation.Web.Security.Attributes;
+using MOROPO.Framework.Guama.Media.Persistence.Entities;
+using MOROPO.Framework.Guama.Media.Presentation.Web.Common.Managers.Facade;
 using MOROPO.UIC.CoInnova.Models.View;
 using MOROPO.UIC.CoInnova.Persistence.Entities;
 using System.Linq;
@@ -18,16 +20,20 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
         private readonly IEntityRepository<Collaborator, System.Guid> collaboratorRepository;
         private readonly IEntityRepository<ChallangeWorkflowIteration, System.Guid> challangeWorkflowIterationRepository;
         private readonly IEntityRepository<ChallangeWorkflowStep, System.Guid> challangeWorkflowStepRepository;
+        private readonly IEntityRepository<Image, System.Guid> imageRepository;
         private readonly Managers.RelativeDocumentFileManager documentManager;
+        private readonly IImageFileManagerFacade imageFileManager;
 
-        public ChallangesController(Managers.RelativeDocumentFileManager documentManager, IEntityRepository<ChallangeWorkflowStep, System.Guid> challangeWorkflowStepRepository, IEntityRepository<ChallangeWorkflowIteration, System.Guid> challangeWorkflowIterationRepository, IEntityRepository<Collaborator, System.Guid> collaboratorRepository, IEntityRepository<Document, System.Guid> documentRepository, IEntityRepository<ChallangeWorkflow, System.Guid> challangeWorkflowRepository, IEntityRepository<Challange, System.Guid> repository, Microsoft.Extensions.Localization.IStringLocalizer<ChallangesController> localizer, ILogger<ChallangesController> logger) : base(repository, localizer, logger)
+        public ChallangesController(IImageFileManagerFacade imageFileManager, Managers.RelativeDocumentFileManager documentManager, IEntityRepository<Image, System.Guid> imageRepository, IEntityRepository<ChallangeWorkflowStep, System.Guid> challangeWorkflowStepRepository, IEntityRepository<ChallangeWorkflowIteration, System.Guid> challangeWorkflowIterationRepository, IEntityRepository<Collaborator, System.Guid> collaboratorRepository, IEntityRepository<Document, System.Guid> documentRepository, IEntityRepository<ChallangeWorkflow, System.Guid> challangeWorkflowRepository, IEntityRepository<Challange, System.Guid> repository, Microsoft.Extensions.Localization.IStringLocalizer<ChallangesController> localizer, ILogger<ChallangesController> logger) : base(repository, localizer, logger)
         {
             this.challangeWorkflowRepository = challangeWorkflowRepository;
             this.documentRepository = documentRepository;
             this.collaboratorRepository = collaboratorRepository;
             this.challangeWorkflowIterationRepository = challangeWorkflowIterationRepository;
             this.challangeWorkflowStepRepository = challangeWorkflowStepRepository;
+            this.imageRepository = imageRepository;
             this.documentManager = documentManager;
+            this.imageFileManager = imageFileManager;
         }
 
         [RequirePermissions(Constants.Permission.ChallangeViewer)]
@@ -620,7 +626,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
             var model = new ChallangeWorkflowIterationsViewModel
             {
                 Challange = new ChallangeDisplayViewModel(),
-                WorkflowIterations = challangeWorkflowIterationRepository.FindBy(ent1ty => ent1ty.ChallangeId == entity.Id).OrderBy(ent1ty => ent1ty.CreatedAt).ToArray().Select(item =>
+                WorkflowIterations = challangeWorkflowIterationRepository.FindBy(ent1ty => ent1ty.ChallangeId == entity.Id && ent1ty.WorkflowStep.WorkflowId == entity.WorkflowId).OrderBy(ent1ty => ent1ty.CreatedAt).ToArray().Select(item =>
                 {
                     var result = new ChallangeWorkflowIterationDisplayViewModel();
 
@@ -939,6 +945,113 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
             SetDefaultNotification(notificationType: Framework.Guama.Core.Presentation.Models.View.NotificationType.Danger, GetNotFoundMessage());
 
             return GetDefaultActionResult();
+        }
+
+        #endregion
+
+        #region Images
+
+        [HttpPost]
+        [Route("edit/{key}/workflow/iterations/{iterationId}/images/add")]
+        [ValidateAntiForgeryToken]
+        [RequirePermissions(Constants.Permission.ChallangeEditor)]
+        public IActionResult AddWorkflowIterationImage(System.Guid key, System.Guid iterationId)
+        {
+            try
+            {
+                var imageFile = Request.Form.Files[0];
+
+                var entity = challangeWorkflowIterationRepository.Get(iterationId);
+
+                // TODO Validate imageFile
+
+                if (ModelState.IsValid)
+                {
+                    try
+                    {
+                        using (var memoryStream = new System.IO.MemoryStream())
+                        {
+                            imageFile.CopyTo(memoryStream);
+
+                            var image = new Image { ContentType = imageFile.ContentType, Length = imageFile.Length, About = "For Challange Workflow Iteration " + entity.Id };
+
+                            imageRepository.Add(image, User.Identity.Name, false);
+
+                            imageFileManager.SaveImageFileContent(image.Id, memoryStream.ToArray(), imageFile.ContentType);
+
+                            entity.ImageBridges.Add(new ChallangeWorkflowIterationImageBridge
+                            {
+                                ProwId = entity.Id,
+                                SternId = image.Id
+                            });
+                        }
+
+                        challangeWorkflowIterationRepository.Update(entity, User.Identity.Name);
+
+                        SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Success, GetCreationSuccessMessage());
+
+                        return RedirectToAction("EditWorkflowIterations", new { key });
+                    }
+                    catch (Framework.Guama.Core.Presentation.Web.Frontend.InvalidModelException e)
+                    {
+                        ModelState.AddModelError(e.ModelKey, e.ErrorMessage);
+                    }
+                }
+
+                SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Danger, GetInvalidMessage());
+
+                return RedirectToAction("EditWorkflowIterations", new { key });
+            }
+            catch (System.Exception e)
+            {
+                logger.LogError(e.InnerException, e.Message);
+            }
+
+            SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Danger, GetNotFoundMessage());
+
+            return GetDefaultActionResult();
+        }
+
+        [HttpPost]
+        [Route("edit/{key}/workflow/iterations/{iterationId}/images/delete")]
+        [ValidateAntiForgeryToken]
+        [RequirePermissions(Constants.Permission.PrototypeEditor)]
+        public IActionResult DeleteWorkflowIterationImage(System.Guid key, System.Guid iterationId, System.Guid imageId)
+        {
+            try
+            {
+                var entity = challangeWorkflowIterationRepository.Get(iterationId);
+
+                var bridge = entity.ImageBridges.First(b => b.SternId == imageId);
+
+                entity.ImageBridges.Remove(bridge);
+
+                challangeWorkflowIterationRepository.Update(entity, User.Identity.Name);
+
+                imageRepository.Delete(bridge.Stern, User.Identity.Name);
+
+                imageFileManager.DeleteImageFile(bridge.Stern);
+
+                SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Success, GetDeletionSuccessMessage());
+
+                return RedirectToAction("EditWorkflowIterations", new { key });
+            }
+            catch (Microsoft.EntityFrameworkCore.DbUpdateException e)
+            {
+                logger.LogError(e.InnerException, e.Message);
+
+                SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Warning, GetOnDeletionDependecyConstrainErrorMessage());
+
+                return RedirectToAction("EditWorkflowIterations", new { key });
+            }
+            catch (System.Exception e)
+            {
+                logger.LogError(e.InnerException, e.Message);
+            }
+
+            SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Danger, GetNotFoundMessage());
+
+            return GetSuccessDeleteActionResult();
         }
 
         #endregion
