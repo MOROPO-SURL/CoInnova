@@ -183,8 +183,88 @@
                     <td style="vertical-align: middle;" title="Creado">@item.Created</td>
                     <td style="vertical-align: middle;">
                         <div class="btn-group btn-group-sm">
-                                <a role="button" href="@Url.Action("edit", new { key = item.Id })" class="btn btn-light" title="Editar"><span class="mdi mdi-square-edit-outline"></span><span class="hidden-xs"> Modificar</span></a>
+                            <button class="btn btn-light" title="@Model" data-toggle="modal" data-target="#descrip-@item.Id"><span class="mdi mdi-file-eye-outline  "></span><span>Detalles</span></button>
+                            <a role="button" href="@Url.Action("edit", new { key = item.Id })" class="btn btn-light" title="Editar"><span class="mdi mdi-square-edit-outline"></span><span class="hidden-xs"> Modificar</span></a>
+                            <div class="btn-group btn-group-sm">
+                                <button type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown" title="Extras"></button>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    @if (item.Id != User.Identity.Name)
+                                    {
+                                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#change-password-@item.Id">Cambiar Contrase&ntilde;a</a>
+                                    }
+                                    else
+                                    {
+                                        <a class="dropdown-item disabled" href="#">Cambiar Contrase&ntilde;a</a>
+                                    }
+                                </div>
+                            </div>
                             <a role="button" href="@Url.Action("delete", new {key = item.Id})" class="btn btn-danger"><span class="mdi mdi-trash-can-outline"></span> Eliminar</a>
+                        </div>
+                        @if (item.Id != User.Identity.Name)
+                        {
+                            @await Html.PartialAsync("_UserChangePasswordPartial", new MOROPO.Framework.Guama.Security.Personal.Presentation.Web.Backend.Models.View.UserChangePasswordViewModel { UserId = item.Id });
+                        }
+                        <div class="modal fade " id="descrip-@item.Id" tabindex="-1" role="dialog" aria-labelledby="descrip-@item.Id-label" aria-hidden="true">
+                            <div class="modal-dialog modal-lg" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="descrip-@item.Id-label">Detalles</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="card-body">  
+                                            <dl>
+                                                <dt>Usuario</dt>
+                                                <dd>@item.Id</dd>
+                                            </dl>
+                                            <div class="row">
+                                                <dl class="col-sm-6">
+                                                    <dt>Habilitado?</dt>
+                                                    <dd>@if (item.Enabled) { <span>Si</span> } else { <span>No</span> }</dd>
+                                                </dl>
+                                                <dl class="col-sm-6">
+                                                    <dt>Acceso Total?</dt>
+                                                    <dd>@if (item.HasFullAccess) { <span>Si</span> } else { <span>No</span> }</dd>
+                                                </dl>
+                                                <dl class="col-sm-6">
+                                                    <dt>Registrado</dt>
+                                                    <dd>@item.Created</dd>
+                                                </dl>
+                                            </div>
+                                            <dl>
+                                                <dt class="border-bottom mb-2">Roles</dt>
+                                                <dd>
+                                                    @if (item.Roles.Any())
+                                                    {
+                                                        <dl>
+                                                        @foreach (var it3m in item.Roles)
+                                                        {
+                                                            <dt>@it3m.Name</dt>
+                                                            <dd>
+                                                            @if (string.IsNullOrEmpty(it3m.Description))
+                                                            {
+                                                                <span class="text-muted">Descripción no especificada</span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <span>@it3m.Description</span>
+                                                            }
+                                                            </dd>
+                                                        }
+                                                        </dl>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>--</span>
+                                                    }
+                                                </dd>
+                                            </dl>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </td>
                 </tr>

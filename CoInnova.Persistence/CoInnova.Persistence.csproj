@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="GuamaFramework.Security.Personal.Persistence" Version="6.0.0.10" />
+    <PackageReference Include="GuamaFramework.Security.Personal.Persistence" Version="6.0.0.11" />
   </ItemGroup>
 
 </Project>

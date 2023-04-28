@@ -258,9 +258,6 @@
   <data name="Widower" xml:space="preserve">
     <value>Viudo(a)</value>
   </data>
-  <data name="AdministrativeRoles" xml:space="preserve">
-    <value>Roles Administrativos</value>
-  </data>
   <data name="RegularExpressionValidationErrorMessage" xml:space="preserve">
     <value>Formato incorrecto</value>
   </data>
@@ -289,7 +286,7 @@
     <value>Código de Verificación</value>
   </data>
   <data name="Login" xml:space="preserve">
-    <value>Control de Acceso</value>
+    <value>Nombre de Usuario</value>
   </data>
   <data name="licensing-manager" xml:space="preserve">
     <value>Licenciar</value>
@@ -348,9 +345,6 @@
   <data name="Unknown" xml:space="preserve">
     <value>Desconocidos</value>
   </data>
-  <data name="AdmitionMode" xml:space="preserve">
-    <value>Modalidad de ingreso</value>
-  </data>
   <data name="Medium" xml:space="preserve">
     <value>Medio</value>
   </data>
@@ -363,32 +357,32 @@
   <data name="Country" xml:space="preserve">
     <value>País</value>
   </data>
-  <data name="administrative-roles-creator" xml:space="preserve">
-    <value>Agregar roles administrativos</value>
+  <data name="security-role-creator" xml:space="preserve">
+    <value>Agregar roles del sistema</value>
   </data>
-  <data name="administrative-roles-creator-description" xml:space="preserve">
-    <value>Usuario que puede agregar roles administrativos</value>
+  <data name="security-role-creator-description" xml:space="preserve">
+    <value>Usuario que puede agregar roles del sistema</value>
   </data>
-  <data name="administrative-roles-editor" xml:space="preserve">
-    <value>Modificar roles administrativos</value>
+  <data name="security-role-editor" xml:space="preserve">
+    <value>Modificar roles del sistema</value>
   </data>
-  <data name="administrative-roles-editor-description" xml:space="preserve">
-    <value>Usuario que puede modificar roles administrativos</value>
+  <data name="security-role-editor-description" xml:space="preserve">
+    <value>Usuario que puede modificar roles del sistema</value>
   </data>
-  <data name="administrative-roles-management" xml:space="preserve">
-    <value>Gestionar de roles administrativos</value>
+  <data name="security-role-management" xml:space="preserve">
+    <value>Gestionar roles del sistema</value>
   </data>
-  <data name="administrative-roles-remover" xml:space="preserve">
-    <value>Eliminar roles administrativos</value>
+  <data name="security-role-remover" xml:space="preserve">
+    <value>Eliminar roles del sistema</value>
   </data>
-  <data name="administrative-roles-remover-description" xml:space="preserve">
-    <value>Usuario que puede modificar roles administrativos</value>
+  <data name="security-role-remover-description" xml:space="preserve">
+    <value>Usuario que puede modificar roles del sistema</value>
   </data>
-  <data name="administrative-roles-viewer" xml:space="preserve">
-    <value>Visualizar roles administrativos</value>
+  <data name="security-role-viewer" xml:space="preserve">
+    <value>Visualizar roles del sistema</value>
   </data>
-  <data name="administrative-roles-viewer-description" xml:space="preserve">
-    <value>Usuario que puede visualizar roles administrativos</value>
+  <data name="security-role-viewer-description" xml:space="preserve">
+    <value>Usuario que puede visualizar roles del sistema</value>
   </data>
   <data name="Cost" xml:space="preserve">
     <value>Costo</value>
@@ -425,5 +419,17 @@
   </data>
   <data name="CurrentUserNotRemovableMessage" xml:space="preserve">
     <value>El usuario actual no puede ser eliminado</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Inicio</value>
+  </data>
+  <data name="trace-viewer" xml:space="preserve">
+    <value>Visualizar registros</value>
+  </data>
+  <data name="trace-viewer-description" xml:space="preserve">
+    <value>Usuarios que pueden visualizar registros del sistema</value>
+  </data>
+  <data name="Users" xml:space="preserve">
+    <value>Usuarios</value>
   </data>
 </root>

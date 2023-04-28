@@ -7,7 +7,7 @@
     <div class="checkbox">
         <label class="h4">
             @Html.CheckBoxFor(model => model.Selected)
-            @Model.Label
+            @GlobalViewLocalizationHelper.Localize(Model.Label)
         </label>
     </div>
 </div>
