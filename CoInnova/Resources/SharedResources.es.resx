@@ -1,0 +1,429 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="DeletionSuccessMessage" xml:space="preserve">
+    <value>Cambios aplicados con éxito.</value>
+  </data>
+  <data name="DisableSuccessMessage" xml:space="preserve">
+    <value>Elemento deshabilitado con éxito.</value>
+  </data>
+  <data name="EditionSuccessMessage" xml:space="preserve">
+    <value>Cambios aplicados con éxito.</value>
+  </data>
+  <data name="EnableSuccessMessage" xml:space="preserve">
+    <value>Elemento habilitado con éxito.</value>
+  </data>
+  <data name="InvalidAuthenticationDataMessage" xml:space="preserve">
+    <value>Usuario y/o contraseña incorrectos.</value>
+  </data>
+  <data name="InvalidMessage" xml:space="preserve">
+    <value>Los datos introducidos no son válidos.</value>
+  </data>
+  <data name="NotFoundMessage" xml:space="preserve">
+    <value>El elemento especificado no encontrado.</value>
+  </data>
+  <data name="RequiredDataIncompleteMessage" xml:space="preserve">
+    <value>Algunos relacionados no pueden encontrarse.</value>
+  </data>
+  <data name="RequiredDataIncompleteTitle" xml:space="preserve">
+    <value>Datos necesarios para continuar</value>
+  </data>
+  <data name="RequiredValidationErrorMessage" xml:space="preserve">
+    <value>El campo {0} es obligatorio.</value>
+  </data>
+  <data name="MaxLengthValidationErrorMessage" xml:space="preserve">
+    <value>El campo {0} no debe exceder los {1} caracteres.</value>
+  </data>
+  <data name="RangeValidationErrorMessage" xml:space="preserve">
+    <value>El valor del campo {0} de estar entre {1} y {2}.</value>
+  </data>
+  <data name="CompareValidationErrorMessage" xml:space="preserve">
+    <value>Los campos {0} y {1} no coinciden.</value>
+  </data>
+  <data name="ConfirmPassword" xml:space="preserve">
+    <value>Confirmación de la Contraseña</value>
+  </data>
+  <data name="StringLengthMinMaxValidationErrorMessage" xml:space="preserve">
+    <value>El valor del campo {0} debe tener como mínimo {2} y como máximo {1} caracteres.</value>
+  </data>
+  <data name="UniqueValueConvinationValidationErrorMessage" xml:space="preserve">
+    <value>La combinación de valores de los campos {0} y {1} ya existe en el sistema y esta debe ser única.</value>
+  </data>
+  <data name="PasswordChangeRequiredMessage" xml:space="preserve">
+    <value>Cambio de contraseña requerido.</value>
+  </data>
+  <data name="ChangePasswordSuccessMessage" xml:space="preserve">
+    <value>Cambio de contraseña realizado con éxito. Inicie sesión nuevamente.</value>
+  </data>
+  <data name="UserDisabledMessage" xml:space="preserve">
+    <value>Usuario deshabilitado.</value>
+  </data>
+  <data name="system-admin-role" xml:space="preserve">
+    <value>Administrador del Sistema</value>
+  </data>
+  <data name="Administration" xml:space="preserve">
+    <value>Administración</value>
+  </data>
+  <data name="Dashboard" xml:space="preserve">
+    <value>Panel de Control</value>
+  </data>
+  <data name="traces" xml:space="preserve">
+    <value>Registros</value>
+  </data>
+  <data name="NewPassword" xml:space="preserve">
+    <value>Nueva Contraseña</value>
+  </data>
+  <data name="OldPassword" xml:space="preserve">
+    <value>Contraseña Anterior</value>
+  </data>
+  <data name="Upload" xml:space="preserve">
+    <value>Cargar archivo</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Título</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Descripción</value>
+  </data>
+  <data name="Disabled" xml:space="preserve">
+    <value>No Habilitado(a)</value>
+  </data>
+  <data name="Enabled" xml:space="preserve">
+    <value>Habilitado(a)</value>
+  </data>
+  <data name="EnabledState" xml:space="preserve">
+    <value>Estado de Habilitación</value>
+  </data>
+  <data name="Eny" xml:space="preserve">
+    <value>Cualquiera</value>
+  </data>
+  <data name="Unattended" xml:space="preserve">
+    <value>No Atendido(a)</value>
+  </data>
+  <data name="DefaultPhotoSessionContentCollageLayout" xml:space="preserve">
+    <value>Diseño de Impresión de Sesión de Fotos por defecto</value>
+  </data>
+  <data name="DefaultPictureContentCollageLayout" xml:space="preserve">
+    <value>Diseño de Impresión de Foto Única por defecto</value>
+  </data>
+  <data name="About" xml:space="preserve">
+    <value>Acerca de</value>
+  </data>
+  <data name="BornDate" xml:space="preserve">
+    <value>Fecha de Nacimiento</value>
+  </data>
+  <data name="CivilStatus" xml:space="preserve">
+    <value>Estado Civil</value>
+  </data>
+  <data name="Divorced" xml:space="preserve">
+    <value>Divoriciado(a)</value>
+  </data>
+  <data name="Famale" xml:space="preserve">
+    <value>Femenino</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>Apellidos</value>
+  </data>
+  <data name="Male" xml:space="preserve">
+    <value>Masculino</value>
+  </data>
+  <data name="Married" xml:space="preserve">
+    <value>Casado(a)</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="Sex" xml:space="preserve">
+    <value>Sexo</value>
+  </data>
+  <data name="Single" xml:space="preserve">
+    <value>Soltero(a)</value>
+  </data>
+  <data name="Widower" xml:space="preserve">
+    <value>Viudo(a)</value>
+  </data>
+  <data name="AdministrativeRoles" xml:space="preserve">
+    <value>Roles Administrativos</value>
+  </data>
+  <data name="RegularExpressionValidationErrorMessage" xml:space="preserve">
+    <value>Formato incorrecto</value>
+  </data>
+  <data name="Url" xml:space="preserve">
+    <value>Dirección Web</value>
+  </data>
+  <data name="Authors" xml:space="preserve">
+    <value>Autores</value>
+  </data>
+  <data name="Member" xml:space="preserve">
+    <value>Integrante</value>
+  </data>
+  <data name="Members" xml:space="preserve">
+    <value>Integrantes</value>
+  </data>
+  <data name="DateTime" xml:space="preserve">
+    <value>Fecha y Hora</value>
+  </data>
+  <data name="SelectionRequiredValidationMessage" xml:space="preserve">
+    <value>La selección en el campo {0} es obligatoria</value>
+  </data>
+  <data name="InvalidVerificationCodeMessage" xml:space="preserve">
+    <value>Código de verificación incorrecto.</value>
+  </data>
+  <data name="Verification Code" xml:space="preserve">
+    <value>Código de Verificación</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Control de Acceso</value>
+  </data>
+  <data name="licensing-manager" xml:space="preserve">
+    <value>Licenciar</value>
+  </data>
+  <data name="licensing-manager-description" xml:space="preserve">
+    <value>Usuarios que puede gestionar el licenciamiento</value>
+  </data>
+  <data name="shell-manager" xml:space="preserve">
+    <value>Administrar</value>
+  </data>
+  <data name="shell-manager-description" xml:space="preserve">
+    <value>Usuarios con acceso a la administración</value>
+  </data>
+  <data name="CharacterGeneration" xml:space="preserve">
+    <value>Generación de Caracteres</value>
+  </data>
+  <data name="AfterData" xml:space="preserve">
+    <value>Datos Actuales</value>
+  </data>
+  <data name="Author" xml:space="preserve">
+    <value>Autor</value>
+  </data>
+  <data name="BeforeData" xml:space="preserve">
+    <value>Datos Anteriores</value>
+  </data>
+  <data name="EntityName" xml:space="preserve">
+    <value>Nombre de la Entidad</value>
+  </data>
+  <data name="Groups" xml:space="preserve">
+    <value>Roles</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Contraseña</value>
+  </data>
+  <data name="Registered" xml:space="preserve">
+    <value>Registro</value>
+  </data>
+  <data name="User" xml:space="preserve">
+    <value>Usuario</value>
+  </data>
+  <data name="Address" xml:space="preserve">
+    <value>Dirección</value>
+  </data>
+  <data name="Municipality" xml:space="preserve">
+    <value>Municipio</value>
+  </data>
+  <data name="State" xml:space="preserve">
+    <value>Provincia</value>
+  </data>
+  <data name="EmailAddressValidationErrorMessage" xml:space="preserve">
+    <value>El correo electrónico no es valido</value>
+  </data>
+  <data name="PhoneValidationErrorMessage" xml:space="preserve">
+    <value>El número de teléfono no es valido</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>Desconocidos</value>
+  </data>
+  <data name="AdmitionMode" xml:space="preserve">
+    <value>Modalidad de ingreso</value>
+  </data>
+  <data name="Medium" xml:space="preserve">
+    <value>Medio</value>
+  </data>
+  <data name="Unknow" xml:space="preserve">
+    <value>Desconocido</value>
+  </data>
+  <data name="UrlValidationErrorMessage" xml:space="preserve">
+    <value>La dirección web no es valida</value>
+  </data>
+  <data name="Country" xml:space="preserve">
+    <value>País</value>
+  </data>
+  <data name="administrative-roles-creator" xml:space="preserve">
+    <value>Agregar roles administrativos</value>
+  </data>
+  <data name="administrative-roles-creator-description" xml:space="preserve">
+    <value>Usuario que puede agregar roles administrativos</value>
+  </data>
+  <data name="administrative-roles-editor" xml:space="preserve">
+    <value>Modificar roles administrativos</value>
+  </data>
+  <data name="administrative-roles-editor-description" xml:space="preserve">
+    <value>Usuario que puede modificar roles administrativos</value>
+  </data>
+  <data name="administrative-roles-management" xml:space="preserve">
+    <value>Gestionar de roles administrativos</value>
+  </data>
+  <data name="administrative-roles-remover" xml:space="preserve">
+    <value>Eliminar roles administrativos</value>
+  </data>
+  <data name="administrative-roles-remover-description" xml:space="preserve">
+    <value>Usuario que puede modificar roles administrativos</value>
+  </data>
+  <data name="administrative-roles-viewer" xml:space="preserve">
+    <value>Visualizar roles administrativos</value>
+  </data>
+  <data name="administrative-roles-viewer-description" xml:space="preserve">
+    <value>Usuario que puede visualizar roles administrativos</value>
+  </data>
+  <data name="Cost" xml:space="preserve">
+    <value>Costo</value>
+  </data>
+  <data name="Location" xml:space="preserve">
+    <value>Localización</value>
+  </data>
+  <data name="Width" xml:space="preserve">
+    <value>Ancho</value>
+  </data>
+  <data name="ReleaseAt" xml:space="preserve">
+    <value>Fecha de Emisión</value>
+  </data>
+  <data name="RegistratedAt" xml:space="preserve">
+    <value>Fecha de Registro</value>
+  </data>
+  <data name="RegistrationEndAt" xml:space="preserve">
+    <value>Fecha que Vence</value>
+  </data>
+  <data name="RegistrationNumber" xml:space="preserve">
+    <value>Número de Registro</value>
+  </data>
+  <data name="CreatedAt" xml:space="preserve">
+    <value>Creado en</value>
+  </data>
+  <data name="Day of Criterion" xml:space="preserve">
+    <value>Fecha del Criterio</value>
+  </data>
+  <data name="DateOfAssessment" xml:space="preserve">
+    <value>Fecha del Criterio</value>
+  </data>
+  <data name="CurrentUserNotDisactivableMessage" xml:space="preserve">
+    <value>Este usuario no puede ser desavilitado</value>
+  </data>
+  <data name="CurrentUserNotRemovableMessage" xml:space="preserve">
+    <value>El usuario actual no puede ser eliminado</value>
+  </data>
+</root>
