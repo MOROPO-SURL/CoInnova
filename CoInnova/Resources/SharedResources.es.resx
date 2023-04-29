@@ -432,4 +432,52 @@
   <data name="Users" xml:space="preserve">
     <value>Usuarios</value>
   </data>
+  <data name="Agents" xml:space="preserve">
+    <value>Agentes de Innovación</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>Ninguno</value>
+  </data>
+  <data name="Options" xml:space="preserve">
+    <value>Opciones</value>
+  </data>
+  <data name="Argument" xml:space="preserve">
+    <value>Argumento</value>
+  </data>
+  <data name="Benefited" xml:space="preserve">
+    <value>Beneficiado</value>
+  </data>
+  <data name="ExpirateAt" xml:space="preserve">
+    <value>Fecha de Expiración</value>
+  </data>
+  <data name="FoundatedAt" xml:space="preserve">
+    <value>Fecha de Fundación</value>
+  </data>
+  <data name="Host" xml:space="preserve">
+    <value>Dirección del Cliente</value>
+  </data>
+  <data name="InnovationAgent" xml:space="preserve">
+    <value>Agente de Innovación</value>
+  </data>
+  <data name="IsPublic" xml:space="preserve">
+    <value>Es Público</value>
+  </data>
+  <data name="Numerator" xml:space="preserve">
+    <value>Numeral</value>
+  </data>
+  <data name="Permissions" xml:space="preserve">
+    <value>Permisos</value>
+  </data>
+  <data name="PrototypingLevel" xml:space="preserve">
+    <value>Nivel de Prototipado</value>
+  </data>
+  <data name="Summary" xml:space="preserve">
+    <value>Resumen</value>
+  </data>
+  <data name="Workflow" xml:space="preserve">
+    <value>Modelo de Gestión</value>
+  </data>
+  <data name="Challange" xml:space="preserve">
+    <value>Reto de Innovación</value>
+  </data>
 </root>

@@ -25,7 +25,9 @@
                     new Configurators.PrototypeSphereBridgeEntityTypeConfigurator(),
                     new Configurators.UseCaseDocumentBridgeEntityTypeConfigurator(),
                     new Configurators.UseCaseImageBridgeEntityTypeConfigurator(),
-                    new Configurators.PrototypeCollaboratorBridgeEntityTypeConfigurator()
+                    new Configurators.PrototypeCollaboratorBridgeEntityTypeConfigurator(),
+                    new Configurators.InnovationAgentEntityTypeConfigurator(),
+                    new Configurators.InnovationAgentUserBridgeEntityTypeConfigurator()
                 };
             }
         }

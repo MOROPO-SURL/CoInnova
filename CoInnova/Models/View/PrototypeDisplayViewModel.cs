@@ -27,7 +27,7 @@ namespace MOROPO.UIC.CoInnova.Models.View
         public PrototypingLevelDisplayViewModel Level { get; set; }
 
         [Display(Name = "InnovationAgent")]
-        public CollaboratorDisplayViewModel InnovationAgent { get; set; }
+        public InnovationAgentDisplayViewModel InnovationAgent { get; set; }
 
         [Display(Name = "Summary")]
         public string Summary { get; set; }
@@ -48,7 +48,7 @@ namespace MOROPO.UIC.CoInnova.Models.View
             FeatureImageId = entity.FeatureImageId;
             FeatureImageExtension = entity.FeatureImage?.ContentType.ContentTypeToExtension();
             Level = new PrototypingLevelDisplayViewModel();
-            InnovationAgent = new CollaboratorDisplayViewModel();
+            InnovationAgent = new InnovationAgentDisplayViewModel();
 
             Level.Import(entity.Level);
             InnovationAgent.Import(entity.InnovationAgent);

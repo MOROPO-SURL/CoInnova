@@ -127,6 +127,7 @@
             <thead>
                 <tr>
                     <th>@GlobalViewLocalizationHelper.Localize("Title")</th>
+                    <th>@GlobalViewLocalizationHelper.Localize("InnovationAgent")</th>
                     <th style="width: 1px; word-wrap: unset;">@GlobalViewLocalizationHelper.Localize("Options")</th>
                 </tr>
             </thead>
@@ -135,6 +136,7 @@
                 {
                     <tr>
                         <td style="vertical-align: middle;">@item.Title</td>
+                        <td style="vertical-align: middle;">@item.InnovationAgent.Identity.Name</td>
                         <td style="vertical-align: middle;">
                             <div class="btn-group btn-group-sm">
                                 <a role="button" href="@Url.Action("edit", new { key = item.Id })" class="btn btn-light" title="Editar"><span class="mdi mdi-square-edit-outline"></span><span class="hidden-xs"> Modificar</span></a>
@@ -247,12 +249,13 @@ else
             <thead>
                 <tr>
                     <th>@GlobalViewLocalizationHelper.Localize("Title")</th>
+                    <th>@GlobalViewLocalizationHelper.Localize("InnovationAgent")</th>
                     <th style="width: 1px; word-wrap: unset;">@GlobalViewLocalizationHelper.Localize("Options")</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td colspan="2"><p style="margin: 0 5px;" class="text-muted">Sin elementos que mostrar</p></td>
+                    <td colspan="3"><p style="margin: 0 5px;" class="text-muted">Sin elementos que mostrar</p></td>
                 </tr>
             </tbody>
         </table>

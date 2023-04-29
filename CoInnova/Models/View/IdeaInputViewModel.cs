@@ -11,11 +11,15 @@ namespace MOROPO.UIC.CoInnova.Models.View
         [Display(Name = "Title")]
         public string Title { get; set; }
 
-        [Display(Name = "Public?")]
+        [Display(Name = "IsPublic")]
         public bool IsPublic { get; set; }
 
         [Display(Name = "Description")]
         public string Description { get; set; }
+
+        [Required(ErrorMessage = "RequiredValidationErrorMessage")]
+        [Display(Name = "InnovationAgent")]
+        public System.Guid? InnovationAgentId { get; set; }
 
         [Display(Name = "Workflow")]
         public System.Guid? WorkflowId { get; set; }
@@ -24,6 +28,8 @@ namespace MOROPO.UIC.CoInnova.Models.View
         [Display(Name = "Challange")]
         public System.Guid? ChallangeId { get; set; }
         public Microsoft.AspNetCore.Mvc.Rendering.SelectListItem[] AvailableChallangeSelectListItems { get; set; }
+
+        public Microsoft.AspNetCore.Mvc.Rendering.SelectListItem[] AvailableInnovationAgentSelectListItems { get; set; }
 
         public Idea Export()
         {
@@ -40,6 +46,7 @@ namespace MOROPO.UIC.CoInnova.Models.View
             Title = entity.Title;
             Description = entity.Description;
             IsPublic = entity.IsPublic;
+            InnovationAgentId = entity.InnovationAgentId;
             WorkflowId = entity.WorkflowId;
             ChallangeId = entity.ChallangeId;
         }

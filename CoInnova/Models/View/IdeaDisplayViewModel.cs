@@ -22,12 +22,18 @@
         [System.ComponentModel.DataAnnotations.Display(Name = "Challange")]
         public ChallangeDisplayViewModel Challange { get; set; }
 
+        [System.ComponentModel.DataAnnotations.Display(Name = "InnovationAgent")]
+        public InnovationAgentDisplayViewModel InnovationAgent { get; set; }
+
         public void Import(Persistence.Entities.Idea entity)
         {
             Id = entity.Id;
             Title = entity.Title;
             Description = entity.Description;
             IsPublic = entity.IsPublic;
+            InnovationAgent = new InnovationAgentDisplayViewModel();
+
+            InnovationAgent.Import(entity.InnovationAgent);
 
             if (entity.WorkflowId != null)
             {

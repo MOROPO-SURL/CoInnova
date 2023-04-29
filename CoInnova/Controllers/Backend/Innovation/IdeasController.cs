@@ -22,10 +22,11 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
         private readonly IEntityRepository<IdeaWorkflowIteration, System.Guid> ideaWorkflowIterationRepository;
         private readonly IEntityRepository<IdeaWorkflowStep, System.Guid> ideaWorkflowStepRepository;
         private readonly IEntityRepository<Image, System.Guid> imageRepository;
+        private readonly IEntityRepository<InnovationAgent, System.Guid> innovationAgentRepository;
         private readonly Managers.RelativeDocumentFileManager documentManager;
         private readonly IImageFileManagerFacade imageFileManager;
 
-        public IdeasController(IImageFileManagerFacade imageFileManager, Managers.RelativeDocumentFileManager documentManager, IEntityRepository<Image, System.Guid> imageRepository, IEntityRepository<IdeaWorkflowStep, System.Guid> ideaWorkflowStepRepository, IEntityRepository<IdeaWorkflowIteration, System.Guid> ideaWorkflowIterationRepository, IEntityRepository<Collaborator, System.Guid> collaboratorRepository, IEntityRepository<Document, System.Guid> documentRepository, IEntityRepository<Challange, System.Guid> challangeRepository, IEntityRepository<IdeaWorkflow, System.Guid> ideaWorkflowRepository, IEntityRepository<Idea, System.Guid> repository, Microsoft.Extensions.Localization.IStringLocalizer<IdeasController> localizer, ILogger<IdeasController> logger) : base(repository, localizer, logger)
+        public IdeasController(IImageFileManagerFacade imageFileManager, Managers.RelativeDocumentFileManager documentManager, IEntityRepository<InnovationAgent, System.Guid> innovationAgentRepository, IEntityRepository<Image, System.Guid> imageRepository, IEntityRepository<IdeaWorkflowStep, System.Guid> ideaWorkflowStepRepository, IEntityRepository<IdeaWorkflowIteration, System.Guid> ideaWorkflowIterationRepository, IEntityRepository<Collaborator, System.Guid> collaboratorRepository, IEntityRepository<Document, System.Guid> documentRepository, IEntityRepository<Challange, System.Guid> challangeRepository, IEntityRepository<IdeaWorkflow, System.Guid> ideaWorkflowRepository, IEntityRepository<Idea, System.Guid> repository, Microsoft.Extensions.Localization.IStringLocalizer<IdeasController> localizer, ILogger<IdeasController> logger) : base(repository, localizer, logger)
         {
             this.ideaWorkflowRepository = ideaWorkflowRepository;
             this.challangeRepository = challangeRepository;
@@ -34,6 +35,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
             this.ideaWorkflowIterationRepository = ideaWorkflowIterationRepository;
             this.ideaWorkflowStepRepository = ideaWorkflowStepRepository;
             this.imageRepository = imageRepository;
+            this.innovationAgentRepository = innovationAgentRepository;
             this.documentManager = documentManager;
             this.imageFileManager = imageFileManager;
         }
@@ -82,6 +84,9 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
         {
             base.PreCreate(entity, modelInput);
 
+            entity.InnovationAgentId = modelInput.InnovationAgentId;
+            entity.InnovationAgent = innovationAgentRepository.Get(modelInput.InnovationAgentId.Value);
+
             if (modelInput.WorkflowId != null)
             {
                 entity.WorkflowId = modelInput.WorkflowId;
@@ -98,6 +103,12 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
         protected override void PreEdit(Idea entity, IdeaInputViewModel modelInput)
         {
             base.PreEdit(entity, modelInput);
+
+            if (entity.InnovationAgentId != modelInput.InnovationAgentId)
+            {
+                entity.InnovationAgentId = modelInput.InnovationAgentId;
+                entity.InnovationAgent = innovationAgentRepository.Get(modelInput.InnovationAgentId.Value);
+            }
 
             if (entity.WorkflowId != modelInput.WorkflowId)
             {
@@ -167,6 +178,11 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
             {
                 Value = item.Id.ToString(),
                 Text = item.Title
+            }).ToArray();
+            model.AvailableInnovationAgentSelectListItems = innovationAgentRepository.GetAll().Select(item => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
+            {
+                Value = item.Id.ToString(),
+                Text = item.Identity.Name
             }).ToArray();
         }
 

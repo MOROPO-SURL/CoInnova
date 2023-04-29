@@ -91,5 +91,7 @@ namespace MOROPO.UIC.CoInnova.Persistence.EF
         public DbSet<Entities.UseCaseDocumentBridge> UseCaseDocumentBridges { get; set; }
         public DbSet<Entities.PrototypingLevel> PrototypingLevels { get; set; }
         public DbSet<Entities.ApiKey> ApiKeys { get; set; }
+        public DbSet<Entities.InnovationAgent> InnovationAgents { get; set; }
+        public DbSet<Entities.InnovationAgentUserBridge> InnovationAgentUserBridges { get; set; }
     }
 }

@@ -15,9 +15,6 @@ namespace MOROPO.UIC.CoInnova.Models.View
         [Display(Name = "FoundatedAt")]
         public System.DateTime? BornDate { get; set; }
 
-        [Display(Name = "Alias")]
-        public string Alias { get; set; }
-
         [Display(Name = "About")]
         public string About { get; set; }
 
@@ -32,7 +29,6 @@ namespace MOROPO.UIC.CoInnova.Models.View
 
         public bool ResetImage { get; set; }
 
-        [Required(ErrorMessage = "RequiredValidationErrorMessage")]
         [Display(Name = "Representative")]
         public string UserId { get; set; }
 

@@ -49,12 +49,12 @@
             </ul>
         </div>
         <div class="card-body">
-            <div class="mb-3">
-                @Html.LabelFor(model => model.Title, new { @class = "control-label" })
-                @Html.TextBoxFor(model => model.Title, new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Title, null, new { @class = "text-danger" })
-            </div>
             <div class="row">
+                <div class="col mb-3">
+                    @Html.LabelFor(model => model.Title, new { @class = "control-label" })
+                    @Html.TextBoxFor(model => model.Title, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Title, null, new { @class = "text-danger" })
+                </div>
                 <div class="col-auto mb-3">
                     @Html.LabelFor(model => model.IsPublic, new { @class = "control-label" })
                     <div class="checkbox">
@@ -64,7 +64,14 @@
                         </label>
                     </div>
                 </div>
-                <div class="col mb-3">
+            </div> 
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    @Html.LabelFor(model => model.InnovationAgentId, new { @class = "control-label" })
+                    @Html.DropDownListFor(model => model.InnovationAgentId, Model.AvailableInnovationAgentSelectListItems, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.InnovationAgentId, null, new { @class = "text-danger" })
+                </div>
+                <div class="col-md-6 mb-3">
                     @Html.LabelFor(model => model.WorkflowId, new { @class = "control-label" })
                     @Html.DropDownListFor(model => model.WorkflowId, Model.AvailableWorkflowSelectListItems, GlobalViewLocalizationHelper.Localize("None"), new { @class = "form-control" })
                     @Html.ValidationMessageFor(model => model.WorkflowId, null, new { @class = "text-danger" })

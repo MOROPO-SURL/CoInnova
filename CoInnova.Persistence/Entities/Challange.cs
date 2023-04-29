@@ -22,6 +22,11 @@
 
         public System.DateTime CreatedAt { get; set; }
 
+        [System.ComponentModel.DataAnnotations.Schema.ForeignKey("InnovationAgentId")]
+        public InnovationAgent InnovationAgent { get; set; }
+        [System.ComponentModel.DataAnnotations.Required]
+        public System.Guid? InnovationAgentId { get; set; }
+
         [System.ComponentModel.DataAnnotations.Schema.ForeignKey("WorkflowId")]
         public ChallangeWorkflow Workflow { get; set; }
         public System.Guid? WorkflowId { get; set; }

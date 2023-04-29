@@ -26,6 +26,11 @@
         public Framework.Guama.Media.Persistence.Entities.Image FeatureImage { get; set; }
         public System.Guid? FeatureImageId { get; set; }
 
+        [System.ComponentModel.DataAnnotations.Schema.ForeignKey("InnovationAgentId")]
+        public InnovationAgent InnovationAgent { get; set; }
+        [System.ComponentModel.DataAnnotations.Required]
+        public System.Guid? InnovationAgentId { get; set; }
+
         [System.ComponentModel.DataAnnotations.Schema.ForeignKey("WorkflowId")]
         public IdeaWorkflow Workflow { get; set; }
         public System.Guid? WorkflowId { get; set; }

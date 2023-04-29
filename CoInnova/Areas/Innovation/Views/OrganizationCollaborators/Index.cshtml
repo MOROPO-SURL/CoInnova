@@ -155,11 +155,20 @@
                             }
                         </td>
                         <td style="vertical-align: middle;">@item.OrganizationIdentity.Name</td>
-                        <td style="vertical-align: middle;">@Html.Raw(string.IsNullOrEmpty(item.User.LastName) ? string.Format("{0} ({1})", item.User.Name.Trim(), item.User.Id) : string.Format("{0} {1} ({2})", item.User.Name.Trim(), item.User.LastName.Trim(), item.User.Id))</td>
+                        <td style="vertical-align: middle;">
+                            @if (item.User != null)
+                            {
+                                <span>@Html.Raw(string.IsNullOrEmpty(item.User.LastName) ? string.Format("{0} ({1})", item.User.Name.Trim(), item.User.Id) : string.Format("{0} {1} ({2})", item.User.Name.Trim(), item.User.LastName.Trim(), item.User.Id))</span>
+                            }
+                            else
+                            {
+                                <span>--</span>
+                            }
+                        </td>
                         <td style="vertical-align: middle;">@item.CreatedAt.ToShortDateString()</td>
                         <td style="vertical-align: middle;">
-                            <div class="btn-group">
-                                <a role="button" href="#" class="btn btn-light" title="Detalles"><span class="mdi mdi-eye"></span><span class="hidden-xs"> Detalles</span></a>
+                            <div class="btn-group btn-group-sm">
+                                @*<a role="button" href="#" class="btn btn-light" title="Detalles"><span class="mdi mdi-eye"></span><span class="hidden-xs"> Detalles</span></a>*@
                                 <a role="button" href="@Url.Action("edit", new { key = item.Id })" class="btn btn-light" title="Editar"><span class="mdi mdi-square-edit-outline"></span><span class="hidden-xs"> Modificar</span></a>
                                 <a role="button" href="@Url.Action("delete", new {key = item.Id})" class="btn btn-danger"><span class="mdi mdi-trash-can-outline"></span> Eliminar</a>
                             </div>

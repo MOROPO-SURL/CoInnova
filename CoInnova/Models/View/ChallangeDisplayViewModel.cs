@@ -1,4 +1,6 @@
-﻿namespace MOROPO.UIC.CoInnova.Models.View
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace MOROPO.UIC.CoInnova.Models.View
 {
     public class ChallangeDisplayViewModel : Framework.Guama.Core.Persistence.Presentation.Models.Contract.IEntityDisplayModel<Persistence.Entities.Challange, System.Guid>
     {
@@ -14,6 +16,9 @@
 
         public ChallangeWorkflowDisplayViewModel Workflow { get; set; }
 
+        [Display(Name = "InnovationAgent")]
+        public InnovationAgentDisplayViewModel InnovationAgent { get; set; }
+
         public void Import(Persistence.Entities.Challange entity)
         {
             Id = entity.Id;
@@ -21,6 +26,9 @@
             Description = entity.Description;
             CreatedAt = entity.CreatedAt;
             IsPublic = entity.IsPublic;
+            InnovationAgent = new InnovationAgentDisplayViewModel();
+
+            InnovationAgent.Import(entity.InnovationAgent);
 
             if (entity.WorkflowId != null)
             {

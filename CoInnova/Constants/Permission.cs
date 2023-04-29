@@ -59,5 +59,10 @@
         public const string SphereCreator = "sphere-creator";
         public const string SphereEditor = "sphere-editor";
         public const string SphereRemover = "sphere-remover";
+
+        public const string InnovationAgentViewer = "innovationagent-viewer";
+        public const string InnovationAgentCreator = "innovationagent-creator";
+        public const string InnovationAgentEditor = "innovationagent-editor";
+        public const string InnovationAgentRemover = "innovationagent-remover";
     }
 }

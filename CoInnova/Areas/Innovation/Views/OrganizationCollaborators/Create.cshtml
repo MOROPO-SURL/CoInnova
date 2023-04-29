@@ -98,20 +98,13 @@
                     </div>
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            @Html.LabelFor(model => model.Alias, new { @class = "control-label" })
-                            @Html.TextBoxFor(model => model.Alias, new { @class = "form-control" })
-                            @Html.ValidationMessageFor(model => model.Alias, null, new { @class = "text-danger" })
-                        </div>
-                        <div class="col-md-6">
                             @Html.LabelFor(model => model.BornDate, new { @class = "control-label" })
                             @Html.TextBoxFor(model => model.BornDate, new { @class = "form-control", @readonly = "readonly" })
                             @Html.ValidationMessageFor(model => model.BornDate, null, new { @class = "text-danger" })
                         </div>
-                    </div>
-                    <div class="row">
                         <div class="col-md-6 mb-3">
                             @Html.LabelFor(model => model.UserId, new { @class = "control-label" })
-                            @Html.DropDownListFor(model => model.UserId, Model.AvailableUsers, new { @class = "form-control" })
+                            @Html.DropDownListFor(model => model.UserId, Model.AvailableUsers, GlobalViewLocalizationHelper.Localize("None"), new { @class = "form-control" })
                             @Html.ValidationMessageFor(model => model.UserId, null, new { @class = "text-danger" })
                         </div>
                     </div>

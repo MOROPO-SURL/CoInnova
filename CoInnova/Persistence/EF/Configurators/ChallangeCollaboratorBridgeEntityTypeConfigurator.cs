@@ -5,7 +5,6 @@
         public ChallangeCollaboratorBridgeEntityTypeConfigurator()
         {
             prowNavigationExpression = entity => entity.CollaboratorBridges;
-            sternNavigationExpression = entity => entity.ChallangeBridges;
         }
     }
 }

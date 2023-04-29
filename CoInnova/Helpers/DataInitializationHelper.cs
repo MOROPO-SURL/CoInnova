@@ -235,6 +235,27 @@ namespace MOROPO.UIC.CoInnova.Helpers
 
             #endregion
 
+            #region InnovationAgent
+
+            if (!permissionDbSet.Any(item => item.Code.Equals(Constants.Permission.InnovationAgentViewer)))
+            {
+                permissionDbSet.Add(Constants.Permission.InnovationAgentViewer.ToPermissionEntity(Constants.PermissionsFamily.InnovationAgentManagement));
+            }
+            if (!permissionDbSet.Any(item => item.Code.Equals(Constants.Permission.InnovationAgentRemover)))
+            {
+                permissionDbSet.Add(Constants.Permission.InnovationAgentRemover.ToPermissionEntity(Constants.PermissionsFamily.InnovationAgentManagement));
+            }
+            if (!permissionDbSet.Any(item => item.Code.Equals(Constants.Permission.InnovationAgentEditor)))
+            {
+                permissionDbSet.Add(Constants.Permission.InnovationAgentEditor.ToPermissionEntity(Constants.PermissionsFamily.InnovationAgentManagement));
+            }
+            if (!permissionDbSet.Any(item => item.Code.Equals(Constants.Permission.InnovationAgentRemover)))
+            {
+                permissionDbSet.Add(Constants.Permission.InnovationAgentRemover.ToPermissionEntity(Constants.PermissionsFamily.InnovationAgentManagement));
+            }
+
+            #endregion
+
             if (!permissionDbSet.Any(item => item.Code.Equals(Constants.Permission.TraceViewer)))
             {
                 permissionDbSet.Add(Constants.Permission.TraceViewer.ToPermissionEntity());

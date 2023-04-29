@@ -39,6 +39,14 @@ namespace MOROPO.UIC.CoInnova.Extensions
             {
                 new ManagementDashboardSectionViewModel
                 {
+                    Title = "Agentes de Innovación",
+                    Controller = "agents",
+                    Action = "index",
+                    Area = "innovation",
+                    Role = Constants.Permission.InnovationAgentViewer
+                },
+                new ManagementDashboardSectionViewModel
+                {
                     Title = "Retos de Innovación",
                     Controller = "challanges",
                     Action = "index",

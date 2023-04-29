@@ -16,6 +16,7 @@ namespace MOROPO.UIC.CoInnova.Persistence.EF.Repositories
                 .Include(entity => entity.Workflow)
                 .Include(entity => entity.Challange).ThenInclude(entity => entity.Workflow)
                 .Include(entity => entity.FeatureImage)
+                .Include(entity => entity.InnovationAgent).ThenInclude(entity => entity.Identity).ThenInclude(entity => entity.Image)
                 .Include(entity => entity.CollaboratorBridges).ThenInclude(bridge => bridge.Stern).ThenInclude(entity => entity.OrganizationIdentity).ThenInclude(entity => entity.Image)
                 .Include(entity => entity.DocumentBridges).ThenInclude(bridge => bridge.Stern);
         }

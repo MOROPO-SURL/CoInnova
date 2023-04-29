@@ -23,10 +23,11 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
         private readonly IEntityRepository<UseCase, System.Guid> useCaseRepository;
         private readonly IEntityRepository<Image, System.Guid> imageRepository;
         private readonly IEntityRepository<Document, System.Guid> documentRepository;
+        private readonly IEntityRepository<InnovationAgent, System.Guid> innovationAgentRepository;
         private readonly Managers.RelativeDocumentFileManager documentManager;
         private readonly IImageFileManagerFacade imageFileManager;
 
-        public PrototypesController(IImageFileManagerFacade imageFileManager, Managers.RelativeDocumentFileManager documentManager, IEntityRepository<Document, System.Guid> documentRepository, IEntityRepository<Image, System.Guid> imageRepository, IEntityRepository<UseCase, System.Guid> useCaseRepository, IEntityRepository<Sphere, System.Guid> sphereRepository, IEntityRepository<Collaborator, System.Guid> collaboratorRepository, IEntityRepository<PrototypingLevel, System.Guid> levelRepository, IEntityRepository<Idea, System.Guid> ideaRepository, IEntityRepository<Prototype, System.Guid> repository, Microsoft.Extensions.Localization.IStringLocalizer<PrototypesController> localizer, Microsoft.Extensions.Logging.ILogger<PrototypesController> logger) : base(repository, localizer, logger)
+        public PrototypesController(IImageFileManagerFacade imageFileManager, Managers.RelativeDocumentFileManager documentManager, IEntityRepository<InnovationAgent, System.Guid> innovationAgentRepository, IEntityRepository<Document, System.Guid> documentRepository, IEntityRepository<Image, System.Guid> imageRepository, IEntityRepository<UseCase, System.Guid> useCaseRepository, IEntityRepository<Sphere, System.Guid> sphereRepository, IEntityRepository<Collaborator, System.Guid> collaboratorRepository, IEntityRepository<PrototypingLevel, System.Guid> levelRepository, IEntityRepository<Idea, System.Guid> ideaRepository, IEntityRepository<Prototype, System.Guid> repository, Microsoft.Extensions.Localization.IStringLocalizer<PrototypesController> localizer, Microsoft.Extensions.Logging.ILogger<PrototypesController> logger) : base(repository, localizer, logger)
         {
             this.ideaRepository = ideaRepository;
             this.levelRepository = levelRepository;
@@ -35,6 +36,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
             this.useCaseRepository = useCaseRepository;
             this.imageRepository = imageRepository;
             this.documentRepository = documentRepository;
+            this.innovationAgentRepository = innovationAgentRepository;
             this.documentManager = documentManager;
             this.imageFileManager = imageFileManager;
         }
@@ -87,7 +89,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
             entity.Level = levelRepository.Get(modelInput.LevelId.Value);
 
             entity.InnovationAgentId = modelInput.InnovationAgentId;
-            entity.InnovationAgent = collaboratorRepository.Get(modelInput.InnovationAgentId.Value);
+            entity.InnovationAgent = innovationAgentRepository.Get(modelInput.InnovationAgentId.Value);
 
             if (modelInput.IdeaId != null)
             {
@@ -109,7 +111,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
             if (entity.InnovationAgentId != modelInput.InnovationAgentId)
             {
                 entity.InnovationAgentId = modelInput.InnovationAgentId;
-                entity.InnovationAgent = collaboratorRepository.Get(modelInput.InnovationAgentId.Value);
+                entity.InnovationAgent = innovationAgentRepository.Get(modelInput.InnovationAgentId.Value);
             }
 
             if (entity.IdeaId != modelInput.IdeaId)
@@ -172,10 +174,10 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
                 Value = item.Id.ToString(),
                 Text = string.Format("L{0} {1}", item.Numerator, item.Name)
             }).ToArray();
-            model.AvailableInnovationAgents = collaboratorRepository.FindBy(entity => entity.OrganizationIdentityId != null).Select(item => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
+            model.AvailableInnovationAgents = innovationAgentRepository.GetAll().Select(item => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
             {
                 Value = item.Id.ToString(),
-                Text = item.OrganizationIdentity.Name
+                Text = item.Identity.Name
             }).ToArray();
         }
 

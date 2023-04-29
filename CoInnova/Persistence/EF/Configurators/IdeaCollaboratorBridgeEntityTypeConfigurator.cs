@@ -5,7 +5,6 @@
         public IdeaCollaboratorBridgeEntityTypeConfigurator()
         {
             prowNavigationExpression = entity => entity.CollaboratorBridges;
-            sternNavigationExpression = entity => entity.IdeaBridges;
         }
     }
 }

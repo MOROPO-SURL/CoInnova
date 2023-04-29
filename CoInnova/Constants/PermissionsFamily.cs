@@ -25,5 +25,7 @@
         public const string IdeaCommentManagement = "ideacomment-management";
 
         public const string SphereManagement = "sphere-management";
+
+        public const string InnovationAgentManagement = "innovationagent-management";
     }
 }

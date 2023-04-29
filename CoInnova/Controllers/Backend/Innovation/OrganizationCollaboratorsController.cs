@@ -113,8 +113,11 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
         {
             base.PreCreate(entity, modelInput);
 
-            entity.User = userRepository.Get(modelInput.UserId);
-            entity.UserId = modelInput.UserId;
+            if (modelInput.UserId != null)
+            {
+                entity.User = userRepository.Get(modelInput.UserId);
+                entity.UserId = modelInput.UserId;
+            }
 
             if (modelInput.ImageFile == null) return;
 
@@ -136,7 +139,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
 
             if (modelInput.UserId != entity.UserId)
             {
-                entity.User = userRepository.Get(modelInput.UserId);
+                entity.User = modelInput.UserId != null ? userRepository.Get(modelInput.UserId) : null;
                 entity.UserId = modelInput.UserId;
             }
 

@@ -28,7 +28,7 @@
         public System.Guid? LevelId { get; set; }
 
         [System.ComponentModel.DataAnnotations.Schema.ForeignKey("InnovationAgentId")]
-        public Collaborator InnovationAgent { get; set; }
+        public InnovationAgent InnovationAgent { get; set; }
         [System.ComponentModel.DataAnnotations.Required]
         public System.Guid? InnovationAgentId { get; set; }
 

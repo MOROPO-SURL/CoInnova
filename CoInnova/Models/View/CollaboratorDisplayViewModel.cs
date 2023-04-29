@@ -14,9 +14,13 @@
         {
             Id = entity.Id;
             CreatedAt = entity.CreatedAt;
-            User = new Framework.Guama.Security.Personal.Presentation.Web.Backend.Models.View.UserDisplayViewModel();
 
-            User.Import(entity.User);
+            if (entity.UserId != null)
+            {
+                User = new Framework.Guama.Security.Personal.Presentation.Web.Backend.Models.View.UserDisplayViewModel();
+
+                User.Import(entity.User);
+            }
 
             if (entity.OrganizationIdentityId != null)
             {

@@ -62,6 +62,7 @@ namespace MOROPO.UIC.CoInnova
             services.AddScoped<IEntityRepository<Evaluation, System.Guid>, Persistence.EF.Repositories.EvaluationRepository>();
             services.AddScoped<IEntityRepository<ChallangeWorkflowIteration, System.Guid>, Persistence.EF.Repositories.ChallangeWorkflowIterationRepository>();
             services.AddScoped<IEntityRepository<IdeaWorkflowIteration, System.Guid>, Persistence.EF.Repositories.IdeaWorkflowIterationRepository>();
+            services.AddScoped<IEntityRepository<InnovationAgent, System.Guid>, Persistence.EF.Repositories.InnovationAgentRepository>();
 
             services.AddSingleton<Managers.RelativeDocumentFileManager>();
 
