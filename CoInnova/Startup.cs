@@ -77,7 +77,7 @@ namespace MOROPO.UIC.CoInnova
             })
             .AddCookie(config =>
             {
-                config.AccessDeniedPath = new PathString("/security/error/forbidden");
+                config.AccessDeniedPath = new PathString("/error/403");
                 config.LoginPath = new PathString("/security/account/login");
                 config.ExpireTimeSpan = System.TimeSpan.FromMinutes(5);
                 config.SlidingExpiration = true;
@@ -225,10 +225,12 @@ namespace MOROPO.UIC.CoInnova
             }
             else
             {
-                app.UseExceptionHandler("/error");
+                app.UseExceptionHandler("/error/exception");
 
                 app.UseHsts();
             }
+
+            app.UseStatusCodePagesWithReExecute("/error/{0}");
 
             var atStartUpRoles = dbContext.Set<Framework.Guama.Core.Security.Common.Persistence.Entities.Role>().Include(e => e.PermissionBridges).ThenInclude(b => b.Stern).ToArray();
 

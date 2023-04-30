@@ -486,4 +486,7 @@
   <data name="Number" xml:space="preserve">
     <value>Número</value>
   </data>
+  <data name="CreationSuccessMessage" xml:space="preserve">
+    <value>Cambios aplicados con éxito.</value>
+  </data>
 </root>
