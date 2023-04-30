@@ -138,7 +138,7 @@
                             }
                             <div class="mt-3">
                                 <div class="btn-group btn-group-sm">
-                                    <a class="btn btn-light" href="#">Descargar</a>
+                                    <a class="btn btn-light" asp-action="document" asp-controller="download" asp-area="" asp-route-key="@item.Id">Descargar</a>
                                     <a class="btn btn-light" href="#" data-toggle="modal" data-target="#edit-document-@item.Id">Modificar</a>
                                     <a class="btn btn-danger" href="#" data-toggle="modal" data-target="#delete-document-@item.Id">Eliminar</a>
                                 </div>

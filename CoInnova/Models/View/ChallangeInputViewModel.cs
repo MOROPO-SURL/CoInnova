@@ -17,16 +17,10 @@ namespace MOROPO.UIC.CoInnova.Models.View
         [Display(Name = "Description")]
         public string Description { get; set; }
 
-        [Required(ErrorMessage = "RequiredValidationErrorMessage")]
-        [Display(Name = "InnovationAgent")]
-        public System.Guid? InnovationAgentId { get; set; }
-
         [Display(Name = "Workflow")]
         public System.Guid? WorkflowId { get; set; }
 
         public Microsoft.AspNetCore.Mvc.Rendering.SelectListItem[] AvailableWorkflowSelectListItems { get; set; }
-
-        public Microsoft.AspNetCore.Mvc.Rendering.SelectListItem[] AvailableInnovationAgentSelectListItems { get; set; }
 
         public Challange Export()
         {
@@ -37,13 +31,12 @@ namespace MOROPO.UIC.CoInnova.Models.View
             return entity;
         }
 
-        public void Import(Challange entity)
+        public virtual void Import(Challange entity)
         {
             Id = entity.Id;
             Title = entity.Title;
             Description = entity.Description;
             IsPublic = entity.IsPublic;
-            InnovationAgentId = entity.InnovationAgentId;
             WorkflowId = entity.WorkflowId;
         }
 

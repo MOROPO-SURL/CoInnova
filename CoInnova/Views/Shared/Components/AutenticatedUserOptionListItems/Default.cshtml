@@ -1,0 +1,13 @@
+﻿@using MOROPO.Framework.Guama.Core.Security.Common.Presentation.Web.Frontend.Extensions
+
+@model bool
+
+@if (Model)
+{
+    <a class="dropdown-item" asp-action="index" asp-controller="moderation" asp-area=""><span class="mdi mdi-account-tie" style="margin-right: 4px;"></span>@GlobalViewLocalizationHelper.Localize("Moderación", ViewLocalizer)</a>
+}
+
+@if (User.IsAuthorized(MOROPO.Framework.Guama.Core.Security.Presentation.Constants.Permissions.ShellManager))
+{
+    <a class="dropdown-item" asp-action="index" asp-controller="dashboard"><span class="mdi mdi-cogs" style="margin-right: 4px;"></span>@GlobalViewLocalizationHelper.Localize("Administración", ViewLocalizer)</a>
+}

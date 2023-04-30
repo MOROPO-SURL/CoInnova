@@ -1,0 +1,156 @@
+﻿@{ 
+    Layout = "_Layout";
+}
+
+@section styles {
+    <style type="text/css">
+        .form-signin {
+            width: 100%;
+            max-width: 330px;
+            padding: 15px;
+            margin: auto;
+        }
+
+        .form-signin .checkbox {
+            font-weight: 400;
+        }
+
+        .form-signin .form-control {
+            position: relative;
+            box-sizing: border-box;
+            height: auto;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        .form-signin .form-control:focus {
+            z-index: 2;
+        }
+
+        .form-signin #UserName {
+            margin-bottom: -1px;
+            border-bottom-right-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        .form-signin #Password {
+            margin-bottom: 10px;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+        }
+    </style>
+
+    @RenderSection("styles", false)
+}
+
+@section scripts {
+    @RenderSection("scripts", false)
+}
+
+<nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light shadow">
+    <a class="navbar-brand" href="#">CoInnova</a>    
+    
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigationNavbar" aria-controls="navigationNavbar" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navigationNavbar">
+        @if (User.Identity.IsAuthenticated)
+        {
+            <form asp-action="logout" asp-controller="account" asp-area="security" asp-antiforgery="true" class="form-inline w-100">
+                <ul class="nav justify-content-end w-100">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">@User.Identity.Name</a>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" asp-action="index" asp-controller="account" asp-area="security"><span class="mdi mdi-account-circle" style="margin-right: 4px;"></span>Perfil de Usuario</a>
+                            @await Component.InvokeAsync("AutenticatedUserOptionListItems")                          
+                            <div class="dropdown-divider"></div>
+                            <button type="submit" class="dropdown-item"><span class="mdi mdi-logout-variant" style="margin-right: 4px;"></span>Salir</button>
+                        </div>
+                    </li>
+                </ul>
+            </form>
+        }
+        else
+        {
+            <div class="w-100">
+                <a class="btn btn-link float-right" href="@Url.Action("login", "account", new { Area = "security"})"><span class="mdi mdi-login-variant" style="margin-right: 4px;"></span>Entrar</a>
+            </div>
+        }
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-2 col-md-3 bg-light" style="padding: 0;">
+            @await Component.InvokeAsync("DefaultSidebar")
+        </div>
+        <div role="main" class="col-lg-10 col-md-9 ml-sm-auto px-4" style="padding-top: 80px;">
+            @if (ViewData[BreadcrumbViewModel.BREADCRUMBS_MAP_KEY] != null)
+            {
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-4">
+                        @{
+                            ICollection<BreadcrumbViewModel> breadcrumbs = ViewData[BreadcrumbViewModel.BREADCRUMBS_MAP_KEY] as ICollection<BreadcrumbViewModel>;
+
+                            if (breadcrumbs != null)
+                            {
+                                var total = breadcrumbs.Count();
+                                var count = 1;
+
+                                foreach (var breadcrumb in breadcrumbs)
+                                {
+                                    if (count < total)
+                                    {
+                                        <li class="breadcrumb-item"><a href="@breadcrumb.Url">@Html.Raw(breadcrumb.Caption)</a></li>
+                                    }
+                                    else
+                                    {
+                                        <li class="breadcrumb-item active">@Html.Raw(breadcrumb.Caption)</li>
+                                    }
+
+                                    count++;
+                                }
+                            }
+                        }
+                    </ol>
+                </nav>
+            }
+
+            @{
+                var notificationEntries = TempData.Where(x => x.Key.EndsWith("-notification")).ToArray();
+
+                foreach (var extraNotificationEntry in notificationEntries)
+                {
+                    var notification = JsonConvert.DeserializeObject<NotificationViewModel>(extraNotificationEntry.Value.ToString());
+
+                    <div class="alert alert-dismissible fade show alert-@Html.Raw(notification.Type.ToString().ToLower())">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        @if (notification.Title != null)
+                        {
+                            <h4>@GlobalViewLocalizationHelper.Localize(notification.Title, ViewLocalizer)</h4>
+                        }
+
+                        @if (notification.Message != null)
+                        {
+                            @Html.Raw(GlobalViewLocalizationHelper.Localize(notification.Message, ViewLocalizer));
+                        }
+
+                        @if (notification.Messages != null)
+                        {
+                            <ul>
+                                @foreach (var item in notification.Messages)
+                                {
+                                    <li>@GlobalViewLocalizationHelper.Localize(item, ViewLocalizer)</li>
+                                }
+                            </ul>
+                        }
+                    </div>
+                }
+            }
+
+            @RenderBody()
+        </div>
+    </div>
+</div>

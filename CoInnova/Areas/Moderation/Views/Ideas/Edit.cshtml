@@ -1,0 +1,96 @@
+﻿@model MOROPO.UIC.CoInnova.Models.View.IdeaInputViewModel
+
+@{
+    ViewData["Title"] = "Modificar Idea Innovadora";
+
+    ViewData[BreadcrumbViewModel.BREADCRUMBS_MAP_KEY] = new List<BreadcrumbViewModel>
+    {
+        new BreadcrumbViewModel
+        {
+            Caption = "<span class=\"mdi mdi-home\" style=\"margin-right: 4px;\"></span>" + GlobalViewLocalizationHelper.Localize("Home", ViewLocalizer),
+            Url = Url.Action("index", "home", new { Area = string.Empty })
+        },
+        new BreadcrumbViewModel
+        {
+            Caption = "Área de Moderación",
+            Url = Url.Action("index", "dashboard", new { Area = "moderation" })
+        },
+        new BreadcrumbViewModel
+        {
+            Caption = "Administración de Ideas Innovadoras",
+            Url = Url.Action("index")
+        },
+        new BreadcrumbViewModel
+        {
+            Caption = ViewData["Title"].ToString()
+        }
+    };
+
+    Layout = "_ModerationFrontendLayout";
+}
+
+@using (Html.BeginForm("edit", "ideas", new { Area = "moderation", key = string.Empty }, FormMethod.Post, true, null))
+{
+    @Html.ValidationSummary(true)
+
+    @Html.HiddenFor(model => model.Id)
+
+    <div class="card mb-3">
+        <div class="card-header">
+            <h4>@ViewData["Title"]</h4>
+            <ul class="nav nav-tabs card-header-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">Generales</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="@Url.Action("editpersoncollaborations", @Model.Id)">Colaboradores</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="@Url.Action("editdocuments", @Model.Id)">Documentos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="@Url.Action("EditWorkflowIterations", @Model.Id)">Proceso de Innovación</a>
+                </li>
+            </ul>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col mb-3">
+                    @Html.LabelFor(model => model.Title, new { @class = "control-label" })
+                    @Html.TextBoxFor(model => model.Title, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Title, null, new { @class = "text-danger" })
+                </div>
+                <div class="col-auto mb-3">
+                    @Html.LabelFor(model => model.IsPublic, new { @class = "control-label" })
+                    <div class="checkbox">
+                        <label>
+                            @Html.EditorFor(model => model.IsPublic)
+                            @Html.ValidationMessageFor(model => model.IsPublic)
+                        </label>
+                    </div>
+                </div>
+            </div> 
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    @Html.LabelFor(model => model.WorkflowId, new { @class = "control-label" })
+                    @Html.DropDownListFor(model => model.WorkflowId, Model.AvailableWorkflowSelectListItems, GlobalViewLocalizationHelper.Localize("None"), new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.WorkflowId, null, new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="mb-3">
+                @Html.LabelFor(model => model.ChallangeId, new { @class = "control-label" })
+                @Html.DropDownListFor(model => model.ChallangeId, Model.AvailableChallangeSelectListItems, GlobalViewLocalizationHelper.Localize("None"), new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.ChallangeId, null, new { @class = "text-danger" })
+            </div>
+            <div>
+                @Html.LabelFor(model => model.Description, new { @class = "control-label" })
+                @Html.TextAreaFor(model => model.Description, 18, 0, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Description, null, new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="card-footer">
+            <button type="submit" class="btn btn-primary">Modificar</button>
+            <a class="btn btn-light" href="@Url.Action("index")">Regresar al listado</a>
+        </div>
+    </div>
+}

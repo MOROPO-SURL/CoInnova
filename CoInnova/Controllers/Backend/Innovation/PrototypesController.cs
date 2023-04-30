@@ -6,6 +6,7 @@ using MOROPO.Framework.Guama.Core.Presentation.Web.Security.Attributes;
 using MOROPO.Framework.Guama.Media.Persistence.Entities;
 using MOROPO.Framework.Guama.Media.Presentation.Web.Common.Managers.Facade;
 using MOROPO.UIC.CoInnova.Models.View;
+using MOROPO.UIC.CoInnova.Models.View.Backend;
 using MOROPO.UIC.CoInnova.Persistence.Entities;
 using System.Linq;
 
@@ -14,7 +15,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
     [Microsoft.AspNetCore.Authorization.Authorize]
     [RequirePermissions(Framework.Guama.Core.Security.Presentation.Constants.Permissions.ShellManager)]
     [Area("innovation")]
-    public class PrototypesController : Framework.Guama.Core.Presentation.Web.Backend.Controllers.AbstractEntityManagementController<Prototype, System.Guid, PrototypeInputViewModel, PrototypeDisplayViewModel>
+    public class PrototypesController : Framework.Guama.Core.Presentation.Web.Backend.Controllers.AbstractEntityManagementController<Prototype, System.Guid, PrototypeInputBackendViewModel, PrototypeDisplayViewModel>
     {
         private readonly IEntityRepository<Idea, System.Guid> ideaRepository;
         private readonly IEntityRepository<PrototypingLevel, System.Guid> levelRepository;
@@ -54,7 +55,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
         }
 
         [RequirePermissions(Constants.Permission.PrototypeCreator)]
-        public override IActionResult Create(PrototypeInputViewModel modelInput)
+        public override IActionResult Create(PrototypeInputBackendViewModel modelInput)
         {
             return base.Create(modelInput);
         }
@@ -64,7 +65,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
             return base.Edit(key);
         }
 
-        public override IActionResult Edit(PrototypeInputViewModel modelInput)
+        public override IActionResult Edit(PrototypeInputBackendViewModel modelInput)
         {
             return base.Edit(modelInput);
         }
@@ -81,7 +82,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
             return base.Delete(displayModel);
         }
 
-        protected override void PreCreate(Prototype entity, PrototypeInputViewModel modelInput)
+        protected override void PreCreate(Prototype entity, PrototypeInputBackendViewModel modelInput)
         {
             base.PreCreate(entity, modelInput);
 
@@ -98,7 +99,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
             }
         }
 
-        protected override void PreEdit(Prototype entity, PrototypeInputViewModel modelInput)
+        protected override void PreEdit(Prototype entity, PrototypeInputBackendViewModel modelInput)
         {
             base.PreEdit(entity, modelInput);
 
@@ -134,35 +135,35 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
             return base.GetSuccessEditActionResult(key);
         }
 
-        protected override void ConfigureCreate(PrototypeInputViewModel modelInput)
+        protected override void ConfigureCreate(PrototypeInputBackendViewModel modelInput)
         {
             base.ConfigureCreate(modelInput);
 
             Populate(modelInput);
         }
 
-        protected override void ConfigurePostFailCreateValidation(PrototypeInputViewModel modelInput)
+        protected override void ConfigurePostFailCreateValidation(PrototypeInputBackendViewModel modelInput)
         {
             base.ConfigurePostFailCreateValidation(modelInput);
 
             Populate(modelInput);
         }
 
-        protected override void ConfigureEdit(Prototype entity, PrototypeInputViewModel modelInput)
+        protected override void ConfigureEdit(Prototype entity, PrototypeInputBackendViewModel modelInput)
         {
             base.ConfigureEdit(entity, modelInput);
 
             Populate(modelInput);
         }
 
-        protected override void ConfigurePostFailEditValidation(Prototype entity, PrototypeInputViewModel modelInput)
+        protected override void ConfigurePostFailEditValidation(Prototype entity, PrototypeInputBackendViewModel modelInput)
         {
             base.ConfigurePostFailEditValidation(entity, modelInput);
 
             Populate(modelInput);
         }
 
-        private void Populate(PrototypeInputViewModel model)
+        private void Populate(PrototypeInputBackendViewModel model)
         {
             model.AvailableIdeas = ideaRepository.GetAll().Select(item => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
             {

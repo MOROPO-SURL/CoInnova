@@ -1,0 +1,183 @@
+﻿@model MOROPO.UIC.CoInnova.Models.View.UseCaseImagesViewModel
+
+@{
+    ViewData["Title"] = "Modificar Escalamiento (Imágenes)";
+
+    ViewData[BreadcrumbViewModel.BREADCRUMBS_MAP_KEY] = new List<BreadcrumbViewModel>
+    {
+        new BreadcrumbViewModel
+        {
+            Caption = "<span class=\"mdi mdi-home\" style=\"margin-right: 4px;\"></span>" + GlobalViewLocalizationHelper.Localize("Home", ViewLocalizer),
+            Url = Url.Action("index", "home", new { Area = string.Empty })
+        },
+        new BreadcrumbViewModel
+        {
+            Caption = "Área de Moderación",
+            Url = Url.Action("index", "dashboard", new { Area = "moderation" })
+        },
+        new BreadcrumbViewModel
+        {
+            Caption = "Administración de Prototipos",
+            Url = Url.Action("index")
+        },
+        new BreadcrumbViewModel
+        {
+            Caption = "Modificar Prototipo",
+            Url = Url.Action("editusecases", new { key = Model.Prototype.Id })
+        },
+        new BreadcrumbViewModel
+        {
+            Caption = ViewData["Title"].ToString()
+        }
+    };
+
+    Layout = "_ModerationFrontendLayout";
+}
+
+<div class="card" style="margin-bottom: 20px;">
+    <div class="card-header">
+        <h4>Modificar Escalamiento</h4>
+        <ul class="nav nav-tabs card-header-tabs">
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("modifyusecase", new { key = Model.Prototype.Id, id = Model.UseCase.Id })">Generales</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("editusecasedocuments", new { key = Model.Prototype.Id, id = Model.UseCase.Id })">Documentos</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active">Imágenes</a>
+            </li>
+        </ul>
+    </div>
+    <div class="card-body pb-0">
+        <div class="alert alert-dark mb-4">
+            <details>
+                <summary class="h4 mb-0">@Model.UseCase.Collaborator.OrganizationIdentity.Name</summary>
+                <hr />
+                <dl class="mb-0">
+                    <dt>Prototipo</dt>
+                    <dd>@Model.Prototype.Title</dd>
+                    <dt>@Html.DisplayNameFor(model => model.UseCase.About)</dt>
+                    @if (Model.UseCase.About == null)
+                    {
+                        <dd>--</dd>
+                    }
+                    else
+                    {
+                        <dd>@Model.UseCase.About</dd>
+                    }
+                </dl>
+            </details>
+        </div>
+        <div class="modal fade" id="add-image" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="add-image-title">Agregar Imagen</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    @using (Html.BeginForm("addusecaseimage", "prototypes", new { key = Model.Prototype.Id, id = Model.UseCase.Id }, FormMethod.Post, true, new { enctype = "multipart/form-data" }))
+                    {
+                        <div class="modal-body">
+                            <input type="file" class="form-control" id="imageFile" name="imageFile" />
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Agregar</button>
+                            <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        @if (Model.Images.Length <= 0)
+        {
+            <p class="text-muted mb-2">Sin elementos que mostrar</p>
+        }
+        else
+        {
+            <div class="card-columns">
+                @foreach (var item in Model.Images)
+                {
+                    var cardClass = Model.UseCase.FeatureImageId == item.Id ? "card border-primary" : "card";
+
+                    <div class="@cardClass" style="margin-bottom: 1.25rem !important;">
+                        @if (Model.UseCase.FeatureImageId != item.Id)
+                        {
+                            <img class="card-img" src="~/media/images/@item.Id.@item.Extension" />
+                        }
+                        else
+                        {
+                            <div class="card-body p-1">
+                                <img class="card-img" src="~/media/images/@item.Id.@item.Extension" />
+                            </div>
+                        }
+                        <div class="card-img-overlay">
+                            <div class="btn-group btn-group-sm float-right">
+                                @if (Model.UseCase.FeatureImageId != item.Id)
+                                {
+                                    <a class="btn btn-success" href="#" data-toggle="modal" data-target="#featured-image-@item.Id"><span class="mdi mdi-target"></span></a>
+                                }
+                                <a class="btn btn-danger" href="#" data-toggle="modal" data-target="#delete-image-@item.Id"><span class="mdi mdi-trash-can"></span></a>
+                            </div>
+                        </div>
+                        <div class="modal fade" id="delete-image-@item.Id" tabindex="-1" role="dialog" aria-labelledby="delete-image-@item.Id-lable" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    @using (Html.BeginForm("deleteusecaseimage", "prototypes", new { key = Model.Prototype.Id, id = Model.UseCase.Id }, FormMethod.Post, true, new { @class = "modal-content" }))
+                                    {
+                                        @Html.Hidden("imageId", item.Id)
+
+                                        <div class="modal-header">
+                                            <h4 class="modal-title" id="delete-image-@item.Id-lable">Eliminar Imagen</h4>
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p class="mb-0">Esta seguro que desea eliminar la imagen seleccionada?</p>
+                                        </div>
+                                        <div class="modal-footer" style="margin-top: 0;">
+                                            <button type="submit" class="btn btn-danger">Eliminar</button>
+                                            <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        @if (Model.UseCase.FeatureImageId != item.Id)
+                        {
+                            <div class="modal fade" id="featured-image-@item.Id" tabindex="-1" role="dialog" aria-labelledby="featured-image-@item.Id-lable" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        @using (Html.BeginForm("featuredusecaseimage", "prototypes", new { key = Model.Prototype.Id, id = Model.UseCase.Id }, FormMethod.Post, true, new { @class = "modal-content" }))
+                                        {
+                                            @Html.Hidden("imageId", item.Id)
+
+                                            <div class="modal-header">
+                                                <h4 class="modal-title" id="delete-image-@item.Id-lable">Seleccionar como Imagen Principal</h4>
+                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p class="mb-0">Esta seguro que desea selecciona la imagen seleccionada como principal?</p>
+                                            </div>
+                                            <div class="modal-footer" style="margin-top: 0;">
+                                                <button type="submit" class="btn btn-primary">Seleccionar</button>
+                                                <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        }
+    </div>
+    <div class="card-footer">
+        <a class="btn btn-primary" href="#" data-toggle="modal" data-target="#add-image">Agregar</a>
+        <a class="btn btn-light" href="@Url.Action("index")">Regresar al listado</a>
+    </div>
+</div>
+
+

@@ -1,45 +1,88 @@
-﻿@model MOROPO.UIC.CoInnova.Models.View.UserProfileViewModel
+﻿@using MOROPO.Framework.Guama.Core.Security.Common.Presentation.Web.Frontend.Extensions
+@using MOROPO.UIC.CoInnova.Constants
+
+@model MOROPO.UIC.CoInnova.Models.View.UserProfileViewModel
 
 <div style="padding: 40px 20px 20px 20px; position: relative; min-height: 100vh; z-index: 1000; overflow-x: hidden; overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */">
-    @if (Model != null)
-    {
-        <div class="m-4 p-lg-4 p-md-2 text-center" style="padding-bottom: 0 !important;">
-            @if (Model.ImageId == null)
+    <div class="m-4 p-lg-4 p-md-2 text-center" style="padding-bottom: 0 !important;">
+        @if (Model.ImageId == null)
+        {
+            <img src="~/img/default-person-picture.jpg" class="img-fluid img-thumbnail rounded-circle" />
+        }
+        else
+        {
+            var imageSource = string.Format("/media/images/{0}.{1}", Model.ImageId, Model.ImageExtension);
+
+            <img src="@imageSource" class="img-fluid img-thumbnail rounded-circle" />
+        }
+    </div>
+    <div class="text-center mt-2 mb-4">
+        <p class="h4">@Model.Name</p>
+        @if (!string.IsNullOrEmpty(Model.LastName))
+        {
+            <p class="h5">@Model.LastName</p>
+        }
+        <a asp-action="index" asp-controller="account" asp-area="security" class="btn btn-outline-dark mt-1"><span class="mdi mdi-account" style="margin-right: 4px;"></span>Perfil de Usuario</a>
+    </div>
+    
+    <hr />
+
+    <nav class="nav flex-column nav-pills nav-sidebar">
+        @if (Context.Request.Path.Value == "/moderation/dashboard")
+        {
+            <a class="nav-link active" href="#"><span class="mdi mdi-account-tie" style="margin-right: 4px;"></span>Área de Moderación</a>
+        }
+        else
+        {
+            <a class="nav-link" href="@Url.Action("index", "dashboard", new { area = "moderation", key = string.Empty })"><span class="mdi mdi-account-tie" style="margin-right: 4px;"></span>Área de Moderación</a>
+        }
+
+        @if (User.IsAuthorized(Permission.ChallangeViewer))
+        {
+            if (Context.Request.Path.Value.StartsWith("/moderation/challanges"))
             {
-                <img src="~/img/default-person-picture.jpg" class="img-fluid img-thumbnail rounded-circle" />
+                <a class="nav-link active" asp-action="index" asp-controller="challanges" asp-area="moderation"><span class="mdi mdi-podium" style="margin-right: 4px;"></span> Retos de Innovación</a>
             }
             else
             {
-                var imageSource = string.Format("/media/images/{0}.{1}", Model.ImageId, Model.ImageExtension);
-
-                <img src="@imageSource" class="img-fluid img-thumbnail rounded-circle" />
+                <a class="nav-link" asp-action="index" asp-controller="challanges" asp-area="moderation"><span class="mdi mdi-podium" style="margin-right: 4px;"></span> Retos de Innovación</a>
             }
-        </div>
-        <div class="text-center mt-2 mb-4">
-            <p class="h4">@Model.Name</p>
-            @if (!string.IsNullOrEmpty(Model.LastName))
+        }
+        else
+        {
+            <a class="nav-link disabled text-muted"><span class="mdi mdi-podium" style="margin-right: 4px;"></span> Retos de Innovación</a>
+        }
+
+        @if (User.IsAuthorized(Permission.IdeaViewer))
+        {
+            if (Context.Request.Path.Value.StartsWith("/moderation/ideas"))
             {
-                <p class="h5">@Model.LastName</p>
+                <a class="nav-link active" asp-action="index" asp-controller="ideas" asp-area="moderation"><span class="mdi mdi-lightbulb-on" style="margin-right: 4px;"></span> Ideas Innovadoras</a>
             }
-            <a asp-action="index" asp-controller="account" asp-area="security" class="btn btn-outline-dark mt-1"><span class="mdi mdi-account" style="margin-right: 4px;"></span>Perfil de Usuario</a>
-        </div>
-    }
-    else
-    {
-        <h1 class="h3 mt-5 mb-2 font-weight-normal text-center">Identifícate</h1>
+            else
+            {
+                <a class="nav-link" asp-action="index" asp-controller="ideas" asp-area="moderation"><span class="mdi mdi-lightbulb-on" style="margin-right: 4px;"></span> Ideas Innovadoras</a>
+            }
+        }
+        else
+        {
+            <a class="nav-link disabled text-muted"><span class="mdi mdi-lightbulb-on" style="margin-right: 4px;"></span> Ideas Innovadoras</a>
+        }
 
-        <form asp-action="login" asp-controller="account" asp-area="security" class="form-signin">
-
-            <input type="text" name="UserName" class="form-control" id="UserName" placeholder = "Usuario" />
-            <input type="password" name="Password" class="form-control" id="Password" placeholder = "Contraseña" />
-
-            <div class="checkbox mb-3 text-center">
-                <label>
-                    @Html.CheckBox("RememberMe") Recordar en este dispositivo
-                </label>
-            </div>
-            <button class="btn btn-primary btn-block" type="submit">Iniciar Sesión</button>
-        </form>
-    }
-    <hr />
+        @if (User.IsAuthorized(Permission.PrototypeViewer))
+        {
+            if (Context.Request.Path.Value.StartsWith("/moderation/prototypes"))
+            {
+                <a class="nav-link active" asp-action="index" asp-controller="prototypes" asp-area="moderation"><span class="mdi mdi-developer-board" style="margin-right: 4px;"></span> Prototipos</a>
+            }
+            else
+            {
+                <a class="nav-link" asp-action="index" asp-controller="prototypes" asp-area="moderation"><span class="mdi mdi-developer-board" style="margin-right: 4px;"></span> Prototipos</a>
+            }
+        }
+        else
+        {
+            <a class="nav-link disabled text-muted"><span class="mdi mdi-developer-board" style="margin-right: 4px;"></span> Prototipos</a>
+        }
+    </nav>
 </div>

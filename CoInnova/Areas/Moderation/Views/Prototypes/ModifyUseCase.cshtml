@@ -1,0 +1,132 @@
+﻿@model MOROPO.UIC.CoInnova.Models.View.UseCaseInputViewModel
+
+@{
+    ViewData["Title"] = "Modificar Escalamiento";
+
+    ViewData[BreadcrumbViewModel.BREADCRUMBS_MAP_KEY] = new List<BreadcrumbViewModel>
+    {
+        new BreadcrumbViewModel
+        {
+            Caption = "<span class=\"mdi mdi-home\" style=\"margin-right: 4px;\"></span>" + GlobalViewLocalizationHelper.Localize("Home", ViewLocalizer),
+            Url = Url.Action("index", "home", new { Area = string.Empty })
+        },
+        new BreadcrumbViewModel
+        {
+            Caption = "Área de Moderación",
+            Url = Url.Action("index", "dashboard", new { Area = "moderation" })
+        },
+        new BreadcrumbViewModel
+        {
+            Caption = "Administración de Prototipos",
+            Url = Url.Action("index")
+        },
+        new BreadcrumbViewModel
+        {
+            Caption = "Modificar Prototipo",
+            Url = Url.Action("editusecases", new { key = Model.Prototype.Id })
+        },
+        new BreadcrumbViewModel
+        {
+            Caption = ViewData["Title"].ToString()
+        }
+    };
+
+    Layout = "_ModerationFrontendLayout";
+}
+
+@section styles {
+    <link rel="stylesheet" href="~/lib/bootstrap-combobox/css/bootstrap-combobox.css" />
+    <style type="text/css">
+        .dropdown-toggle {
+            border-radius: 0.25rem;
+            border: 1px solid #ced4da;
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+            margin-left: -1px;
+            line-height: 36px;
+        }
+
+        .dropdown-toggle::after {
+            margin: 0 5px;
+        }
+
+        ul.dropdown-menu{
+            width: 100%;
+        }
+    </style>
+}
+
+@section scripts {
+    <script src="~/lib/bootstrap-combobox/js/bootstrap-combobox.js"></script>
+    <script type="text/javascript">
+        $('#BenefitedId').combobox();
+    </script>
+
+}
+
+@using (Html.BeginForm("modifyusecase", "prototypes", new { Key = Model.Prototype.Id, Area = "moderation" }, FormMethod.Post, true, null))
+{
+    @Html.ValidationSummary(true)
+
+    <div class="card mb-3">
+        <div class="card-header">
+            <h4>@ViewData["Title"]</h4>
+            <ul class="nav nav-tabs card-header-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">Generales</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="@Url.Action("editusecasedocuments", new { key = Model.Prototype.Id, id = Model.Id })">Documentos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="@Url.Action("editusecaseimages", new { key = Model.Prototype.Id, id = Model.Id })">Imágenes</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="card-body">
+            <div class="alert alert-dark mb-4">
+                <details>
+                    <summary class="h4 mb-0">@Model.Prototype.Title</summary>
+                    <hr />
+                    <div class="row">
+                        <dl class="col-md-6 mb-3">
+                            <dt>@Html.DisplayNameFor(model => model.Prototype.Level)</dt>
+                            <dd>@Model.Prototype.Level.Name</dd>
+                        </dl>
+                        <dl class="col-md-6 mb-3">
+                            <dt>@Html.DisplayNameFor(model => model.Prototype.InnovationAgent.Identity.Name)</dt>
+                            <dd>@Model.Prototype.InnovationAgent.Identity.Name</dd>
+                        </dl>
+                    </div>
+                    <dl class="mb-0">
+                        <dt>@Html.DisplayNameFor(model => model.Prototype.Idea)</dt>
+                        @if (Model.Prototype.Idea == null)
+                        {
+                            <dd>---</dd>
+                        }
+                        else
+                        {
+                            <dd>@Model.Prototype.Idea.Title</dd>
+                        }
+                    </dl>
+                </details>
+            </div>
+            @Html.HiddenFor(model => model.Id) 
+            <div class="mb-3">
+                @Html.LabelFor(model => model.BenefitedId, new { @class = "control-label" })
+                @Html.DropDownListFor(model => model.BenefitedId, Model.AvailableCollaborators, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.BenefitedId, null, new { @class = "text-danger" })
+            </div>
+            <div>
+                @Html.LabelFor(model => model.About, new { @class = "control-label" })
+                @Html.TextAreaFor(model => model.About, 10, 0, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.About, null, new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="card-footer">
+            <button type="submit" class="btn btn-primary">Modificar</button>
+            <a class="btn btn-light" href="@Url.Action("editusecases", new { key = Model.Prototype.Id })">Regresar al listado</a>
+        </div>
+    </div>
+}

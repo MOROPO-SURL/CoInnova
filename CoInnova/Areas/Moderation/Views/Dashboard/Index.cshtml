@@ -1,0 +1,98 @@
+﻿@using MOROPO.Framework.Guama.Core.Security.Common.Presentation.Web.Frontend.Extensions
+@using MOROPO.UIC.CoInnova.Constants
+@model MOROPO.UIC.CoInnova.Models.View.ModerationDashboardViewModel
+
+@{
+    const string TITLE = "Área de Moderación";
+
+    ViewData["Title"] = TITLE;
+
+    ViewData[BreadcrumbViewModel.BREADCRUMBS_MAP_KEY] = new List<BreadcrumbViewModel>
+    {
+        new BreadcrumbViewModel
+        {
+            Caption = "<span class=\"mdi mdi-home\"></span> Inicio",
+            Url = "/"
+        },
+        new BreadcrumbViewModel
+        {
+            Caption = TITLE
+        }
+    };
+
+    Layout = "_ModerationFrontendLayout";
+}
+
+<h3>@TITLE</h3>
+<hr class="mb-4" />
+
+<h5>Agente de Innovación</h5>
+<button class="btn btn-light btn-lg dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+    <span>@Model.Target.Identity.Name</span>
+</button>
+<div class="dropdown-menu">
+    @if (Model.Others.Length <= 0)
+    {
+        <a class="dropdown-item disabled">No tiene asignados otros agentes de innovación que moderar</a>
+    }
+    else
+    {
+        foreach (var item in Model.Others)
+        {
+            <a class="dropdown-item" asp-action="index" asp-route-key="@item.Id">@item.Identity.Name</a>
+        }
+    }
+</div>
+<div class="row mt-5">
+    <div class="col-sm-6 col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <div class="mdi mdi-podium mdi-48px"></div>
+                <h3 class="card-title">Retos de Innovación</h3>
+                <p class="card-text">Trabajar con los retos de innovación gestionados por <b>@Model.Target.Identity.Name</b>.</p>
+                @if (User.IsAuthorized(Permission.ChallangeViewer))
+                {
+                    <a asp-action="index" asp-controller="challanges" asp-area="moderation" class="btn btn-primary">Gestionar</a>
+                }
+                else
+                {
+                    <a href="#" class="btn btn-light disabled">Gestionar</a>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <div class="mdi mdi-lightbulb-on mdi-48px"></div>
+                <h3 class="card-title">Ideas Innovadoras</h3>
+                <p class="card-text">Trabajar con las ideas innovadoras gestionados por <b>@Model.Target.Identity.Name</b>.</p>
+                @if (User.IsAuthorized(Permission.IdeaViewer))
+                {
+                    <a asp-action="index" asp-controller="ideas" asp-area="moderation" class="btn btn-primary">Gestionar</a>
+                }
+                else
+                {
+                    <a href="#" class="btn btn-light disabled">Gestionar</a>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <div class="mdi mdi-developer-board mdi-48px"></div>
+                <h3 class="card-title">Prototipos</h3>
+                <p class="card-text">Trabajar con los prototipos gestionados por <b>@Model.Target.Identity.Name</b>.</p>
+                @if (User.IsAuthorized(Permission.PrototypeViewer))
+                {
+                    <a asp-action="index" asp-controller="prototypes" asp-area="moderation" class="btn btn-primary">Gestionar</a>
+                }
+                else
+                {
+                    <a href="#" class="btn btn-light disabled">Gestionar</a>
+                }
+            </div>
+        </div>
+    </div>
+</div>

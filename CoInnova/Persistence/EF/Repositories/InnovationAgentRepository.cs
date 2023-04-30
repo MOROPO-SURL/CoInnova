@@ -17,7 +17,8 @@ namespace MOROPO.UIC.CoInnova.Persistence.EF.Repositories
                 .Include(entity => entity.Identity).ThenInclude(entity => entity.PhoneContactItemBridges).ThenInclude(bridge => bridge.Stern)
                 .Include(entity => entity.Identity).ThenInclude(entity => entity.EmailContactItemBridges).ThenInclude(bridge => bridge.Stern)
                 .Include(entity => entity.Identity).ThenInclude(entity => entity.SocialContactItemBridges).ThenInclude(bridge => bridge.Stern)
-                .Include(entity => entity.Identity).ThenInclude(entity => entity.PostalContactItemBridges).ThenInclude(bridge => bridge.Stern);
+                .Include(entity => entity.Identity).ThenInclude(entity => entity.PostalContactItemBridges).ThenInclude(bridge => bridge.Stern)
+                .Include(entity => entity.UserBridges).ThenInclude(bridge => bridge.Stern).ThenInclude(entity => entity.Identity).ThenInclude(entity => entity.Image);
         }
     }
 }

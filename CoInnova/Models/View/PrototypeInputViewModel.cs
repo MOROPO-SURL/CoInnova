@@ -18,10 +18,6 @@ namespace MOROPO.UIC.CoInnova.Models.View
         [Display(Name = "PrototypingLevel")]
         public System.Guid? LevelId { get; set; }
 
-        [Required(ErrorMessage = "RequiredValidationErrorMessage")]
-        [Display(Name = "InnovationAgent")]
-        public System.Guid? InnovationAgentId { get; set; }
-
         [Display(Name = "Idea")]
         public System.Guid? IdeaId { get; set; }
 
@@ -37,8 +33,6 @@ namespace MOROPO.UIC.CoInnova.Models.View
 
         public Microsoft.AspNetCore.Mvc.Rendering.SelectListItem[] AvailableIdeas { get; set; }
 
-        public Microsoft.AspNetCore.Mvc.Rendering.SelectListItem[] AvailableInnovationAgents { get; set; }
-
         public Prototype Export()
         {
             var entity = new Prototype();
@@ -48,7 +42,7 @@ namespace MOROPO.UIC.CoInnova.Models.View
             return entity;
         }
 
-        public void Import(Prototype entity)
+        public virtual void Import(Prototype entity)
         {
             Id = entity.Id;
             Title = entity.Title;
@@ -56,7 +50,6 @@ namespace MOROPO.UIC.CoInnova.Models.View
             Description = entity.Description;
             IsPublic = entity.IsPublic;
             LevelId = entity.LevelId;
-            InnovationAgentId = entity.InnovationAgentId;
             IdeaId = entity.IdeaId;
         }
 

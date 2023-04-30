@@ -1,0 +1,45 @@
+﻿@model MOROPO.UIC.CoInnova.Models.View.ChallangeDisplayViewModel
+
+@{
+    ViewData["Title"] = "Eliminar Reto de Innovación";
+
+    ViewData[BreadcrumbViewModel.BREADCRUMBS_MAP_KEY] = new List<BreadcrumbViewModel>
+    {
+        new BreadcrumbViewModel
+        {
+            Caption = "<span class=\"mdi mdi-home\" style=\"margin-right: 4px;\"></span>" + GlobalViewLocalizationHelper.Localize("Home", ViewLocalizer),
+            Url = Url.Action("index", "home", new { Area = string.Empty })
+        },
+        new BreadcrumbViewModel
+        {
+            Caption = "Área de Moderación",
+            Url = Url.Action("index", "dashboard", new { Area = "moderation" })
+        },
+        new BreadcrumbViewModel
+        {
+            Caption = "Administración de Retos de Innovación",
+            Url = Url.Action("index")
+        },
+        new BreadcrumbViewModel
+        {
+            Caption = ViewData["Title"].ToString()
+        }
+    };
+
+    Layout = "_ModerationFrontendLayout";
+}
+
+<h3>Esta seguro que desea eliminar el reto de innovación detallado a continuación?</h3>
+
+<dl>
+    <dt>@Html.DisplayNameFor(model => model.Title)</dt>
+    <dd>@Html.DisplayFor(model => model.Title)</dd>
+</dl>
+@using (Html.BeginForm("delete", "challanges", new { Area = "moderation", key = string.Empty }, FormMethod.Post, true, null))
+{
+    @Html.HiddenFor(model => model.Id)
+    <div>
+        <button type="submit" class="btn btn-danger">Eliminar</button>
+        <a class="btn btn-light" href="@Url.Action("index")">Cancelar</a>
+    </div>
+}

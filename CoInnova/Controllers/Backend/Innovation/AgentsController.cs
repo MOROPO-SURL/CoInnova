@@ -6,6 +6,7 @@ using MOROPO.Framework.Guama.Core.Presentation.Web.Security.Attributes;
 using MOROPO.Framework.Guama.Identity.Persistence.Entities;
 using MOROPO.Framework.Guama.Media.Persistence.Entities;
 using MOROPO.Framework.Guama.Media.Presentation.Web.Common.Managers.Facade;
+using MOROPO.Framework.Guama.Security.Personal.Persistence.Entities;
 using MOROPO.UIC.CoInnova.Models.View;
 using MOROPO.UIC.CoInnova.Persistence.Entities;
 using System.Linq;
@@ -21,14 +22,16 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
         private readonly IEntityRepository<OrganizationIdentity, System.Guid> identityRepository;
         private readonly IEntityRepository<PhoneContactItem, System.Guid> phoneContactItemRepository;
         private readonly IEntityRepository<EmailContactItem, System.Guid> emailContactItemRepository;
+        private readonly IEntityRepository<User, string> userRepository;
         private readonly IImageFileManagerFacade imageFileManager;
 
-        public AgentsController(IImageFileManagerFacade imageFileManager, IEntityRepository<EmailContactItem, System.Guid> emailContactItemRepository, IEntityRepository<PhoneContactItem, System.Guid> phoneContactItemRepository, IEntityRepository<OrganizationIdentity, System.Guid> identityRepository, IEntityRepository<Image, System.Guid> imageRepository, IEntityRepository<InnovationAgent, System.Guid> repository, Microsoft.Extensions.Localization.IStringLocalizer<AgentsController> localizer, ILogger<AgentsController> logger) : base(repository, localizer, logger)
+        public AgentsController(IImageFileManagerFacade imageFileManager, IEntityRepository<User, string> userRepository, IEntityRepository<EmailContactItem, System.Guid> emailContactItemRepository, IEntityRepository<PhoneContactItem, System.Guid> phoneContactItemRepository, IEntityRepository<OrganizationIdentity, System.Guid> identityRepository, IEntityRepository<Image, System.Guid> imageRepository, IEntityRepository<InnovationAgent, System.Guid> repository, Microsoft.Extensions.Localization.IStringLocalizer<AgentsController> localizer, ILogger<AgentsController> logger) : base(repository, localizer, logger)
         {
             this.imageRepository = imageRepository;
             this.identityRepository = identityRepository;
             this.phoneContactItemRepository = phoneContactItemRepository;
             this.emailContactItemRepository = emailContactItemRepository;
+            this.userRepository = userRepository;
             this.imageFileManager = imageFileManager;
         }
 
@@ -401,6 +404,141 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
         }
 
         #endregion
+
+        #endregion
+
+        #region Moderators
+
+        [Route("edit/{key}/moderators")]
+        [RequirePermissions(Constants.Permission.InnovationAgentEditor)]
+        public IActionResult EditModerators(System.Guid key)
+        {
+            try
+            {
+                var entity = Repository.Get(key);
+
+                var availableUsers = userRepository.GetAll().ToList();
+
+                var includedUsers = new System.Collections.Generic.List<User>();
+
+                foreach (var bridge in entity.UserBridges)
+                {
+                    var user = availableUsers.FirstOrDefault(item => item.Id == bridge.SternId);
+
+                    includedUsers.Add(user);
+
+                    availableUsers.Remove(user);
+                }
+
+                var model = new InnovationAgentModeratorsViewModel
+                {
+                    Agent = new InnovationAgentDisplayViewModel(),
+                    Moderators = includedUsers.Select(item =>
+                    {
+                        var iModel = new Framework.Guama.Security.Personal.Presentation.Web.Backend.Models.View.UserDisplayViewModel();
+
+                        iModel.Import(item);
+
+                        return iModel;
+                    }).ToArray(),
+                    AvailableUserSeletListItems = availableUsers.Select(item => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem { Value = item.Id.ToString(), Text = string.IsNullOrEmpty(item.Identity.LastName) ? item.Identity.Name : string.Format("{0} {1}", item.Identity.Name, item.Identity.LastName) }).ToArray()
+                };
+
+                model.Agent.Import(entity);
+
+                return View(model);
+            }
+            catch (System.Exception e)
+            {
+                logger.LogError(e.InnerException, e.Message);
+            }
+
+            SetDefaultNotification(NotificationType.Danger, GetNotFoundMessage());
+
+            return GetDefaultActionResult();
+        }
+
+        [Route("edit/{key}/moderators/add")]
+        [RequirePermissions(Constants.Permission.ChallangeEditor)]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult EditModeratorsAdd(System.Guid key, string userId)
+        {
+            try
+            {
+                var entity = Repository.Get(key);
+
+                if (userId != null)
+                {
+                    try
+                    {
+                        entity.UserBridges.Add(new InnovationAgentUserBridge { ProwId = entity.Id, SternId = userId });
+
+                        Repository.Update(entity, User.Identity.Name);
+
+                        SetDefaultNotification(NotificationType.Success, GetCreationSuccessMessage());
+
+                        return RedirectToAction("EditModerators", new { key });
+                    }
+                    catch (Framework.Guama.Core.Presentation.Web.Frontend.InvalidModelException e)
+                    {
+                        ModelState.AddModelError(e.ModelKey, e.ErrorMessage);
+                    }
+                }
+
+                ModelState.AddModelError("userId", string.Format(localizer["RequiredValidationErrorMessage"], localizer["User"]));
+
+                SetDefaultNotification(NotificationType.Danger, GetInvalidMessage());
+
+                return RedirectToAction("EditModerators", new { key });
+            }
+            catch (System.Exception e)
+            {
+                logger.LogError(e.InnerException, e.Message);
+            }
+
+            SetDefaultNotification(NotificationType.Danger, GetNotFoundMessage());
+
+            return GetDefaultActionResult();
+        }
+
+        [HttpPost]
+        [Route("edit/{key}/moderators/delete")]
+        [ValidateAntiForgeryToken]
+        [RequirePermissions(Constants.Permission.InnovationAgentEditor)]
+        public IActionResult EditModeratorsDelete(System.Guid key, string userId)
+        {
+            try
+            {
+                var entity = Repository.Get(key);
+
+                var bridge = entity.UserBridges.First(b => b.SternId == userId);
+
+                entity.UserBridges.Remove(bridge);
+
+                Repository.Update(entity, User.Identity.Name);
+
+                SetDefaultNotification(NotificationType.Success, GetDeletionSuccessMessage());
+
+                return RedirectToAction("EditModerators", new { key });
+            }
+            catch (Microsoft.EntityFrameworkCore.DbUpdateException e)
+            {
+                logger.LogError(e.InnerException, e.Message);
+
+                SetDefaultNotification(NotificationType.Warning, GetOnDeletionDependecyConstrainErrorMessage());
+
+                return RedirectToAction("EditModerators", new { key });
+            }
+            catch (System.Exception e)
+            {
+                logger.LogError(e.InnerException, e.Message);
+            }
+
+            SetDefaultNotification(NotificationType.Danger, GetNotFoundMessage());
+
+            return GetSuccessDeleteActionResult();
+        }
 
         #endregion
     }

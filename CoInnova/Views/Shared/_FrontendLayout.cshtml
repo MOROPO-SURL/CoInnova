@@ -1,5 +1,4 @@
-﻿@using MOROPO.Framework.Guama.Core.Security.Common.Presentation.Web.Frontend.Extensions
-@{ 
+﻿@{ 
     Layout = "_Layout";
 }
 
@@ -58,20 +57,15 @@
         @if (User.Identity.IsAuthenticated)
         {
             <form asp-action="logout" asp-controller="account" asp-area="security" asp-antiforgery="true" class="form-inline w-100">
-                <ul class="navbar-nav justify-content-end w-100">                
-                    @if (User.IsAuthorized(MOROPO.Framework.Guama.Core.Security.Presentation.Constants.Permissions.ShellManager))
-                    {
-                        <li>
-                            <a class="btn btn-link" href="@Url.Action("index", "dashboard")">
-                                <div><span class="mdi mdi-cogs" style="margin-right: 4px;"></span>@GlobalViewLocalizationHelper.Localize("Administración", ViewLocalizer)</div>
-                            </a>
-                        </li>
-                    }
-                    <li>
-                        <a asp-action="index" asp-controller="account" asp-area="security" class="btn btn-link"><span class="mdi mdi-account-circle" style="margin-right: 4px;"></span>@User.Identity.Name</a>
-                    </li>
-                    <li>
-                        <button type="submit" class="btn btn-link"><span class="mdi mdi-logout-variant" style="margin-right: 4px;"></span>Salir</button>
+                <ul class="nav justify-content-end w-100">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">@User.Identity.Name</a>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" asp-action="index" asp-controller="account" asp-area="security"><span class="mdi mdi-account-circle" style="margin-right: 4px;"></span>Perfil de Usuario</a>
+                            @await Component.InvokeAsync("AutenticatedUserOptionListItems")                          
+                            <div class="dropdown-divider"></div>
+                            <button type="submit" class="dropdown-item"><span class="mdi mdi-logout-variant" style="margin-right: 4px;"></span>Salir</button>
+                        </div>
                     </li>
                 </ul>
             </form>
@@ -79,7 +73,7 @@
         else
         {
             <div class="w-100">
-                <a class="btn btn-link float-right" href="@Url.Action("login", "account", new { Area = "security"})">Entrar</a>
+                <a class="btn btn-link float-right" href="@Url.Action("login", "account", new { Area = "security"})"><span class="mdi mdi-login-variant" style="margin-right: 4px;"></span>Entrar</a>
             </div>
         }
     </div>

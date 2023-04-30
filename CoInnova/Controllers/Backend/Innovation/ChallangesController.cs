@@ -5,6 +5,7 @@ using MOROPO.Framework.Guama.Core.Presentation.Web.Security.Attributes;
 using MOROPO.Framework.Guama.Media.Persistence.Entities;
 using MOROPO.Framework.Guama.Media.Presentation.Web.Common.Managers.Facade;
 using MOROPO.UIC.CoInnova.Models.View;
+using MOROPO.UIC.CoInnova.Models.View.Backend;
 using MOROPO.UIC.CoInnova.Persistence.Entities;
 using System.Linq;
 
@@ -13,7 +14,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
     [Microsoft.AspNetCore.Authorization.Authorize]
     [RequirePermissions(Framework.Guama.Core.Security.Presentation.Constants.Permissions.ShellManager)]
     [Area("innovation")]
-    public class ChallangesController : Framework.Guama.Core.Presentation.Web.Backend.Controllers.AbstractEntityManagementController<Challange, System.Guid, ChallangeInputViewModel, ChallangeDisplayViewModel>
+    public class ChallangesController : Framework.Guama.Core.Presentation.Web.Backend.Controllers.AbstractEntityManagementController<Challange, System.Guid, ChallangeInputBackendViewModel, ChallangeDisplayViewModel>
     {
         private readonly IEntityRepository<ChallangeWorkflow, System.Guid> challangeWorkflowRepository;
         private readonly IEntityRepository<Document, System.Guid> documentRepository;
@@ -51,7 +52,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
         }
 
         [RequirePermissions(Constants.Permission.ChallangeCreator)]
-        public override IActionResult Create(ChallangeInputViewModel modelInput)
+        public override IActionResult Create(ChallangeInputBackendViewModel modelInput)
         {
             return base.Create(modelInput);
         }
@@ -61,7 +62,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
             return base.Edit(key);
         }
 
-        public override IActionResult Edit(ChallangeInputViewModel modelInput)
+        public override IActionResult Edit(ChallangeInputBackendViewModel modelInput)
         {
             return base.Edit(modelInput);
         }
@@ -78,7 +79,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
             return base.Delete(displayModel);
         }
 
-        protected override void PreCreate(Challange entity, ChallangeInputViewModel modelInput)
+        protected override void PreCreate(Challange entity, ChallangeInputBackendViewModel modelInput)
         {
             base.PreCreate(entity, modelInput);
 
@@ -92,7 +93,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
             }
         }
 
-        protected override void PreEdit(Challange entity, ChallangeInputViewModel modelInput)
+        protected override void PreEdit(Challange entity, ChallangeInputBackendViewModel modelInput)
         {
             base.PreEdit(entity, modelInput);
 
@@ -117,35 +118,35 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
             }
         }
 
-        protected override void ConfigureCreate(ChallangeInputViewModel modelInput)
+        protected override void ConfigureCreate(ChallangeInputBackendViewModel modelInput)
         {
             base.ConfigureCreate(modelInput);
 
             Populate(modelInput);
         }
 
-        protected override void ConfigurePostFailCreateValidation(ChallangeInputViewModel modelInput)
+        protected override void ConfigurePostFailCreateValidation(ChallangeInputBackendViewModel modelInput)
         {
             base.ConfigurePostFailCreateValidation(modelInput);
 
             Populate(modelInput);
         }
 
-        protected override void ConfigureEdit(Challange entity, ChallangeInputViewModel modelInput)
+        protected override void ConfigureEdit(Challange entity, ChallangeInputBackendViewModel modelInput)
         {
             base.ConfigureEdit(entity, modelInput);
 
             Populate(modelInput);
         }
 
-        protected override void ConfigurePostFailEditValidation(Challange entity, ChallangeInputViewModel modelInput)
+        protected override void ConfigurePostFailEditValidation(Challange entity, ChallangeInputBackendViewModel modelInput)
         {
             base.ConfigurePostFailEditValidation(entity, modelInput);
 
             Populate(modelInput);
         }
 
-        private void Populate(ChallangeInputViewModel model)
+        private void Populate(ChallangeInputBackendViewModel model)
         {
             model.AvailableWorkflowSelectListItems = challangeWorkflowRepository.GetAll().Select(item => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
             {
@@ -634,7 +635,7 @@ namespace MOROPO.UIC.CoInnova.Controllers.Backend.Innovation
 
             if (entity.WorkflowId ==  null)
             {
-                SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Warning, "Flujo de Trabajo", "No se ha especificado el flujo de trabajo a utilizar en el proceso de innovación para este reto. Puede especificarlo en este formulario.", null);
+                SetDefaultNotification(Framework.Guama.Core.Presentation.Models.View.NotificationType.Warning, "Proceso de Innovación", "No se ha especificado el modelo de gestión a utilizar en el proceso de innovación para este reto. Puede especificarlo en este formulario.", null);
 
                 return RedirectToAction("Edit", new { key = entity.Id });
             }
