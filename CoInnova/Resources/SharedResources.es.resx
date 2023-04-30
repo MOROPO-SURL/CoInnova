@@ -480,4 +480,10 @@
   <data name="Challange" xml:space="preserve">
     <value>Reto de Innovación</value>
   </data>
+  <data name="Label" xml:space="preserve">
+    <value>Etiqueta</value>
+  </data>
+  <data name="Number" xml:space="preserve">
+    <value>Número</value>
+  </data>
 </root>

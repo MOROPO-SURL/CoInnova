@@ -79,7 +79,17 @@
     @Html.HiddenFor(model => model.Id)
 
     <div class="card mb-3">
-        <div class="card-header"><h4 class="mb-0">@ViewData["Title"]</h4></div>
+        <div class="card-header">
+            <h4>Modificar Agente de Innovación</h4>
+            <ul class="nav nav-tabs card-header-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">Generales</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="@Url.Action("EditContacts", @Model.Id)">Contactos</a>
+                </li>
+            </ul>
+        </div>
 
         <div class="card-body">
             <div class="row">
